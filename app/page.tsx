@@ -3,7 +3,13 @@ import Image from "next/image";
 import { TypeAnimation } from "react-type-animation";
 
 import { PaycrestLogo, TextCursor } from "@/components/ImageAssets";
-import { AnimatedContainer, AnimatedItem } from "@/components/Animations";
+import { usePrivy } from "@privy-io/react-auth";
+import {
+	AnimatedContainer,
+	AnimatedItem,
+	primaryButtonStyles,
+	secondaryButtonStyles,
+} from "@/components";
 
 const CurrencyLogo = ({
 	src,
@@ -28,6 +34,9 @@ const CurrencyLogo = ({
 );
 
 export default function Home() {
+	const { ready, authenticated, login } = usePrivy();
+	const disableLogin = !ready || (ready && authenticated);
+
 	return (
 		<div className="min-h-screen content-center bg-white p-4 overflow-hidden">
 			<AnimatedContainer className="relative space-y-6 max-w-2xl px-4 mx-auto aspect-square content-center sm:border sm:border-border-light sm:rounded-full">
@@ -108,13 +117,17 @@ export default function Home() {
 				<AnimatedItem className="flex gap-3 items-center sm:justify-center">
 					<button
 						type="button"
-						className="px-4 py-2.5 rounded-xl border border-border-light hover:shadow bg-white text-text-primary font-medium text-sm leading-normal outline-none focus:ring-primary-blue focus:ring hover:-translate-y-1 transition-all ease-in-out hover:bg-gray-100"
+						onClick={login}
+						disabled={disableLogin}
+						className={secondaryButtonStyles}
 					>
 						Connect
 					</button>
 					<button
 						type="button"
-						className="px-4 py-2.5 rounded-xl border border-border-light hover:shadow bg-primary-blue text-white font-medium text-sm leading-normal outline-none focus:ring-primary-blue focus:ring hover:-translate-y-1 transition-all ease-in-out hover:bg-blue-800"
+						onClick={login}
+						disabled={disableLogin}
+						className={primaryButtonStyles}
 					>
 						Get started
 					</button>
