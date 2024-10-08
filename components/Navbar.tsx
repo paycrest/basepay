@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { usePrivy } from "@privy-io/react-auth";
+import { useLogout, usePrivy } from "@privy-io/react-auth";
 import { useEffect, useRef, useState } from "react";
 
 import { classNames } from "@/app/utils";
@@ -18,19 +18,34 @@ import {
 import { PiCheck } from "react-icons/pi";
 import { dropdownVariants } from "./Animations";
 import { useOutsideClick } from "@/app/hooks";
+import { Preloader } from "./Preloader";
 
 export const Navbar = () => {
 	const router = useRouter();
 	const [isAddressCopied, setIsAddressCopied] = useState(false);
 	const [isWalletDropdownOpen, setIsWalletDropdownOpen] = useState(false);
 	const [isSettingsDropdownOpen, setIsSettingsDropdownOpen] = useState(false);
+	const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-	const { ready, authenticated, logout, user } = usePrivy();
+	const { ready, authenticated, user } = usePrivy();
+
+	const { logout } = useLogout({
+		onSuccess: () => {
+			router.push("/");
+			setIsLoggingOut(false);
+		},
+	});
 
 	const handleCopyAddress = () => {
 		navigator.clipboard.writeText(user?.wallet?.address ?? "");
 		setIsAddressCopied(true);
 		setTimeout(() => setIsAddressCopied(false), 2000);
+	};
+
+	const handleLogout = async () => {
+		setIsSettingsDropdownOpen(false);
+		setIsLoggingOut(true);
+		await logout();
 	};
 
 	const walletDropdownRef = useRef<HTMLDivElement>(null);
@@ -52,7 +67,7 @@ export const Navbar = () => {
 		}
 	}, [ready, authenticated]);
 
-	if (!ready) return <></>;
+	if (isLoggingOut) return <Preloader isLoading={isLoggingOut} />;
 
 	return (
 		<header className="sticky left-0 top-0 z-20 w-full bg-white transition-all">
@@ -149,30 +164,32 @@ export const Navbar = () => {
 									aria-labelledby="settings-dropdown"
 									className="text-sm text-text-primary font-normal"
 								>
-									<li className="flex cursor-pointer items-center justify-between gap-2 px-4 py-2 transition hover:bg-gray-200">
-										<div className="flex items-center gap-2.5">
-											<WalletIcon />
-											<p className="max-w-60 break-words">
-												{user?.wallet?.address ?? ""}
-											</p>
-										</div>
-
+									<li>
 										<button
 											type="button"
 											onClick={handleCopyAddress}
-											title="Copy wallet address"
+											className="flex cursor-pointer items-center justify-between gap-2 px-4 py-2 transition hover:bg-gray-200 w-full"
 										>
-											{isAddressCopied ? (
-												<PiCheck className="size-4" />
-											) : (
-												<CopyIcon className="size-4 transition hover:text-black" />
-											)}
+											<div className="flex items-center gap-2.5">
+												<WalletIcon />
+												<p className="max-w-40 break-words">
+													{user?.wallet?.address ?? ""}
+												</p>
+											</div>
+
+											<div>
+												{isAddressCopied ? (
+													<PiCheck className="size-4" />
+												) : (
+													<CopyIcon className="size-4 transition hover:text-black" />
+												)}
+											</div>
 										</button>
 									</li>
 									<li>
 										<button
 											type="button"
-											onClick={logout}
+											onClick={handleLogout}
 											className="flex items-center gap-2.5 px-4 py-2 transition hover:bg-gray-200 w-full"
 										>
 											<LogoutIcon />

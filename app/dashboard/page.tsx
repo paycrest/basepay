@@ -4,12 +4,7 @@ import Image from "next/image";
 import { usePrivy } from "@privy-io/react-auth";
 
 import { shortenAddress } from "../utils";
-import {
-	Navbar,
-	Preloader,
-	primaryButtonStyles,
-	secondaryButtonStyles,
-} from "@/components";
+import { Navbar, Preloader, primaryButtonStyles } from "@/components";
 import { ArrowRightIcon, BannerIcon } from "@/components/ImageAssets";
 
 const data = [
