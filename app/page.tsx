@@ -1,9 +1,12 @@
 "use client";
+
 import Image from "next/image";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { TypeAnimation } from "react-type-animation";
 
+import { useLogin, usePrivy } from "@privy-io/react-auth";
 import { PaycrestLogo, TextCursor } from "@/components/ImageAssets";
-import { usePrivy } from "@privy-io/react-auth";
 import {
 	AnimatedContainer,
 	AnimatedItem,
@@ -34,8 +37,22 @@ const CurrencyLogo = ({
 );
 
 export default function Home() {
-	const { ready, authenticated, login } = usePrivy();
+	const router = useRouter();
+	const { ready, authenticated } = usePrivy();
 	const disableLogin = !ready || (ready && authenticated);
+
+	const { login } = useLogin({
+		onComplete: () => {
+			router.push("/dashboard");
+		},
+	});
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: this only depends on ready and authenticated
+	useEffect(() => {
+		if (ready && authenticated) {
+			router.push("/dashboard");
+		}
+	}, [ready, authenticated]);
 
 	return (
 		<div className="min-h-screen content-center bg-white p-4 overflow-hidden">

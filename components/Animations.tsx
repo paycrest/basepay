@@ -17,10 +17,34 @@ const stagger = {
 	},
 };
 
-export const AnimatedContainer: React.FC<{
+export const dropdownVariants = {
+	open: {
+		opacity: 1,
+		y: 0,
+		transition: {
+			type: "spring",
+			stiffness: 300,
+			damping: 30,
+		},
+	},
+	closed: {
+		opacity: 0,
+		y: -20,
+		transition: {
+			type: "spring",
+			stiffness: 300,
+			damping: 30,
+		},
+	},
+};
+
+export const AnimatedContainer = ({
+	children,
+	className,
+}: {
 	children: React.ReactNode;
 	className?: string;
-}> = ({ children, className }) => (
+}) => (
 	<motion.div
 		className={className}
 		initial="initial"
@@ -31,10 +55,13 @@ export const AnimatedContainer: React.FC<{
 	</motion.div>
 );
 
-export const AnimatedItem: React.FC<{
+export const AnimatedItem = ({
+	children,
+	className,
+}: {
 	children: React.ReactNode;
 	className?: string;
-}> = ({ children, className }) => (
+}) => (
 	<motion.div className={className} variants={fadeInUp}>
 		{children}
 	</motion.div>

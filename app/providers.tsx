@@ -16,7 +16,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 				appearance: {
 					theme: "light",
 					accentColor: "#0065F5",
-					logo: "/logos/basepay-logo.svg",
+					logo: "/logos/basepay.svg",
 				},
 				embeddedWallets: {
 					createOnLogin: "users-without-wallets",
