@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { TypeAnimation } from "react-type-animation";
 
@@ -10,6 +10,7 @@ import { PaycrestLogo, TextCursor } from "@/components/ImageAssets";
 import {
 	AnimatedContainer,
 	AnimatedItem,
+	Preloader,
 	primaryButtonStyles,
 	secondaryButtonStyles,
 } from "@/components";
@@ -40,9 +41,11 @@ export default function Home() {
 	const router = useRouter();
 	const { ready, authenticated } = usePrivy();
 	const disableLogin = !ready || (ready && authenticated);
+	const [showPreloader, setShowPreloader] = useState(false);
 
 	const { login } = useLogin({
 		onComplete: () => {
+			setShowPreloader(true);
 			router.push("/dashboard");
 		},
 	});
@@ -52,7 +55,15 @@ export default function Home() {
 		if (ready && authenticated) {
 			router.push("/dashboard");
 		}
+
+		if (disableLogin) {
+			setShowPreloader(true);
+		} else {
+			setShowPreloader(false);
+		}
 	}, [ready, authenticated]);
+
+	if (showPreloader) return <Preloader isLoading={showPreloader} />;
 
 	return (
 		<div className="min-h-screen content-center bg-white p-4 overflow-hidden">
