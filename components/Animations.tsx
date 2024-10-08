@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-const fadeInUp = {
+export const fadeInUp = {
 	initial: { opacity: 0, y: 20 },
 	animate: {
 		opacity: 1,
@@ -34,6 +34,26 @@ export const dropdownVariants = {
 			type: "spring",
 			stiffness: 300,
 			damping: 30,
+		},
+	},
+};
+
+export const previewVariants = {
+	hidden: { opacity: 0, width: 0 },
+	visible: {
+		opacity: 1,
+		width: "100%",
+		transition: {
+			duration: 0.3,
+			ease: "easeInOut",
+		},
+	},
+	exit: {
+		opacity: 0,
+		width: 0,
+		transition: {
+			duration: 0.1,
+			ease: "easeInOut",
 		},
 	},
 };

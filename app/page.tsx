@@ -79,8 +79,8 @@ export default function Home() {
 					className="absolute top-3 left-3/4"
 				/>
 				<CurrencyLogo
-					src="/logos/gh.svg"
-					alt="gh"
+					src="/logos/ar.svg"
+					alt="ar"
 					className="absolute right-0"
 				/>
 				<CurrencyLogo
@@ -94,8 +94,8 @@ export default function Home() {
 					className="absolute bottom-16 left-20"
 				/>
 				<CurrencyLogo
-					src="/logos/sa.svg"
-					alt="sa"
+					src="/logos/br.svg"
+					alt="br"
 					className="absolute bottom-16 right-20"
 				/>
 

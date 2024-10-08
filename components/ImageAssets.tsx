@@ -280,3 +280,34 @@ export const BannerIcon = (props: ImageProps) => {
 		</svg>
 	);
 };
+
+export const GreenCheckCircleIcon = (props: ImageProps) => {
+	return (
+		<svg
+			width="16"
+			height="16"
+			viewBox="0 0 16 16"
+			fill="none"
+			xmlns="http://www.w3.org/2000/svg"
+			{...props}
+		>
+			<title>Check circle</title>
+			<path
+				d="M0 8C0 3.58172 3.58172 0 8 0C12.4183 0 16 3.58172 16 8C16 12.4183 12.4183 16 8 16C3.58172 16 0 12.4183 0 8Z"
+				fill="#39C65D"
+			/>
+			<path
+				d="M0 8C0 3.58172 3.58172 0 8 0C12.4183 0 16 3.58172 16 8C16 12.4183 12.4183 16 8 16C3.58172 16 0 12.4183 0 8Z"
+				stroke="#39C65D"
+				stroke-width="8"
+			/>
+			<path
+				d="M4.44434 8.82107L5.75987 10.6229C6.17219 11.1876 7.0185 11.1767 7.41605 10.6014L10.7935 5.71429"
+				stroke="white"
+				stroke-width="1.14286"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+			/>
+		</svg>
+	);
+};
