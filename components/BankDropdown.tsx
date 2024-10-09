@@ -1,21 +1,23 @@
-import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { useForm } from "react-hook-form";
+import { useState, useRef, useEffect } from "react";
+import type { UseFormReturn } from "react-hook-form";
 
-import { ImSpinner } from "react-icons/im";
 import { CiSearch } from "react-icons/ci";
+import { ImSpinner } from "react-icons/im";
 import { PiCaretDown } from "react-icons/pi";
 
 import { classNames } from "@/app/utils";
 import { useOutsideClick } from "@/app/hooks";
 import { dropdownVariants } from "./Animations";
-import type { InstitutionProps } from "@/app/types";
+import type { FormDataTypes, InstitutionProps } from "@/app/types";
 
 interface BankDropdownProps {
 	institutions: InstitutionProps[];
 	isFetchingInstitutions: boolean;
 	selectedInstitution: InstitutionProps | null;
 	setSelectedInstitution: (institution: InstitutionProps | null) => void;
+	// biome-ignore lint/suspicious/noExplicitAny: ...
+	formMethods: UseFormReturn<FormDataTypes, any, undefined>;
 }
 
 export const BankDropdown = ({
@@ -23,8 +25,10 @@ export const BankDropdown = ({
 	isFetchingInstitutions,
 	selectedInstitution,
 	setSelectedInstitution,
+	formMethods,
 }: BankDropdownProps) => {
-	const { register } = useForm();
+	const { setValue, watch } = formMethods;
+	const { currency, institution } = watch();
 	const [bankSearchTerm, setBankSearchTerm] = useState("");
 	const [isInstitutionsDropdownOpen, setIsInstitutionsDropdownOpen] =
 		useState(false);
@@ -39,6 +43,10 @@ export const BankDropdown = ({
 		handler: () => setIsInstitutionsDropdownOpen(false),
 	});
 
+	useEffect(() => {
+		console.log(institution);
+	}, [institution]);
+
 	return (
 		<div ref={institutionsDropdownRef} className="flex-1 space-y-2">
 			<p className="text-text-primary font-medium">Bank</p>
@@ -48,8 +56,15 @@ export const BankDropdown = ({
 				onClick={() =>
 					setIsInstitutionsDropdownOpen(!isInstitutionsDropdownOpen)
 				}
-				disabled={isFetchingInstitutions}
-				className="flex w-full items-center justify-between gap-2 rounded-xl border border-gray-200 px-3 py-2.5 text-left text-sm text-neutral-900 outline-none transition-all hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+				disabled={isFetchingInstitutions || !currency}
+				className={classNames(
+					"flex w-full items-center justify-between gap-2 rounded-xl border border-gray-200 px-3 py-2.5 text-left text-sm text-neutral-900 outline-none transition-all hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+					isFetchingInstitutions
+						? "cursor-progress"
+						: !currency
+							? "cursor-not-allowed"
+							: "",
+				)}
 			>
 				{selectedInstitution ? (
 					<p className="truncate">{selectedInstitution.name}</p>
@@ -105,13 +120,8 @@ export const BankDropdown = ({
 										onClick={() => {
 											setSelectedInstitution(institution);
 											setIsInstitutionsDropdownOpen(false);
-											register("institution", {
-												value: institution.code,
-												required: {
-													value: true,
-													message: "Select bank",
-												},
-											});
+											setValue("institution", institution.code);
+											console.log();
 										}}
 									>
 										{institution.name}

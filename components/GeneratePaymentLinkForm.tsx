@@ -1,12 +1,13 @@
 import Image from "next/image";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { PiCaretDown } from "react-icons/pi";
 
 import { classNames } from "@/app/utils";
-import type { InstitutionProps } from "@/app/types";
-import { currencies, institutions } from "@/app/mocks";
+import { currencies } from "@/app/mocks";
+import type { FormDataTypes, InstitutionProps } from "@/app/types";
+import { fetchAccountName, fetchSupportedInstitutions } from "@/app/aggregator";
 
 import {
 	inputClasses,
@@ -14,17 +15,84 @@ import {
 	secondaryButtonStyles,
 } from "./Styles";
 import { Dropdown } from "./Dropdown";
+import { InputError } from "./InputError";
 import { BankDropdown } from "./BankDropdown";
 import { GreenCheckCircleIcon } from "./ImageAssets";
 import { AnimatedContainer, AnimatedItem } from "./Animations";
 
 export const GeneratePaymentLinkForm = () => {
 	const router = useRouter();
-	const { register, setValue, watch } = useForm();
+	const formMethods = useForm<FormDataTypes>({ mode: "onChange" });
+	const {
+		register,
+		setValue,
+		watch,
+		formState: { isValid, isDirty, isSubmitting, isLoading },
+	} = formMethods;
+	const { currency, accountIdentifier, institution, recipientName } = watch();
 
 	const [isFetchingInstitutions, setIsFetchingInstitutions] = useState(false);
+	const [isFetchingRecipientName, setIsFetchingRecipientName] = useState(false);
+	const [recipientNameError, setRecipientNameError] = useState("");
+	const [institutions, setInstitutions] = useState<InstitutionProps[]>([]);
 	const [selectedInstitution, setSelectedInstitution] =
 		useState<InstitutionProps | null>(null);
+
+	// Fetch supported institutions based on currency
+	useEffect(() => {
+		const getInstitutions = async (currencyValue: string) => {
+			if (!currencyValue) return;
+			setIsFetchingInstitutions(true);
+
+			const institutions = await fetchSupportedInstitutions(currencyValue);
+			setInstitutions(institutions);
+
+			setIsFetchingInstitutions(false);
+		};
+
+		getInstitutions(currency);
+	}, [currency]);
+
+	// Fetch recipient name based on institution and account identifier
+	// biome-ignore lint/correctness/useExhaustiveDependencies: effect only runs when institution or accountIdentifier changes
+	useEffect(() => {
+		let timeoutId: NodeJS.Timeout;
+		const getRecipientName = async () => {
+			if (
+				!institution ||
+				!accountIdentifier ||
+				accountIdentifier.toString().length < 10
+			)
+				return;
+
+			setIsFetchingRecipientName(true);
+
+			try {
+				const accountName = await fetchAccountName({
+					institution: institution.toString(),
+					accountIdentifier: accountIdentifier.toString(),
+				});
+
+				setValue("recipientName", accountName);
+			} catch (error) {
+				setValue("recipientName", "");
+				setRecipientNameError("No recipient account found");
+			} finally {
+				setIsFetchingRecipientName(false);
+			}
+		};
+
+		const debounceFetchRecipientName = () => {
+			clearTimeout(timeoutId);
+			timeoutId = setTimeout(getRecipientName, 1000);
+		};
+
+		debounceFetchRecipientName();
+
+		return () => {
+			clearTimeout(timeoutId);
+		};
+	}, [accountIdentifier, institution]);
 
 	return (
 		<AnimatedContainer className="space-y-6">
@@ -78,7 +146,7 @@ export const GeneratePaymentLinkForm = () => {
 									type="button"
 									onClick={toggleDropdown}
 									disabled={isFetchingInstitutions}
-									className="flex w-full items-center justify-between gap-2 rounded-xl border border-gray-200 px-3 py-2.5 text-left text-sm text-neutral-900 outline-none transition-all hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+									className="flex w-full items-center justify-between gap-2 rounded-xl border border-gray-200 px-3 py-2.5 text-left text-sm text-neutral-900 outline-none transition-all hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-progress"
 								>
 									{selectedItem?.name ? (
 										<div className="flex items-center gap-1.5">
@@ -114,6 +182,7 @@ export const GeneratePaymentLinkForm = () => {
 							isFetchingInstitutions={isFetchingInstitutions}
 							selectedInstitution={selectedInstitution}
 							setSelectedInstitution={setSelectedInstitution}
+							formMethods={formMethods}
 						/>
 
 						{/* Account number */}
@@ -138,24 +207,50 @@ export const GeneratePaymentLinkForm = () => {
 						</div>
 					</div>
 
-					<AnimatedItem className="flex items-center justify-between relative z-0">
-						<p className="rounded-lg bg-[#e5f0fe] px-3 py-1 capitalize text-[#003d93]">
-							Bruce Wayne Enterprises
-						</p>
-						<GreenCheckCircleIcon className="rounded-full size-4" />
-					</AnimatedItem>
+					<AnimatedContainer>
+						{isFetchingRecipientName ? (
+							<AnimatedItem>
+								<div className="w-56 max-w-full h-7 rounded-lg bg-gradient-to-r from-gray-300 to-white animate-pulse" />
+							</AnimatedItem>
+						) : (
+							<>
+								{recipientName ? (
+									<AnimatedItem className="flex items-center justify-between relative z-0">
+										<p className="rounded-lg bg-[#e5f0fe] px-3 py-1 capitalize text-[#003d93]">
+											{recipientName.toLowerCase()}
+										</p>
+										<GreenCheckCircleIcon className="rounded-full size-4" />
+									</AnimatedItem>
+								) : recipientNameError ? (
+									<InputError message={recipientNameError} />
+								) : null}
+							</>
+						)}
+					</AnimatedContainer>
 				</div>
 			</AnimatedItem>
 
 			<AnimatedItem className="flex justify-end space-x-3">
 				<button
 					type="reset"
+					disabled={isSubmitting || isLoading}
 					className={secondaryButtonStyles}
 					onClick={() => router.back()}
 				>
 					Back
 				</button>
-				<button type="submit" className={`w-fit ${primaryButtonStyles}`}>
+				<button
+					type="submit"
+					disabled={
+						!isValid ||
+						!isDirty ||
+						isSubmitting ||
+						isLoading ||
+						isFetchingInstitutions ||
+						recipientNameError !== ""
+					}
+					className={`w-fit ${primaryButtonStyles}`}
+				>
 					Generate payment link
 				</button>
 			</AnimatedItem>

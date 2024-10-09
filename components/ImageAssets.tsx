@@ -309,3 +309,39 @@ export const GreenCheckCircleIcon = (props: ImageProps) => {
 		</svg>
 	);
 };
+
+export const ErrorIcon = (props: ImageProps) => {
+	return (
+		<svg
+			width="16"
+			height="16"
+			viewBox="0 0 16 16"
+			fill="none"
+			xmlns="http://www.w3.org/2000/svg"
+			{...props}
+		>
+			<title>Error</title>
+			<circle
+				cx="8.00138"
+				cy="7.90104"
+				r="6.66667"
+				stroke="currentColor"
+				strokeWidth="1.5"
+			/>
+			<path
+				d="M7.99597 9.90039H8.00195"
+				stroke="currentColor"
+				strokeWidth="1.5"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			/>
+			<path
+				d="M8.00146 7.90039L8.00147 5.23372"
+				stroke="currentColor"
+				strokeWidth="1.5"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			/>
+		</svg>
+	);
+};
