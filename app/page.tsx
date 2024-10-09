@@ -149,7 +149,7 @@ export default function Home() {
 						disabled={disableLogin}
 						className={secondaryButtonStyles}
 					>
-						Connect
+						Login
 					</button>
 					<button
 						type="button"
@@ -157,7 +157,7 @@ export default function Home() {
 						disabled={disableLogin}
 						className={primaryButtonStyles}
 					>
-						Get started
+						Sign up
 					</button>
 				</AnimatedItem>
 			</AnimatedContainer>

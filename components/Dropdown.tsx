@@ -71,7 +71,7 @@ export const Dropdown = ({
 	const toggleDropdown = () => setIsOpen(!isOpen);
 
 	return (
-		<div ref={dropdownRef} className="relative">
+		<div ref={dropdownRef} className="relative z-50">
 			{children({ selectedItem, isOpen, toggleDropdown })}
 
 			{/* Dropdown content */}
@@ -83,7 +83,7 @@ export const Dropdown = ({
 					variants={dropdownVariants}
 					aria-label="Dropdown menu"
 					className={classNames(
-						"absolute right-0 z-50 mt-2 max-h-52 w-full max-w-full overflow-y-auto rounded-xl bg-gray-50 shadow-xl",
+						"absolute right-0 bottom-0 z-50 mt-2 max-h-52 w-full max-w-full overflow-y-auto rounded-xl bg-gray-50 shadow-xl",
 						className ?? "min-w-40",
 					)}
 				>

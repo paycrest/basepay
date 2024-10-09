@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -9,6 +10,7 @@ import {
 	AnimatedContainer,
 	AnimatedItem,
 	GeneratePaymentLinkForm,
+	PaymentLinkPreview,
 	Preloader,
 	previewVariants,
 	secondaryButtonStyles,
@@ -19,7 +21,6 @@ import {
 	GreenCheckCircleIcon,
 } from "@/components/ImageAssets";
 import { shortenAddress } from "@/app/utils";
-import Link from "next/link";
 
 export default function GeneratePaymentLink() {
 	const router = useRouter();
@@ -40,10 +41,10 @@ export default function GeneratePaymentLink() {
 	}, [ready, authenticated]);
 
 	return (
-		<div className="min-h-screen flex flex-col overflow-hidden">
+		<div className="min-h-screen flex flex-col overflow-hidden pt-16">
 			{showPreloader && <Preloader isLoading={showPreloader} />}
 
-			<header className="sticky left-0 top-0 z-20 w-full bg-white transition-all border-b border-border-light">
+			<header className="fixed left-0 top-0 z-20 w-full bg-white transition-all border-b border-border-light">
 				<nav
 					className="container mx-auto flex items-center justify-between py-4 text-text-primary"
 					aria-label="Navbar"
@@ -105,7 +106,7 @@ export default function GeneratePaymentLink() {
 							<div className="p-4 rounded-xl bg-background-neutral flex justify-between items-center">
 								<div className="flex items-center gap-2.5">
 									<BannerIcon className="size-6" />
-									<h3 className="font-medium text-base bg-gradient-to-r from-pink-500 via-orange-500 to-fuchsia-400 bg-clip-text text-transparent">
+									<h3 className="font-medium text-base bg-gradient-to-r from-purple-500 via-orange-500 to-fuchsia-400 bg-clip-text text-transparent">
 										Get your basename
 									</h3>
 								</div>
@@ -144,13 +145,7 @@ export default function GeneratePaymentLink() {
 									</p>
 								</div>
 
-								<Image
-									src="/images/payment-link-preview.png"
-									alt="payment link preview"
-									width={500}
-									height={500}
-									draggable={false}
-								/>
+								<PaymentLinkPreview />
 							</div>
 						</motion.div>
 					)}

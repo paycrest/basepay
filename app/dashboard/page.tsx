@@ -1,7 +1,7 @@
 "use client";
 
+import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { usePrivy } from "@privy-io/react-auth";
 
@@ -14,7 +14,6 @@ import {
 	primaryButtonStyles,
 } from "@/components";
 import { ArrowRightIcon, BannerIcon } from "@/components/ImageAssets";
-import Link from "next/link";
 
 const data = [
 	{
@@ -39,19 +38,11 @@ const Card = ({ title, content }: { title: string; content: string }) => (
 export default function Dashboard() {
 	const router = useRouter();
 	const { ready, user } = usePrivy();
-	const [showPreloader, setShowPreloader] = useState(false);
-
-	const handleRedirect = () => {
-		setShowPreloader(true);
-		router.push("/dashboard/generate");
-	};
 
 	if (!ready) return <Preloader isLoading={!ready} />;
 
 	return (
 		<div className="bg-white space-y-10 max-w-screen-md mx-auto px-4">
-			{showPreloader && <Preloader isLoading={showPreloader} />}
-
 			<Navbar />
 
 			<AnimatedContainer className="space-y-4">
@@ -60,7 +51,7 @@ export default function Dashboard() {
 
 					<div className="space-y-2 relative">
 						<BannerIcon className="size-6" />
-						<h3 className="font-medium bg-gradient-to-r from-pink-500 via-orange-500 to-fuchsia-400 bg-clip-text text-transparent">
+						<h3 className="font-medium bg-gradient-to-r from-purple-500 via-orange-500 to-fuchsia-400 bg-clip-text text-transparent">
 							Get your basename
 						</h3>
 						<p className="text-text-secondary text-sm font-normal">
@@ -105,7 +96,7 @@ export default function Dashboard() {
 					</div>
 					<button
 						type="button"
-						onClick={handleRedirect}
+						onClick={() => router.push("/dashboard/generate")}
 						className={primaryButtonStyles}
 					>
 						Generate link

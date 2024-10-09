@@ -1,88 +1,56 @@
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { useRef, useState } from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-
-import { ImSpinner } from "react-icons/im";
-import { CiSearch } from "react-icons/ci";
 import { PiCaretDown } from "react-icons/pi";
 
-import {
-	AnimatedContainer,
-	AnimatedItem,
-	dropdownVariants,
-} from "./Animations";
+import { classNames } from "@/app/utils";
+import type { InstitutionProps } from "@/app/types";
+import { currencies, institutions } from "@/app/mocks";
+
 import {
 	inputClasses,
 	primaryButtonStyles,
 	secondaryButtonStyles,
 } from "./Styles";
-import { classNames } from "@/app/utils";
-import { useOutsideClick } from "@/app/hooks";
-import type { InstitutionProps } from "@/app/types";
-import { GreenCheckCircleIcon } from "./ImageAssets";
 import { Dropdown } from "./Dropdown";
-import { currencies, institutions } from "@/app/mocks";
 import { BankDropdown } from "./BankDropdown";
+import { GreenCheckCircleIcon } from "./ImageAssets";
+import { AnimatedContainer, AnimatedItem } from "./Animations";
 
 export const GeneratePaymentLinkForm = () => {
-	const { register, setValue } = useForm();
+	const router = useRouter();
+	const { register, setValue, watch } = useForm();
+
 	const [isFetchingInstitutions, setIsFetchingInstitutions] = useState(false);
 	const [selectedInstitution, setSelectedInstitution] =
 		useState<InstitutionProps | null>(null);
 
 	return (
 		<AnimatedContainer className="space-y-6">
-			<AnimatedItem className="space-y-3 bg-background-neutral rounded-2xl">
-				<div className="p-4 pb-0">
-					<div className="rounded-2xl border-border-light border bg-white p-4 space-y-2 text-sm font-normal">
-						<p className="text-text-primary font-medium">Supported Tokens</p>
-						<p className="text-text-secondary">
-							Your customers can pay you with any of these tokens and you will
-							receive your payment directly in your bank account
-						</p>
-						<div className="flex gap-3">
-							<div className="bg-background-neutral rounded-full px-2 py-1 flex gap-1">
+			<AnimatedItem className="space-y-3 bg-background-neutral rounded-2xl p-4">
+				<div className="rounded-2xl border-border-light border bg-white p-4 space-y-2 text-sm font-normal">
+					<p className="text-text-primary font-medium">Supported Tokens</p>
+					<p className="text-text-secondary">
+						Your customers can pay you with any of these tokens and you will
+						receive your payment directly in your bank account
+					</p>
+					<div className="flex gap-3">
+						{["usdc", "usdt"].map((token) => (
+							<div
+								key={token}
+								className="bg-background-neutral rounded-full px-2 py-1 flex gap-1"
+							>
 								<Image
-									src="/logos/usdt.svg"
+									src={`/logos/${token}.svg`}
 									alt="usdt"
 									width={16}
 									height={16}
 								/>
-								<p className="text-text-primary">USDT</p>
+								<p className="text-text-primary">{token.toUpperCase()}</p>
 							</div>
-							<div className="bg-background-neutral rounded-full px-2 py-1 flex gap-1">
-								<Image
-									src="/logos/usdc.svg"
-									alt="usdc"
-									width={16}
-									height={16}
-								/>
-								<p className="text-text-primary">USDC</p>
-							</div>
-						</div>
+						))}
 					</div>
-				</div>
-
-				<div className="space-y-1 px-4">
-					<p className="text-text-primary font-medium">Basic details</p>
-					<p className="text-text-secondary font-normal text-sm">
-						Personalize your basepay link
-					</p>
-				</div>
-
-				<div className="rounded-2xl border-border-light border bg-white p-4 space-y-2 text-sm font-normal">
-					<p className="text-text-primary font-medium">
-						Full name/trading name{" "}
-						<span className="font-normal">(optional)</span>
-					</p>
-
-					<input
-						type="text"
-						placeholder="Enter your full name or trading name"
-						{...register("name")}
-						className={inputClasses}
-					/>
 				</div>
 			</AnimatedItem>
 
@@ -95,7 +63,7 @@ export const GeneratePaymentLinkForm = () => {
 				</div>
 
 				<div className="rounded-2xl border-border-light border bg-white p-4 space-y-3 text-sm font-normal">
-					<div className="space-y-2">
+					<div className="space-y-2 z-50">
 						<p className="text-text-primary font-medium">Currency</p>
 
 						<Dropdown
@@ -170,7 +138,7 @@ export const GeneratePaymentLinkForm = () => {
 						</div>
 					</div>
 
-					<AnimatedItem className="flex items-center justify-between">
+					<AnimatedItem className="flex items-center justify-between relative z-0">
 						<p className="rounded-lg bg-[#e5f0fe] px-3 py-1 capitalize text-[#003d93]">
 							Bruce Wayne Enterprises
 						</p>
@@ -180,7 +148,11 @@ export const GeneratePaymentLinkForm = () => {
 			</AnimatedItem>
 
 			<AnimatedItem className="flex justify-end space-x-3">
-				<button type="button" className={secondaryButtonStyles}>
+				<button
+					type="reset"
+					className={secondaryButtonStyles}
+					onClick={() => router.back()}
+				>
 					Back
 				</button>
 				<button type="submit" className={`w-fit ${primaryButtonStyles}`}>

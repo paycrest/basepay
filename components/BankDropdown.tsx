@@ -1,12 +1,13 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
+
 import { ImSpinner } from "react-icons/im";
 import { CiSearch } from "react-icons/ci";
 import { PiCaretDown } from "react-icons/pi";
 
-import { useOutsideClick } from "@/app/hooks";
 import { classNames } from "@/app/utils";
+import { useOutsideClick } from "@/app/hooks";
 import { dropdownVariants } from "./Animations";
 import type { InstitutionProps } from "@/app/types";
 
@@ -74,7 +75,7 @@ export const BankDropdown = ({
 					animate={isInstitutionsDropdownOpen ? "open" : "closed"}
 					exit="closed"
 					variants={dropdownVariants}
-					className="scrollbar-hide absolute right-0 z-50 mt-2 max-h-80 w-full max-w-full overflow-y-auto rounded-xl bg-gray-50 shadow-xl"
+					className="scrollbar-hide absolute bottom-0 z-50 mt-2 max-h-80 w-full max-w-full overflow-y-auto rounded-xl bg-gray-50 shadow-xl"
 				>
 					<h4 className="px-4 pt-4 font-medium">Select bank</h4>
 					<div className="sticky top-0 bg-gray-50 p-4">
