@@ -46,3 +46,15 @@ export type PaymentOrderResponse = {
 	status: TransactionStatus;
 	icon?: React.ReactNode;
 };
+
+export type RatePayload = {
+	token: string;
+	amount?: number;
+	currency: string;
+};
+
+export type RateResponse = {
+	status: string;
+	data: number;
+	message: string;
+};
