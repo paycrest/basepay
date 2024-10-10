@@ -20,6 +20,7 @@
 	},
 	"dependencies": {
 		"@coinbase/onchainkit": "^0.33.5",
+		"@headlessui/react": "^2.1.10",
 		"@privy-io/react-auth": "^1.88.4",
 		"axios": "^1.7.7",
 		"date-fns": "^4.1.0",

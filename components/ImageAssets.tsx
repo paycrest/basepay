@@ -691,3 +691,67 @@ export const ExternalLinkIcon = (props: ImageProps) => {
 		</svg>
 	);
 };
+
+export const CalculatorIcon = (props: ImageProps) => {
+	return (
+		<svg
+			width="20"
+			height="22"
+			viewBox="0 0 20 22"
+			fill="none"
+			xmlns="http://www.w3.org/2000/svg"
+			{...props}
+		>
+			<title>Calculator</title>
+			<path d="M1 9H19" stroke="white" strokeWidth="2" strokeLinejoin="round" />
+			<path
+				d="M13 5L15 5"
+				stroke="currentColor"
+				strokeWidth="2"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			/>
+			<path
+				d="M19 12V10C19 5.75736 19 3.63604 17.682 2.31802C16.364 1 14.2426 1 10 1C5.75736 1 3.63604 1 2.31802 2.31802C1 3.63604 1 5.75736 1 10V12C1 16.2426 1 18.364 2.31802 19.682C3.63604 21 5.75736 21 10 21C14.2426 21 16.364 21 17.682 19.682C19 18.364 19 16.2426 19 12Z"
+				stroke="currentColor"
+				strokeWidth="2"
+			/>
+			<path
+				d="M5 13H5.52632M9.73684 13H10.2632M14.4737 13H15"
+				stroke="currentColor"
+				strokeWidth="2"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			/>
+			<path
+				d="M5 17H5.52632M9.73684 17H10.2632M14.4737 17H15"
+				stroke="currentColor"
+				strokeWidth="2"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			/>
+		</svg>
+	);
+};
+
+export const XIcon = (props: ImageProps) => {
+	return (
+		<svg
+			width="16"
+			height="16"
+			viewBox="0 0 16 16"
+			fill="none"
+			xmlns="http://www.w3.org/2000/svg"
+			{...props}
+		>
+			<title>X</title>
+			<path
+				d="M15 0.999878L1 14.9999M1 0.999878L15 14.9999"
+				stroke="currentColor"
+				strokeWidth="2"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			/>
+		</svg>
+	);
+};

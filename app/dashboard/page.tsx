@@ -15,6 +15,7 @@ import {
 	Navbar,
 	Preloader,
 	primaryButtonStyles,
+	RateCalculator,
 	TransactionHistory,
 } from "@/components";
 import {
@@ -70,6 +71,8 @@ export default function Dashboard() {
 	return (
 		<div className="bg-white space-y-10 max-w-screen-md mx-auto px-4 pt-10">
 			<Navbar />
+
+			<RateCalculator />
 
 			<AnimatedContainer className="space-y-4">
 				{user?.wallet?.walletClientType !== "privy" && (

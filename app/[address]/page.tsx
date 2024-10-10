@@ -1,5 +1,6 @@
 "use client";
 import jsPDF from "jspdf";
+import Link from "next/link";
 import Image from "next/image";
 import html2canvas from "html2canvas";
 import { QRCode } from "react-qrcode-logo";
@@ -15,26 +16,27 @@ import {
 import {
 	AnimatedContainer,
 	AnimatedItem,
+	BasepayPdf,
 	Preloader,
 	primaryButtonStyles,
+	RateCalculator,
 	secondaryButtonStyles,
 } from "@/components";
 import { classNames } from "../utils";
 import { fetchRate } from "../aggregator";
-import { BasepayPdf } from "@/components/BasepayPdf";
 
 export default function BasepayLink() {
 	const pathname = usePathname();
 	const address = pathname.split("/").pop();
 
-	const { user, ready } = usePrivy();
+	const { ready } = usePrivy();
 	const [rate, setRate] = useState(0);
 	const [isAddressCopied, setIsAddressCopied] = useState(false);
 	const [exportFormat, setExportFormat] = useState<"pdf" | "png">("pdf");
 	const [isGenerating, setIsGenerating] = useState(false);
 
 	const handleCopyAddress = () => {
-		navigator.clipboard.writeText(user?.wallet?.address ?? "");
+		navigator.clipboard.writeText(address ?? "");
 		setIsAddressCopied(true);
 		setTimeout(() => setIsAddressCopied(false), 2000);
 	};
@@ -112,13 +114,21 @@ export default function BasepayLink() {
 
 	return (
 		<>
+			<RateCalculator />
+
 			<AnimatedContainer className="w-full min-h-screen content-center">
 				<div className="p-6 text-sm space-y-5 max-w-md mx-auto">
-					<AnimatedItem className="flex items-center justify-center gap-1 pb-2">
-						<p className="text-text-primary text-base sm:text-lg font-semibold">
-							basepay
-						</p>
-						<PaycrestLogo className="size-2.5" />
+					<AnimatedItem>
+						<Link
+							href="/"
+							title="Go to basepay"
+							className="flex items-center justify-center gap-1 pb-2"
+						>
+							<p className="text-text-primary text-base sm:text-lg font-semibold">
+								basepay
+							</p>
+							<PaycrestLogo className="size-2.5" />
+						</Link>
 					</AnimatedItem>
 
 					<AnimatedItem className="space-y-4">
@@ -169,7 +179,7 @@ export default function BasepayLink() {
 
 					<AnimatedItem className="w-full">
 						<QRCode
-							value={user?.wallet?.address ?? ""}
+							value={address ?? ""}
 							qrStyle="dots"
 							eyeRadius={20}
 							eyeColor="#121217"
@@ -193,7 +203,7 @@ export default function BasepayLink() {
 					<AnimatedItem className="rounded-xl border border-border-light bg-background-neutral py-4 space-y-4">
 						<div className="px-4 flex justify-between items-center">
 							<p className="text-xs font-semibold bg-gradient-to-r from-purple-500 via-orange-500 to-fuchsia-400 bg-clip-text text-transparent">
-								{user?.wallet?.address}
+								{address}
 							</p>
 							<button type="button" onClick={handleCopyAddress}>
 								{isAddressCopied ? (

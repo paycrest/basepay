@@ -29,6 +29,17 @@ export const currencies = [
 	},
 ];
 
+export const tokens = [
+	{
+		name: "USDT",
+		imageUrl: "/logos/usdt.svg",
+	},
+	{
+		name: "USDC",
+		imageUrl: "/logos/usdc.svg",
+	},
+];
+
 export const mockTransactions = [
 	{
 		id: "1",
