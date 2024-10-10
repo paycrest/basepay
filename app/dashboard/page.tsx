@@ -4,8 +4,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { usePrivy } from "@privy-io/react-auth";
+import { AnimatePresence, motion } from "framer-motion";
 
-import { shortenAddress } from "../utils";
+import { classNames, shortenAddress } from "../utils";
 import {
 	AnimatedContainer,
 	AnimatedItem,
@@ -13,7 +14,21 @@ import {
 	Preloader,
 	primaryButtonStyles,
 } from "@/components";
-import { ArrowRightIcon, BannerIcon } from "@/components/ImageAssets";
+import {
+	ArrowRightIcon,
+	BannerIcon,
+	CheckmarkCircleIcon,
+	CopyIcon,
+	DropdownIcon,
+	GreenCheckCircleIcon,
+	StickyNoteIcon,
+	TagsIcon,
+	WalletIcon,
+	WifiCircleIcon,
+} from "@/components/ImageAssets";
+import { useState } from "react";
+import { PiCheck } from "react-icons/pi";
+import { TbPencilMinus } from "react-icons/tb";
 
 const data = [
 	{
@@ -38,6 +53,14 @@ const Card = ({ title, content }: { title: string; content: string }) => (
 export default function Dashboard() {
 	const router = useRouter();
 	const { ready, user } = usePrivy();
+	const [isAddressCopied, setIsAddressCopied] = useState(false);
+	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+	const handleCopyAddress = () => {
+		navigator.clipboard.writeText(user?.wallet?.address ?? "");
+		setIsAddressCopied(true);
+		setTimeout(() => setIsAddressCopied(false), 2000);
+	};
 
 	if (!ready) return <Preloader isLoading={!ready} />;
 
@@ -97,14 +120,145 @@ export default function Dashboard() {
 							{shortenAddress(user?.wallet?.address ?? "", 8)}
 						</p>
 					</div>
-					<button
-						type="button"
-						onClick={() => router.push("/dashboard/generate")}
-						className={primaryButtonStyles}
-					>
-						Generate link
-					</button>
+
+					<div className="flex gap-3 items-center">
+						<button
+							type="button"
+							onClick={() => router.push("/dashboard/generate")}
+							className={primaryButtonStyles}
+						>
+							Generate link
+						</button>
+
+						<button
+							type="button"
+							title="Copy wallet address"
+							onClick={handleCopyAddress}
+							className="px-4 py-3 rounded-full border border-border-light flex items-center gap-2.5 hover:bg-gray-50 transition group"
+						>
+							<p className="font-medium text-sm bg-gradient-to-r from-purple-500 via-orange-500 to-fuchsia-400 bg-clip-text text-transparent group-hover:from-purple-700 group-hover:via-orange-700 group-hover:to-fuchsia-600 transition">
+								jeremy0x.base.eth
+							</p>
+
+							{isAddressCopied ? (
+								<PiCheck className="size-4 text-primary-blue" />
+							) : (
+								<CopyIcon className="size-4 text-primary-blue" />
+							)}
+						</button>
+
+						<button
+							type="button"
+							title="Linked account details"
+							className="flex items-center justify-center gap-2 rounded-full border border-border-light p-2.5"
+							onClick={() => setIsDropdownOpen((prev) => !prev)}
+						>
+							<DropdownIcon
+								className={classNames(
+									"size-7 text-gray-400 transition-transform",
+									isDropdownOpen ? "rotate-180" : "",
+								)}
+							/>
+						</button>
+					</div>
 				</AnimatedItem>
+
+				<AnimatePresence mode="wait">
+					{isDropdownOpen && (
+						<motion.div
+							initial={{ opacity: 0, height: 0 }}
+							animate={{ opacity: 1, height: "auto" }}
+							exit={{ opacity: 0, height: 0 }}
+							transition={{ duration: 0.1 }}
+						>
+							<div className="bg-background-neutral rounded-2xl border border-border-neutral space-y-3 py-4 text-sm">
+								<div className="px-4 flex justify-between">
+									<div className="flex items-center gap-2.5 text-text-primary">
+										<WalletIcon className="size-5" />
+										<p>Wallet address</p>
+									</div>
+									<div className="rounded-full bg-white px-2 py-1 text-text-secondary">
+										{shortenAddress(user?.wallet?.address ?? "", 5)}
+									</div>
+								</div>
+
+								<hr className="border-t border-border-light" />
+
+								<div className="px-4 flex justify-between">
+									<div className="flex items-center gap-2.5 text-text-primary">
+										<WifiCircleIcon className="size-5" />
+										<p>Status</p>
+									</div>
+									<div className="flex items-center gap-2.5">
+										<div className="flex gap-2 items-center rounded-full bg-green-100 px-2 py-1 text-green-700">
+											<GreenCheckCircleIcon className="size-4 rounded-full" />
+											<p>Active</p>
+										</div>
+										<button
+											onClick={() => router.push("/dashboard/generate")}
+											type="button"
+											title="Edit"
+											className="group"
+										>
+											<TbPencilMinus className="size-4 transition text-text-secondary group-hover:text-text-primary" />
+										</button>
+									</div>
+								</div>
+
+								<hr className="border-t border-border-light" />
+
+								<div className="px-4 flex justify-between">
+									<div className="flex items-center gap-2.5 text-text-primary">
+										<TagsIcon className="size-5" />
+										<p>Transactions</p>
+									</div>
+									<div className="rounded-full bg-white px-2 py-1 text-text-secondary">
+										2,394
+									</div>
+								</div>
+
+								<hr className="border-t border-border-light" />
+
+								<div className="px-4 flex justify-between">
+									<div className="flex items-center gap-2.5 text-text-primary">
+										<StickyNoteIcon className="size-5" />
+										<p>Bank account</p>
+									</div>
+									<div className="rounded-full bg-white px-2 py-1 text-text-secondary">
+										PalmPay • 7042158996
+									</div>
+								</div>
+
+								<hr className="border-t border-border-light" />
+
+								<div className="px-4 flex justify-between">
+									<div className="flex items-center gap-2.5 text-text-primary">
+										<CheckmarkCircleIcon className="size-5" />
+										<p>Supported</p>
+									</div>
+									<div className="flex gap-3">
+										{["usdc", "usdt"].map((token) => (
+											<div
+												key={token}
+												className="bg-background-neutral rounded-full px-2 py-1 flex gap-1"
+											>
+												<Image
+													src={`/logos/${token}.svg`}
+													alt="usdt"
+													width={16}
+													height={16}
+												/>
+												<p className="text-text-primary">
+													{token.toUpperCase()}
+												</p>
+											</div>
+										))}
+									</div>
+								</div>
+							</div>
+						</motion.div>
+					)}
+				</AnimatePresence>
 
 				<AnimatedItem className="flex items-center justify-center gap-4">
 					{data.map((item) => (

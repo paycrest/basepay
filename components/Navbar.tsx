@@ -14,7 +14,7 @@ import {
 	WalletIcon,
 } from "./ImageAssets";
 import { Preloader } from "./Preloader";
-import { shortenAddress } from "@/app/utils";
+import { classNames, shortenAddress } from "@/app/utils";
 import { useOutsideClick } from "@/app/hooks";
 import { dropdownVariants } from "./Animations";
 
@@ -83,7 +83,12 @@ export const Navbar = () => {
 							onClick={() => setIsSettingsDropdownOpen(!isSettingsDropdownOpen)}
 							className="flex items-center justify-center gap-2 rounded-xl bg-gray-50 p-2.5 shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white active:scale-95"
 						>
-							<SettingsIcon />
+							<SettingsIcon
+								className={classNames(
+									"transition-transform duration-300 ease-in-out",
+									isSettingsDropdownOpen ? "rotate-180" : "",
+								)}
+							/>
 						</button>
 
 						{/* Dropdown menu */}
@@ -104,10 +109,10 @@ export const Navbar = () => {
 										<button
 											type="button"
 											onClick={handleCopyAddress}
-											className="flex cursor-pointer items-center justify-between gap-2 px-4 py-2 transition hover:bg-gray-200 w-full"
+											className="flex cursor-pointer items-center justify-between gap-2 px-4 py-2 transition hover:bg-gray-200 w-full group"
 										>
 											<div className="flex items-center gap-2.5">
-												<WalletIcon />
+												<WalletIcon className="text-text-secondary" />
 												<p className="max-w-40 break-words">
 													{shortenAddress(user?.wallet?.address ?? "")}
 												</p>
@@ -117,7 +122,7 @@ export const Navbar = () => {
 												{isAddressCopied ? (
 													<PiCheck className="size-4" />
 												) : (
-													<CopyIcon className="size-4 transition hover:text-black" />
+													<CopyIcon className="size-4 transition text-text-secondary group-hover:text-primary-blue" />
 												)}
 											</div>
 										</button>
@@ -128,7 +133,7 @@ export const Navbar = () => {
 											onClick={handleLogout}
 											className="flex items-center gap-2.5 px-4 py-2 transition hover:bg-gray-200 w-full"
 										>
-											<LogoutIcon />
+											<LogoutIcon className="text-text-secondary" />
 											<p>Sign out</p>
 										</button>
 									</li>
