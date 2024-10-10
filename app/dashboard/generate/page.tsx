@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { usePrivy } from "@privy-io/react-auth";
+import type { SubmitHandler } from "react-hook-form";
 import { motion, AnimatePresence } from "framer-motion";
 
 import {
@@ -20,16 +21,29 @@ import {
 	BannerIcon,
 	GreenCheckCircleIcon,
 } from "@/components/ImageAssets";
-import { shortenAddress } from "@/app/utils";
+import { classNames, shortenAddress, sleep } from "@/app/utils";
+import type { FormValues } from "@/app/types";
 
 export default function GeneratePaymentLink() {
 	const router = useRouter();
 	const { user, ready, authenticated } = usePrivy();
 	const [showPreloader, setShowPreloader] = useState(false);
 	const [isPreviewVisible, setIsPreviewVisible] = useState(true);
+	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const togglePreview = () => {
 		setIsPreviewVisible(!isPreviewVisible);
+	};
+
+	const onSubmit: SubmitHandler<FormValues> = async (data) => {
+		setIsSubmitting(true);
+		await sleep(3000);
+		if (data.currency === "NGN") {
+			alert(JSON.stringify(data));
+		} else {
+			alert("Currency is not NGN");
+		}
+		setIsSubmitting(false);
 	};
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: skipped `login` to avoid unnecessary re-renders
@@ -74,78 +88,89 @@ export default function GeneratePaymentLink() {
 			</header>
 
 			<AnimatedContainer className="flex flex-col flex-grow lg:flex-row">
-				<AnimatedItem
-					className={`flex-1 p-10 ${isPreviewVisible ? "" : "mx-auto"}`}
-				>
-					<div className="max-w-lg mx-auto space-y-6">
-						<div className="space-y-2">
-							<h2 className="text-text-primary text-xl font-semibold">
-								Generate payment link
-							</h2>
-							<p className="text-text-secondary text-sm font-normal">
-								Create a direct payment link/page for your customers
-							</p>
-						</div>
-
-						<div className="space-y-4">
-							<div className="flex justify-between items-center gap-4 flex-wrap">
-								<div className="flex gap-2 items-center">
-									<Image
-										src="/images/avatar.svg"
-										alt="avatar"
-										width={24}
-										height={24}
-									/>
-									<p className="text-text-primary font-medium text-base">
-										{shortenAddress(user?.wallet?.address ?? "", 8)}
-									</p>
-								</div>
-								<GreenCheckCircleIcon className="rounded-full size-4" />
+				{!isSubmitting && (
+					<AnimatedItem
+						className={`flex-1 p-10 ${isPreviewVisible ? "" : "mx-auto"}`}
+					>
+						<div className="max-w-lg mx-auto space-y-6">
+							<div className="space-y-2">
+								<h2 className="text-text-primary text-xl font-semibold">
+									Generate payment link
+								</h2>
+								<p className="text-text-secondary text-sm font-normal">
+									Create a direct payment link/page for your customers
+								</p>
 							</div>
 
-							<div className="p-4 rounded-xl bg-background-neutral flex justify-between items-center">
-								<div className="flex items-center gap-2.5">
-									<BannerIcon className="size-6" />
-									<h3 className="font-medium text-base bg-gradient-to-r from-purple-500 via-orange-500 to-fuchsia-400 bg-clip-text text-transparent">
-										Get your basename
-									</h3>
+							<div className="space-y-4">
+								<div className="flex justify-between items-center gap-4 flex-wrap">
+									<div className="flex gap-2 items-center">
+										<Image
+											src="/images/avatar.svg"
+											alt="avatar"
+											width={24}
+											height={24}
+										/>
+										<p className="text-text-primary font-medium text-base">
+											{shortenAddress(user?.wallet?.address ?? "", 8)}
+										</p>
+									</div>
+									<GreenCheckCircleIcon className="rounded-full size-4" />
 								</div>
-								<Link
-									target="_blank"
-									rel="noopener noreferrer"
-									href="https://www.base.org/names"
-									className="flex gap-1 items-center text-primary-blue hover:text-blue-800 transition font-medium"
-								>
-									Continue
-									<ArrowRightIcon />
-								</Link>
-							</div>
-						</div>
 
-						<GeneratePaymentLinkForm />
-					</div>
-				</AnimatedItem>
+								{user?.wallet?.walletClientType !== "privy" && (
+									<div className="p-4 rounded-xl bg-background-neutral flex justify-between items-center">
+										<div className="flex items-center gap-2.5">
+											<BannerIcon className="size-6" />
+											<h3 className="font-medium text-base bg-gradient-to-r from-purple-500 via-orange-500 to-fuchsia-400 bg-clip-text text-transparent">
+												Get your basename
+											</h3>
+										</div>
+										<Link
+											target="_blank"
+											rel="noopener noreferrer"
+											href="https://www.base.org/names"
+											className="flex gap-1 items-center text-primary-blue hover:text-blue-800 transition font-medium"
+										>
+											Continue
+											<ArrowRightIcon />
+										</Link>
+									</div>
+								)}
+							</div>
+
+							<GeneratePaymentLinkForm onSubmit={onSubmit} />
+						</div>
+					</AnimatedItem>
+				)}
 
 				<AnimatePresence mode="wait">
 					{isPreviewVisible && (
 						<motion.div
-							className="flex-1 bg-background-neutral p-10"
+							className="flex-1 bg-background-neutral p-10 w-full"
 							variants={previewVariants}
 							initial="hidden"
 							animate="visible"
 							exit="exit"
 						>
-							<div className="max-w-lg mx-auto space-y-14">
-								<div className="space-y-4">
-									<h3 className="text-text-primary text-base font-medium">
-										Preview
-									</h3>
-									<p className="text-text-secondary text-sm font-normal">
-										What the page will look like for your customers
-									</p>
-								</div>
+							<div
+								className={classNames(
+									"max-w-lg mx-auto space-y-10",
+									isSubmitting ? "pt-20" : "",
+								)}
+							>
+								{!isSubmitting && (
+									<div className="space-y-4">
+										<h3 className="text-text-primary text-base font-medium">
+											Preview
+										</h3>
+										<p className="text-text-secondary text-sm font-normal">
+											What the page will look like for your customers
+										</p>
+									</div>
+								)}
 
-								<PaymentLinkPreview />
+								<PaymentLinkPreview isSubmitting={isSubmitting} />
 							</div>
 						</motion.div>
 					)}

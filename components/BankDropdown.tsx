@@ -9,7 +9,7 @@ import { PiCaretDown } from "react-icons/pi";
 import { classNames } from "@/app/utils";
 import { useOutsideClick } from "@/app/hooks";
 import { dropdownVariants } from "./Animations";
-import type { FormDataTypes, InstitutionProps } from "@/app/types";
+import type { FormValues, InstitutionProps } from "@/app/types";
 
 interface BankDropdownProps {
 	institutions: InstitutionProps[];
@@ -17,7 +17,7 @@ interface BankDropdownProps {
 	selectedInstitution: InstitutionProps | null;
 	setSelectedInstitution: (institution: InstitutionProps | null) => void;
 	// biome-ignore lint/suspicious/noExplicitAny: ...
-	formMethods: UseFormReturn<FormDataTypes, any, undefined>;
+	formMethods: UseFormReturn<FormValues, any, undefined>;
 }
 
 export const BankDropdown = ({

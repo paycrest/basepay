@@ -1,29 +1,26 @@
 "use client";
 import Link from "next/link";
-import Image from "next/image";
 import { motion } from "framer-motion";
+import { PiCheck } from "react-icons/pi";
 import { useRouter } from "next/navigation";
-import { useLogout, usePrivy } from "@privy-io/react-auth";
 import { useEffect, useRef, useState } from "react";
+import { useLogout, usePrivy } from "@privy-io/react-auth";
 
-import { classNames } from "@/app/utils";
 import {
 	CopyIcon,
-	DropdownIcon,
 	LogoutIcon,
 	PaycrestLogo,
 	SettingsIcon,
 	WalletIcon,
 } from "./ImageAssets";
-import { PiCheck } from "react-icons/pi";
-import { dropdownVariants } from "./Animations";
-import { useOutsideClick } from "@/app/hooks";
 import { Preloader } from "./Preloader";
+import { shortenAddress } from "@/app/utils";
+import { useOutsideClick } from "@/app/hooks";
+import { dropdownVariants } from "./Animations";
 
 export const Navbar = () => {
 	const router = useRouter();
 	const [isAddressCopied, setIsAddressCopied] = useState(false);
-	const [isWalletDropdownOpen, setIsWalletDropdownOpen] = useState(false);
 	const [isSettingsDropdownOpen, setIsSettingsDropdownOpen] = useState(false);
 	const [isLoggingOut, setIsLoggingOut] = useState(false);
 
@@ -47,12 +44,6 @@ export const Navbar = () => {
 		setIsLoggingOut(true);
 		await logout();
 	};
-
-	const walletDropdownRef = useRef<HTMLDivElement>(null);
-	useOutsideClick({
-		ref: walletDropdownRef,
-		handler: () => setIsWalletDropdownOpen(false),
-	});
 
 	const settingsDropdownRef = useRef<HTMLDivElement>(null);
 	useOutsideClick({
@@ -83,61 +74,6 @@ export const Navbar = () => {
 				</Link>
 
 				<div className="flex gap-4 text-sm font-normal">
-					{/* Wallet Details */}
-					<div ref={walletDropdownRef} className="relative">
-						<button
-							type="button"
-							aria-label="Wallet details"
-							aria-haspopup="true"
-							onClick={() => setIsWalletDropdownOpen(!isWalletDropdownOpen)}
-							className="flex items-center justify-center gap-2 rounded-xl bg-gray-50 px-2 shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white active:scale-95"
-						>
-							<div className="px-0.5 py-2.5">
-								<Image
-									src="/logos/coinbase.svg"
-									alt="Coinbase logo"
-									width={20}
-									height={20}
-								/>
-							</div>
-							<div className="h-10 w-px border-r border-dashed border-border-light" />
-							<div className="flex items-center gap-2 py-2.5">
-								<p className="hidden sm:block">293 USDC</p>
-								<DropdownIcon
-									className={classNames(
-										"transition-transform",
-										isWalletDropdownOpen ? "rotate-180" : "",
-									)}
-								/>
-							</div>
-						</button>
-
-						{/* Wallet Dropdown menu */}
-						{isWalletDropdownOpen && (
-							<motion.div
-								initial="closed"
-								animate={isWalletDropdownOpen ? "open" : "closed"}
-								exit="closed"
-								variants={dropdownVariants}
-								aria-label="Dropdown menu"
-								className="absolute right-0 z-10 mt-4 max-h-52 min-w-64 max-w-full space-y-4 overflow-y-auto rounded-xl bg-gray-50 p-4 shadow-xl"
-							>
-								<p className="text-gray-500 capitalize">
-									{user?.wallet?.walletClientType ?? "Privy"}
-								</p>
-								<div className="flex items-center gap-2">
-									<Image
-										src="/logos/usdt.svg"
-										alt="USDC logo"
-										width={14}
-										height={14}
-									/>
-									<p className="text-text-primary">62.8974028 USDT</p>
-								</div>
-							</motion.div>
-						)}
-					</div>
-
 					{/* Settings Dropdown */}
 					<div ref={settingsDropdownRef} className="relative">
 						<button
@@ -158,7 +94,7 @@ export const Navbar = () => {
 								exit="closed"
 								variants={dropdownVariants}
 								aria-label="Dropdown menu"
-								className="absolute right-0 z-10 mt-4 w-fit space-y-4 overflow-hidden rounded-xl bg-gray-50 shadow-xl"
+								className="absolute right-0 z-10 mt-4 w-48 space-y-4 overflow-hidden rounded-xl bg-gray-50 shadow-xl"
 							>
 								<ul
 									aria-labelledby="settings-dropdown"
@@ -173,7 +109,7 @@ export const Navbar = () => {
 											<div className="flex items-center gap-2.5">
 												<WalletIcon />
 												<p className="max-w-40 break-words">
-													{user?.wallet?.address ?? ""}
+													{shortenAddress(user?.wallet?.address ?? "")}
 												</p>
 											</div>
 

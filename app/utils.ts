@@ -20,3 +20,13 @@ export function shortenAddress(address: string, chars = 4): string {
 	}
 	return `${address.slice(0, chars)}...${address.slice(-chars)}`;
 }
+
+/**
+ * Pauses the execution for a specified number of milliseconds.
+ *
+ * @param ms - The number of milliseconds to sleep. If undefined, the function will not pause.
+ * @returns A promise that resolves after the specified time has elapsed.
+ */
+export function sleep(ms: number): Promise<void> {
+	return new Promise((resolve) => setTimeout(resolve, ms));
+}

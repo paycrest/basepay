@@ -9,7 +9,7 @@ export type VerifyAccountPayload = {
 	accountIdentifier: string;
 };
 
-export type FormDataTypes = {
+export type FormValues = {
 	currency: string;
 	institution: string;
 	recipientName: string;

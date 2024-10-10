@@ -93,11 +93,10 @@ export const Dropdown = ({
 								<button
 									type="button"
 									onClick={() => !item.disabled && handleChange(item)}
+									disabled={item.disabled}
 									className={classNames(
 										"w-full flex items-center justify-between gap-2 px-3 py-2 transition-all hover:bg-gray-200",
-										item?.disabled
-											? "pointer-events-none cursor-not-allowed"
-											: "cursor-pointer",
+										item?.disabled ? "cursor-not-allowed" : "cursor-pointer",
 									)}
 								>
 									<div className="flex items-center gap-1">

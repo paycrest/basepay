@@ -1,53 +1,30 @@
 export const currencies = [
 	{
 		name: "KES",
-		label: "Kenyan Shilling",
+		label: "Kenyan Shilling (KES)",
 		imageUrl: "/logos/ke.svg",
 	},
 	{
 		name: "NGN",
-		label: "Nigerian Naira",
+		label: "Nigerian Naira (NGN)",
 		imageUrl: "/logos/ng.svg",
 	},
 	{
 		name: "GHS",
-		label: "Ghanaian Cedi",
+		label: "Ghanaian Cedi (GHS)",
 		imageUrl: "/logos/gh.svg",
 		disabled: true,
 	},
 	{
 		name: "ARS",
-		label: "Argentine Peso",
+		label: "Argentine Peso (ARS)",
 		imageUrl: "/logos/ar.svg",
 		disabled: true,
 	},
 	{
 		name: "BRL",
-		label: "Brazilian Real",
+		label: "Brazilian Real (BRL)",
 		imageUrl: "/logos/br.svg",
 		disabled: true,
-	},
-];
-
-export const institutions = [
-	{
-		name: "Access Bank",
-		code: "044",
-		type: "bank",
-	},
-	{
-		name: "First Bank of Nigeria",
-		code: "011",
-		type: "bank",
-	},
-	{
-		name: "Guaranty Trust Bank",
-		code: "058",
-		type: "bank",
-	},
-	{
-		name: "Zenith Bank",
-		code: "057",
-		type: "bank",
 	},
 ];
