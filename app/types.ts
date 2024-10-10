@@ -15,3 +15,34 @@ export type FormValues = {
 	recipientName: string;
 	accountIdentifier: string;
 };
+
+export type TransactionStatus =
+	| "initiated"
+	| "pending"
+	| "reverted"
+	| "expired"
+	| "settled"
+	| "processing"
+	| "refunded";
+
+export type PaymentOrderResponse = {
+	id: string;
+	amount: number;
+	token: string;
+	transactionFee: number;
+	rate: number;
+	network: string;
+	recipient: {
+		currency: string;
+		institution: string;
+		accountIdentifier: string;
+		accountName: string;
+	};
+	fromAddress: string;
+	returnAddress: string;
+	gatewayID: string;
+	createdAt: Date;
+	updatedAt: Date;
+	status: TransactionStatus;
+	icon?: React.ReactNode;
+};

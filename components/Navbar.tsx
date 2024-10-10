@@ -1,12 +1,12 @@
 "use client";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { PiCheck } from "react-icons/pi";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useLogout, usePrivy } from "@privy-io/react-auth";
 
 import {
+	CheckmarkIcon,
 	CopyIcon,
 	LogoutIcon,
 	PaycrestLogo,
@@ -14,9 +14,9 @@ import {
 	WalletIcon,
 } from "./ImageAssets";
 import { Preloader } from "./Preloader";
-import { classNames, shortenAddress } from "@/app/utils";
 import { useOutsideClick } from "@/app/hooks";
 import { dropdownVariants } from "./Animations";
+import { classNames, shortenAddress } from "@/app/utils";
 
 export const Navbar = () => {
 	const router = useRouter();
@@ -61,9 +61,9 @@ export const Navbar = () => {
 	if (isLoggingOut) return <Preloader isLoading={isLoggingOut} />;
 
 	return (
-		<header className="sticky left-0 top-0 z-20 w-full bg-white transition-all">
+		<header className="fixed left-0 top-0 z-20 w-full bg-white transition-all">
 			<nav
-				className="container mx-auto flex items-center justify-between py-4 text-text-primary"
+				className="container mx-auto max-w-screen-md flex items-center justify-between py-4 text-text-primary"
 				aria-label="Navbar"
 			>
 				<Link href="/" className="flex items-center gap-1 lg:flex-1">
@@ -120,7 +120,7 @@ export const Navbar = () => {
 
 											<div>
 												{isAddressCopied ? (
-													<PiCheck className="size-4" />
+													<CheckmarkIcon className="size-4 text-primary-blue" />
 												) : (
 													<CopyIcon className="size-4 transition text-text-secondary group-hover:text-primary-blue" />
 												)}

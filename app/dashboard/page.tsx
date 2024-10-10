@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { TbPencilMinus } from "react-icons/tb";
 import { usePrivy } from "@privy-io/react-auth";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -13,11 +15,13 @@ import {
 	Navbar,
 	Preloader,
 	primaryButtonStyles,
+	TransactionHistory,
 } from "@/components";
 import {
 	ArrowRightIcon,
 	BannerIcon,
 	CheckmarkCircleIcon,
+	CheckmarkIcon,
 	CopyIcon,
 	DropdownIcon,
 	GreenCheckCircleIcon,
@@ -26,9 +30,8 @@ import {
 	WalletIcon,
 	WifiCircleIcon,
 } from "@/components/ImageAssets";
-import { useState } from "react";
-import { PiCheck } from "react-icons/pi";
-import { TbPencilMinus } from "react-icons/tb";
+import { mockTransactions } from "../mocks";
+import type { PaymentOrderResponse } from "../types";
 
 const data = [
 	{
@@ -65,7 +68,7 @@ export default function Dashboard() {
 	if (!ready) return <Preloader isLoading={!ready} />;
 
 	return (
-		<div className="bg-white space-y-10 max-w-screen-md mx-auto px-4">
+		<div className="bg-white space-y-10 max-w-screen-md mx-auto px-4 pt-10">
 			<Navbar />
 
 			<AnimatedContainer className="space-y-4">
@@ -141,7 +144,7 @@ export default function Dashboard() {
 							</p>
 
 							{isAddressCopied ? (
-								<PiCheck className="size-4 text-primary-blue" />
+								<CheckmarkIcon className="size-4 text-primary-blue" />
 							) : (
 								<CopyIcon className="size-4 text-primary-blue" />
 							)}
@@ -264,6 +267,12 @@ export default function Dashboard() {
 					{data.map((item) => (
 						<Card key={item.id} title={item.title} content={item.content} />
 					))}
+				</AnimatedItem>
+
+				<AnimatedItem>
+					<TransactionHistory
+						transactions={mockTransactions as PaymentOrderResponse[]}
+					/>
 				</AnimatedItem>
 			</AnimatedContainer>
 		</div>
