@@ -12,18 +12,11 @@ export type VerifyAccountPayload = {
 export type FormValues = {
 	currency: string;
 	institution: string;
-	recipientName: string;
+	accountName: string;
 	accountIdentifier: string;
 };
 
-export type TransactionStatus =
-	| "initiated"
-	| "pending"
-	| "reverted"
-	| "expired"
-	| "settled"
-	| "processing"
-	| "refunded";
+export type TransactionStatus = "pending" | "settled" | "refunded";
 
 export type PaymentOrderResponse = {
 	id: string;
@@ -47,6 +40,11 @@ export type PaymentOrderResponse = {
 	icon?: React.ReactNode;
 };
 
+export type PaymentOrderParams = {
+	page?: number;
+	pageSize?: number;
+};
+
 export type RatePayload = {
 	token: string;
 	amount?: number;
@@ -57,4 +55,26 @@ export type RateResponse = {
 	status: string;
 	data: number;
 	message: string;
+};
+
+export type LinkAddressRequest = {
+	institution: string;
+	accountIdentifier: string;
+	accountName: string;
+};
+
+export type LinkAddressResponse = {
+	linkedAddress: string;
+	institution: string;
+	accountIdentifier: string;
+	accountName: string;
+	updatedAt: Date;
+	createdAt: Date;
+};
+
+export type LinkedAddressTransactionList = {
+	total: number;
+	page: number;
+	pageSize: number;
+	transactions: PaymentOrderResponse[];
 };

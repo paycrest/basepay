@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { QRCode } from "react-qrcode-logo";
+import { classNames } from "@/app/utils";
 import { usePrivy } from "@privy-io/react-auth";
 
 export const PaymentLinkPreview = ({
@@ -61,26 +61,25 @@ export const PaymentLinkPreview = ({
 						</div>
 					</div>
 				</div>
-				<div className="w-full">
-					<QRCode
-						value={user?.wallet?.address ?? ""}
-						qrStyle="dots"
-						eyeRadius={20}
-						eyeColor="#4c4c63"
-						fgColor="#4c4c63"
-						bgColor="#F9FAFB"
-						size={296}
-						quietZone={28}
-						logoImage="/images/link.svg"
-						style={{
-							borderRadius: "32px",
-							margin: "0 auto",
-							width: "100%",
-							maxWidth: "360px",
-							objectFit: "contain",
-							height: "auto",
-						}}
-					/>
+
+				<div
+					className={classNames(
+						"w-full h-96 content-center bg-center bg-no-repeat bg-cover rounded-3xl",
+						isSubmitting
+							? "animate-pulse bg-[url('/images/qr-gradient-preview.svg')]"
+							: "bg-[url('/images/qr-preview.svg')]",
+					)}
+				>
+					<p
+						className={classNames(
+							"text-text-secondary text-sm w-fit mx-auto mt-36",
+							isSubmitting
+								? "px-3 py-1 rounded-lg bg-green-100 text-green-500"
+								: "",
+						)}
+					>
+						jeremy0x.base.eth
+					</p>
 				</div>
 
 				{isSubmitting ? (
@@ -90,7 +89,10 @@ export const PaymentLinkPreview = ({
 				) : (
 					<div className="rounded-xl border border-border-light bg-background-neutral py-4 space-y-4">
 						<p className="px-4 font-medium bg-gradient-to-r from-purple-500 via-orange-500 to-fuchsia-400 bg-clip-text text-transparent">
-							{user?.wallet?.address}
+							0x4b2d...{" "}
+							<span className="text-text-secondary bg-none text-xs">
+								(linked wallet address)
+							</span>
 						</p>
 						<hr className="border-t border-border-light" />
 						<p className="text-text-secondary px-4">

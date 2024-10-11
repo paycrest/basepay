@@ -21,12 +21,16 @@ import {
 	BannerIcon,
 	GreenCheckCircleIcon,
 } from "@/components/ImageAssets";
-import { classNames, shortenAddress, sleep } from "@/app/utils";
+import { toast } from "react-toastify";
 import type { FormValues } from "@/app/types";
+import { linkNewAddress } from "@/app/aggregator";
+import { classNames, shortenAddress } from "@/app/utils";
+import { useAddressContext } from "@/context/AddressContext";
 
 export default function GeneratePaymentLink() {
 	const router = useRouter();
 	const { user, ready, authenticated } = usePrivy();
+	const { isAddressLinked } = useAddressContext();
 	const [showPreloader, setShowPreloader] = useState(false);
 	const [isPreviewVisible, setIsPreviewVisible] = useState(true);
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -37,13 +41,21 @@ export default function GeneratePaymentLink() {
 
 	const onSubmit: SubmitHandler<FormValues> = async (data) => {
 		setIsSubmitting(true);
-		await sleep(3000);
-		if (data.currency === "NGN") {
-			alert(JSON.stringify(data));
-		} else {
-			alert("Currency is not NGN");
+		try {
+			const response = await linkNewAddress({
+				privyId: user?.id ?? "",
+				payload: data,
+			});
+			if (response) {
+				setShowPreloader(true);
+				router.push(`/${user?.wallet?.address}`);
+			}
+		} catch (error) {
+			console.error("Error linking address: ", error);
+			toast.error("Something went wrong, please try again.");
+		} finally {
+			setIsSubmitting(false);
 		}
-		setIsSubmitting(false);
 	};
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: skipped `login` to avoid unnecessary re-renders
@@ -53,6 +65,14 @@ export default function GeneratePaymentLink() {
 			router.push("/");
 		}
 	}, [ready, authenticated]);
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: this is a false positive
+	useEffect(() => {
+		if (isAddressLinked) {
+			setShowPreloader(true);
+			router.push("/dashboard");
+		}
+	}, [isAddressLinked]);
 
 	return (
 		<div className="min-h-screen flex flex-col overflow-hidden pt-16">
@@ -145,7 +165,7 @@ export default function GeneratePaymentLink() {
 				)}
 
 				<AnimatePresence mode="wait">
-					{isPreviewVisible && (
+					{(isPreviewVisible || isSubmitting) && (
 						<motion.div
 							className="flex-1 bg-background-neutral p-10 w-full"
 							variants={previewVariants}

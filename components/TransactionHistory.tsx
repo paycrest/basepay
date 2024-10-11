@@ -1,22 +1,18 @@
 "use client";
+import Link from "next/link";
+import Image from "next/image";
 import type { PaymentOrderResponse } from "@/app/types";
 import { classNames, formatCurrency, formatDate } from "@/app/utils";
-import Image from "next/image";
 
-import { FaCheckCircle, FaClock, FaExternalLinkAlt } from "react-icons/fa";
 import { StatusIcon } from "./StatusIcon";
 import { ExternalLinkIcon } from "./ImageAssets";
-import Link from "next/link";
 
 type Statuses = {
 	[key: string]: string;
 };
 
 const statuses: Statuses = {
-	initiated: "text-blue-600 bg-blue-100",
 	pending: "text-yellow-600 bg-yellow-100",
-	reverted: "text-pink-700 bg-pink-100",
-	expired: "text-red-700 bg-red-100",
 	settled: "text-green-700 bg-green-100",
 	refunded: "text-orange-700 bg-orange-100",
 };

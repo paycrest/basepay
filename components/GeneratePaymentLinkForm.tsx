@@ -34,7 +34,7 @@ export const GeneratePaymentLinkForm = ({
 		handleSubmit,
 		formState: { isValid, isDirty, isSubmitting },
 	} = formMethods;
-	const { currency, accountIdentifier, institution, recipientName } = watch();
+	const { currency, accountIdentifier, institution, accountName } = watch();
 
 	const [isFetchingInstitutions, setIsFetchingInstitutions] = useState(false);
 	const [isFetchingRecipientName, setIsFetchingRecipientName] = useState(false);
@@ -78,9 +78,9 @@ export const GeneratePaymentLinkForm = ({
 					accountIdentifier: accountIdentifier.toString(),
 				});
 
-				setValue("recipientName", accountName);
+				setValue("accountName", accountName);
 			} catch (error) {
-				setValue("recipientName", "");
+				setValue("accountName", "");
 				setRecipientNameError("No recipient account found");
 			} finally {
 				setIsFetchingRecipientName(false);
@@ -220,10 +220,10 @@ export const GeneratePaymentLinkForm = ({
 								</AnimatedItem>
 							) : (
 								<>
-									{recipientName ? (
+									{accountName ? (
 										<AnimatedItem className="flex items-center justify-between relative z-0">
 											<p className="rounded-lg bg-[#e5f0fe] px-3 py-1 capitalize text-[#003d93]">
-												{recipientName.toLowerCase()}
+												{accountName.toLowerCase()}
 											</p>
 											<GreenCheckCircleIcon className="rounded-full size-4" />
 										</AnimatedItem>
@@ -239,7 +239,9 @@ export const GeneratePaymentLinkForm = ({
 				<AnimatedItem className="flex justify-end space-x-3">
 					<button
 						type="reset"
-						disabled={isSubmitting}
+						disabled={
+							isSubmitting || isFetchingInstitutions || isFetchingRecipientName
+						}
 						className={secondaryButtonStyles}
 						onClick={() => router.back()}
 					>
@@ -253,7 +255,8 @@ export const GeneratePaymentLinkForm = ({
 							isSubmitting ||
 							isFetchingInstitutions ||
 							isFetchingRecipientName ||
-							recipientNameError !== ""
+							recipientNameError !== "" ||
+							accountName === ""
 						}
 						className={`w-fit ${primaryButtonStyles}`}
 					>

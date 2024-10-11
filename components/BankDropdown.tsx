@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import type { UseFormReturn } from "react-hook-form";
 
 import { CiSearch } from "react-icons/ci";
@@ -28,7 +28,7 @@ export const BankDropdown = ({
 	formMethods,
 }: BankDropdownProps) => {
 	const { setValue, watch } = formMethods;
-	const { currency, institution } = watch();
+	const { currency } = watch();
 	const [bankSearchTerm, setBankSearchTerm] = useState("");
 	const [isInstitutionsDropdownOpen, setIsInstitutionsDropdownOpen] =
 		useState(false);
@@ -42,10 +42,6 @@ export const BankDropdown = ({
 		ref: institutionsDropdownRef,
 		handler: () => setIsInstitutionsDropdownOpen(false),
 	});
-
-	useEffect(() => {
-		console.log(institution);
-	}, [institution]);
 
 	return (
 		<div ref={institutionsDropdownRef} className="flex-1 space-y-2">
@@ -121,7 +117,6 @@ export const BankDropdown = ({
 											setSelectedInstitution(institution);
 											setIsInstitutionsDropdownOpen(false);
 											setValue("institution", institution.code);
-											console.log();
 										}}
 									>
 										{institution.name}

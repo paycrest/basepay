@@ -23,17 +23,18 @@ import {
 	secondaryButtonStyles,
 } from "@/components";
 import { classNames } from "../utils";
-import { fetchRate } from "../aggregator";
+import { fetchLinkedAddress, fetchRate } from "../aggregator";
 
 export default function BasepayLink() {
 	const pathname = usePathname();
 	const address = pathname.split("/").pop();
 
-	const { ready } = usePrivy();
+	const { ready, user } = usePrivy();
 	const [rate, setRate] = useState(0);
 	const [isAddressCopied, setIsAddressCopied] = useState(false);
 	const [exportFormat, setExportFormat] = useState<"pdf" | "png">("pdf");
 	const [isGenerating, setIsGenerating] = useState(false);
+	const [isAddressLinked, setIsAddressLinked] = useState(false);
 
 	const handleCopyAddress = () => {
 		navigator.clipboard.writeText(address ?? "");
@@ -96,7 +97,21 @@ export default function BasepayLink() {
 	};
 
 	useEffect(() => {
+		const getLinkedAddress = async () => {
+			if (address) {
+				const response = await fetchLinkedAddress({
+					address,
+				});
+				setIsAddressLinked(response !== "No linked address");
+			}
+		};
+
+		getLinkedAddress();
+	}, [address]);
+
+	useEffect(() => {
 		const getRate = async () => {
+			if (!isAddressLinked) return;
 			const rate = await fetchRate({
 				currency: "ngn",
 				amount: 1,
@@ -106,9 +121,10 @@ export default function BasepayLink() {
 		};
 
 		getRate();
-	}, []);
+	}, [isAddressLinked]);
 
-	if (!address?.startsWith("0x") || address?.length !== 42) notFound();
+	if (!address?.startsWith("0x") || address?.length !== 42 || !isAddressLinked)
+		notFound();
 
 	if (!ready) return <Preloader isLoading={true} />;
 
@@ -132,11 +148,6 @@ export default function BasepayLink() {
 					</AnimatedItem>
 
 					<AnimatedItem className="space-y-4">
-						<div className="flex items-center justify-between">
-							<p className="text-text-secondary">Name</p>
-							<p className="text-text-primary font-medium">Jeremy</p>
-						</div>
-
 						<div className="flex items-center justify-between">
 							<p className="text-text-secondary">Supported tokens</p>
 							<div className="flex gap-2">
@@ -221,32 +232,39 @@ export default function BasepayLink() {
 						</p>
 					</AnimatedItem>
 
-					<AnimatedItem className="flex items-center justify-between space-x-4 rounded-xl bg-background-neutral p-4">
-						<p className="text-text-primary">Download format</p>
-						<div className="flex gap-4">
-							{["pdf", "png"].map((format) => (
-								<label
-									key={format}
-									className="inline-flex items-center gap-2 bg-white rounded-full py-1 px-2 cursor-pointer"
-								>
-									<input
-										type="radio"
-										className="form-radio accent-primary-blue cursor-pointer"
-										name="exportFormat"
-										value={format}
-										checked={exportFormat === format}
-										onChange={() => setExportFormat(format as "pdf" | "png")}
-									/>
-									<span>{format.toUpperCase()}</span>
-								</label>
-							))}
-						</div>
-					</AnimatedItem>
+					{ready && user && user.wallet?.address === address && (
+						<AnimatedItem className="flex items-center justify-between space-x-4 rounded-xl bg-background-neutral p-4">
+							<p className="text-text-primary">Download format</p>
+							<div className="flex gap-4">
+								{["pdf", "png"].map((format) => (
+									<label
+										key={format}
+										className="inline-flex items-center gap-2 bg-white rounded-full py-1 px-2 cursor-pointer"
+									>
+										<input
+											type="radio"
+											className="form-radio accent-primary-blue cursor-pointer"
+											name="exportFormat"
+											value={format}
+											checked={exportFormat === format}
+											onChange={() => setExportFormat(format as "pdf" | "png")}
+										/>
+										<span>{format.toUpperCase()}</span>
+									</label>
+								))}
+							</div>
+						</AnimatedItem>
+					)}
 
 					<AnimatedItem className="flex items-center gap-4">
 						<button
 							type="button"
-							className={classNames(secondaryButtonStyles)}
+							className={classNames(
+								secondaryButtonStyles,
+								ready && user && user.wallet?.address === address
+									? ""
+									: "w-full",
+							)}
 							onClick={() => {
 								navigator.share({
 									title: "My basepay link",
@@ -257,14 +275,17 @@ export default function BasepayLink() {
 						>
 							Share
 						</button>
-						<button
-							type="button"
-							title="Download"
-							onClick={handleExport}
-							className={classNames(primaryButtonStyles, "w-full")}
-						>
-							{isGenerating ? "Preparing..." : "Download"}
-						</button>
+
+						{ready && user && user.wallet?.address === address && (
+							<button
+								type="button"
+								title="Download"
+								onClick={handleExport}
+								className={classNames(primaryButtonStyles, "w-full")}
+							>
+								{isGenerating ? "Preparing..." : "Download"}
+							</button>
+						)}
 					</AnimatedItem>
 
 					<div className="absolute left-[-9999px] top-[-9999px]">

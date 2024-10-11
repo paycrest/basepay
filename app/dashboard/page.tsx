@@ -1,8 +1,7 @@
 "use client";
-
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { TbPencilMinus } from "react-icons/tb";
 import { usePrivy } from "@privy-io/react-auth";
@@ -31,8 +30,9 @@ import {
 	WalletIcon,
 	WifiCircleIcon,
 } from "@/components/ImageAssets";
-import { mockTransactions } from "../mocks";
 import type { PaymentOrderResponse } from "../types";
+import { fetchTransactionHistory } from "../aggregator";
+import { useAddressContext } from "@/context/AddressContext";
 
 const data = [
 	{
@@ -57,6 +57,9 @@ const Card = ({ title, content }: { title: string; content: string }) => (
 export default function Dashboard() {
 	const router = useRouter();
 	const { ready, user } = usePrivy();
+	const { isAddressLinked } = useAddressContext();
+
+	const [transactions, setTransactions] = useState<PaymentOrderResponse[]>([]);
 	const [isAddressCopied, setIsAddressCopied] = useState(false);
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -65,6 +68,24 @@ export default function Dashboard() {
 		setIsAddressCopied(true);
 		setTimeout(() => setIsAddressCopied(false), 2000);
 	};
+
+	useEffect(() => {
+		const getTransactions = async () => {
+			if (!ready || !user?.wallet?.address || !isAddressLinked) return;
+
+			const response = await fetchTransactionHistory({
+				address: user?.wallet?.address,
+				privyId: user?.id,
+				params: {
+					page: 1,
+					pageSize: 50,
+				},
+			});
+			setTransactions(response.transactions);
+		};
+
+		getTransactions();
+	}, [isAddressLinked, user, ready]);
 
 	if (!ready) return <Preloader isLoading={!ready} />;
 
@@ -128,49 +149,55 @@ export default function Dashboard() {
 					</div>
 
 					<div className="flex gap-3 items-center">
-						<button
-							type="button"
-							onClick={() => router.push("/dashboard/generate")}
-							className={primaryButtonStyles}
-						>
-							Generate link
-						</button>
+						{!isAddressLinked && (
+							<button
+								type="button"
+								onClick={() => router.push("/dashboard/generate")}
+								className={primaryButtonStyles}
+							>
+								Generate link
+							</button>
+						)}
 
-						<button
-							type="button"
-							title="Copy wallet address"
-							onClick={handleCopyAddress}
-							className="px-4 py-3 rounded-full border border-border-light flex items-center gap-2.5 hover:bg-gray-50 transition group"
-						>
-							<p className="font-medium text-sm bg-gradient-to-r from-purple-500 via-orange-500 to-fuchsia-400 bg-clip-text text-transparent group-hover:from-purple-700 group-hover:via-orange-700 group-hover:to-fuchsia-600 transition">
-								jeremy0x.base.eth
-							</p>
+						{isAddressLinked && (
+							<>
+								<button
+									type="button"
+									title="Copy wallet address"
+									onClick={handleCopyAddress}
+									className="px-4 py-3 rounded-full border border-border-light flex items-center gap-2.5 hover:bg-gray-50 transition group"
+								>
+									<p className="font-medium text-sm bg-gradient-to-r from-purple-500 via-orange-500 to-fuchsia-400 bg-clip-text text-transparent group-hover:from-purple-700 group-hover:via-orange-700 group-hover:to-fuchsia-600 transition">
+										jeremy0x.base.eth
+									</p>
 
-							{isAddressCopied ? (
-								<CheckmarkIcon className="size-4 text-primary-blue" />
-							) : (
-								<CopyIcon className="size-4 text-primary-blue" />
-							)}
-						</button>
+									{isAddressCopied ? (
+										<CheckmarkIcon className="size-4 text-primary-blue" />
+									) : (
+										<CopyIcon className="size-4 text-primary-blue" />
+									)}
+								</button>
 
-						<button
-							type="button"
-							title="Linked account details"
-							className="flex items-center justify-center gap-2 rounded-full border border-border-light p-2.5"
-							onClick={() => setIsDropdownOpen((prev) => !prev)}
-						>
-							<DropdownIcon
-								className={classNames(
-									"size-7 text-gray-400 transition-transform",
-									isDropdownOpen ? "rotate-180" : "",
-								)}
-							/>
-						</button>
+								<button
+									type="button"
+									title="Linked account details"
+									className="flex items-center justify-center gap-2 rounded-full border border-border-light p-2.5"
+									onClick={() => setIsDropdownOpen((prev) => !prev)}
+								>
+									<DropdownIcon
+										className={classNames(
+											"size-7 text-gray-400 transition-transform",
+											isDropdownOpen ? "rotate-180" : "",
+										)}
+									/>
+								</button>
+							</>
+						)}
 					</div>
 				</AnimatedItem>
 
 				<AnimatePresence mode="wait">
-					{isDropdownOpen && (
+					{isAddressLinked && isDropdownOpen && (
 						<motion.div
 							initial={{ opacity: 0, height: 0 }}
 							animate={{ opacity: 1, height: "auto" }}
@@ -272,11 +299,11 @@ export default function Dashboard() {
 					))}
 				</AnimatedItem>
 
-				<AnimatedItem>
-					<TransactionHistory
-						transactions={mockTransactions as PaymentOrderResponse[]}
-					/>
-				</AnimatedItem>
+				{isAddressLinked && (
+					<AnimatedItem>
+						<TransactionHistory transactions={transactions} />
+					</AnimatedItem>
+				)}
 			</AnimatedContainer>
 		</div>
 	);
