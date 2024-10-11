@@ -84,18 +84,16 @@ export const RateCalculator = () => {
 				transition
 				className="origin-top transition duration-200 ease-out data-[closed]:scale-95 data-[closed]:opacity-0 bg-white shadow-2xl rounded-3xl p-5 space-y-4 w-96 max-w-full -mt-4"
 			>
-				<MenuItem as="div" className="space-y-2">
+				<div className="space-y-2">
 					<div className="flex items-center gap-1">
 						<p className="text-text-primary sm:text-lg font-semibold">
 							basepay
 						</p>
-						<div className="pb-2 mt-5">
-							<PaycrestLogo className="size-2.5" />
-						</div>
+						<PaycrestLogo className="size-2.5" />
 					</div>
 					<p className="text-text-secondary text-sm">Exchange Calculator</p>
-				</MenuItem>
-				<MenuItem as="form">
+				</div>
+				<form>
 					<div className="space-y-2 rounded-2xl bg-gray-50 p-2">
 						<h3 className="px-2 font-medium">Swap</h3>
 
@@ -177,15 +175,15 @@ export const RateCalculator = () => {
 									onSelect={(selectedCurrency) =>
 										setValue("currency", selectedCurrency)
 									}
-									className="min-w-52"
+									className="min-w-64 text-sm"
 								/>
 							</div>
 						</div>
 					</div>
-				</MenuItem>
-				<MenuItem as="p" className="text-sm text-text-secondary">
-					1 {token} = {rate} {currency}
-				</MenuItem>
+				</form>
+				<p className="text-sm text-text-secondary">
+					1 {token ?? "USDT"} = {rate ?? "..."} {currency ?? "KES"}
+				</p>
 			</MenuItems>
 		</Menu>
 	);

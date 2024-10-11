@@ -1,8 +1,7 @@
-import { PiCaretDown } from "react-icons/pi";
 import Image from "next/image";
-import type { DropdownItem } from "./Dropdown";
-import { FlexibleDropdown } from "./FlexibleDropdown";
 import { classNames } from "@/app/utils";
+import { PiCaretDown } from "react-icons/pi";
+import { Dropdown, type DropdownItem } from "./Dropdown";
 
 interface FormDropdownProps {
 	defaultTitle: string;
@@ -20,7 +19,7 @@ export const FormDropdown = ({
 	className,
 }: FormDropdownProps) => {
 	return (
-		<FlexibleDropdown
+		<Dropdown
 			data={data}
 			defaultSelectedItem={defaultSelectedItem}
 			onSelect={onSelect}
@@ -60,6 +59,6 @@ export const FormDropdown = ({
 					/>
 				</button>
 			)}
-		</FlexibleDropdown>
+		</Dropdown>
 	);
 };
