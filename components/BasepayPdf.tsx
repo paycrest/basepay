@@ -4,8 +4,15 @@ import { usePrivy } from "@privy-io/react-auth";
 
 import { PaycrestLogo } from "./ImageAssets";
 
-export const BasepayPdf = () => {
-	const { user } = usePrivy();
+export const BasepayPdf = ({
+	linkedAddress,
+	currency,
+	address,
+}: {
+	linkedAddress: string;
+	currency: string;
+	address: string;
+}) => {
 	return (
 		<div className="relative w-[1440px] h-[1024px] border border-border-light flex justify-between items-start rounded py-20">
 			<div className="relative space-y-6 max-w-lg z-10">
@@ -20,7 +27,7 @@ export const BasepayPdf = () => {
 					</div>
 
 					<h1 className="text-text-primary text-5xl font-semibold leading-tight">
-						Pay <span className="text-background-blue">Naira,</span>
+						Pay <span className="text-background-blue">{currency},</span>
 						<br />
 						with crypto
 					</h1>
@@ -138,7 +145,7 @@ export const BasepayPdf = () => {
 
 						<div className="w-full">
 							<QRCode
-								value={user?.wallet?.address ?? ""}
+								value={linkedAddress}
 								qrStyle="dots"
 								eyeRadius={20}
 								eyeColor="#121217"
@@ -161,7 +168,7 @@ export const BasepayPdf = () => {
 
 						<div className="rounded-xl border border-border-light bg-background-neutral py-4 space-y-4">
 							<p className="px-4 text-sm text-background-blue">
-								{user?.wallet?.address}
+								basepay.link/{address}
 							</p>
 							<hr className="border-t border-border-light" />
 							<p className="text-text-secondary px-4">

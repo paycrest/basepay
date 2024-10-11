@@ -8,6 +8,10 @@ import { usePrivy } from "@privy-io/react-auth";
 import { useEffect, useRef, useState } from "react";
 import { notFound, usePathname } from "next/navigation";
 
+import { http } from "viem";
+import { base } from "viem/chains";
+import { createEnsPublicClient } from "@ensdomains/ensjs";
+
 import {
 	CheckmarkIcon,
 	CopyIcon,
@@ -24,20 +28,66 @@ import {
 } from "@/components";
 import { classNames } from "../utils";
 import { fetchLinkedAddress, fetchRate } from "../aggregator";
+import { toast } from "react-toastify";
 
 export default function BasepayLink() {
 	const pathname = usePathname();
-	const address = pathname.split("/").pop();
+	const rawAddress = pathname.split("/").pop() as string;
+	const [resolvedAddress, setResolvedAddress] = useState<string>("");
+	const [isPageLoading, setIsPageLoading] = useState(true);
+	const [isAddressLinked, setIsAddressLinked] = useState(false);
+	const [hasError, setHasError] = useState(false);
+
+	useEffect(() => {
+		const resolveAddress = async () => {
+			try {
+				if (!rawAddress?.startsWith("0x") && !rawAddress?.includes(".eth")) {
+					setHasError(true);
+					setIsPageLoading(false);
+					return;
+				}
+
+				if (rawAddress?.includes(".eth")) {
+					const client = createEnsPublicClient({
+						// @ts-ignore
+						chain: base,
+						transport: http(),
+					});
+
+					console.log("resolving address", rawAddress);
+					const addressRecord = await client.getAddressRecord({
+						name: rawAddress,
+					});
+					setResolvedAddress(addressRecord?.value ?? "");
+					console.log("resolved address", addressRecord);
+				} else {
+					setResolvedAddress(rawAddress);
+					console.log("resolved address", rawAddress);
+				}
+			} catch (error) {
+				console.error("Error resolving address:", error);
+				setHasError(true);
+			} finally {
+				setIsPageLoading(false);
+			}
+		};
+
+		resolveAddress();
+	}, [rawAddress]);
 
 	const { ready, user } = usePrivy();
 	const [rate, setRate] = useState(0);
 	const [isAddressCopied, setIsAddressCopied] = useState(false);
 	const [exportFormat, setExportFormat] = useState<"pdf" | "png">("pdf");
 	const [isGenerating, setIsGenerating] = useState(false);
-	const [isAddressLinked, setIsAddressLinked] = useState(false);
+
+	const [currency, setCurrency] = useState<string>("Naira");
+	const [linkedAddress, setLinkedAddress] = useState<string>(
+		"0x8e781F6924e039C0B24fa9f1AdaF05f706D4CE22",
+	);
 
 	const handleCopyAddress = () => {
-		navigator.clipboard.writeText(address ?? "");
+		navigator.clipboard.writeText(resolvedAddress ?? "");
 		setIsAddressCopied(true);
 		setTimeout(() => setIsAddressCopied(false), 2000);
 	};
@@ -91,23 +141,29 @@ export default function BasepayLink() {
 			}
 		} catch (error) {
 			console.error("Error generating export:", error);
+			toast.error("Error generating export");
 		} finally {
 			setIsGenerating(false);
 		}
 	};
 
 	useEffect(() => {
-		const getLinkedAddress = async () => {
-			if (address) {
-				const response = await fetchLinkedAddress({
-					address,
-				});
-				setIsAddressLinked(response !== "No linked address");
+		const checkLinkedAddress = async () => {
+			if (resolvedAddress) {
+				try {
+					const response = await fetchLinkedAddress({
+						address: resolvedAddress,
+					});
+					setIsAddressLinked(response !== "No linked address");
+				} catch (error) {
+					console.error("Error fetching linked address:", error);
+					setHasError(true);
+				}
 			}
 		};
 
-		getLinkedAddress();
-	}, [address]);
+		checkLinkedAddress();
+	}, [resolvedAddress]);
 
 	useEffect(() => {
 		const getRate = async () => {
@@ -123,10 +179,18 @@ export default function BasepayLink() {
 		getRate();
 	}, [isAddressLinked]);
 
-	if (!address?.startsWith("0x") || address?.length !== 42 || !isAddressLinked)
-		notFound();
+	useEffect(() => {
+		if (
+			!resolvedAddress?.startsWith("0x") ||
+			resolvedAddress?.length !== 42 ||
+			!isAddressLinked ||
+			hasError
+		) {
+			notFound();
+		}
+	}, [resolvedAddress, isAddressLinked, hasError]);
 
-	if (!ready) return <Preloader isLoading={true} />;
+	if (!ready || isPageLoading) return <Preloader isLoading={true} />;
 
 	return (
 		<>
@@ -190,7 +254,7 @@ export default function BasepayLink() {
 
 					<AnimatedItem className="w-full">
 						<QRCode
-							value={address ?? ""}
+							value={resolvedAddress ?? ""}
 							qrStyle="dots"
 							eyeRadius={20}
 							eyeColor="#121217"
@@ -214,7 +278,7 @@ export default function BasepayLink() {
 					<AnimatedItem className="rounded-xl border border-border-light bg-background-neutral py-4 space-y-4">
 						<div className="px-4 flex justify-between items-center">
 							<p className="text-xs font-semibold bg-gradient-to-r from-purple-500 via-orange-500 to-fuchsia-400 bg-clip-text text-transparent">
-								{address}
+								{resolvedAddress}
 							</p>
 							<button type="button" onClick={handleCopyAddress}>
 								{isAddressCopied ? (
@@ -232,7 +296,7 @@ export default function BasepayLink() {
 						</p>
 					</AnimatedItem>
 
-					{ready && user && user.wallet?.address === address && (
+					{ready && user && user.wallet?.address === resolvedAddress && (
 						<AnimatedItem className="flex items-center justify-between space-x-4 rounded-xl bg-background-neutral p-4">
 							<p className="text-text-primary">Download format</p>
 							<div className="flex gap-4">
@@ -261,7 +325,7 @@ export default function BasepayLink() {
 							type="button"
 							className={classNames(
 								secondaryButtonStyles,
-								ready && user && user.wallet?.address === address
+								ready && user && user.wallet?.address === resolvedAddress
 									? ""
 									: "w-full",
 							)}
@@ -276,7 +340,7 @@ export default function BasepayLink() {
 							Share
 						</button>
 
-						{ready && user && user.wallet?.address === address && (
+						{ready && user && user.wallet?.address === resolvedAddress && (
 							<button
 								type="button"
 								title="Download"
@@ -290,7 +354,11 @@ export default function BasepayLink() {
 
 					<div className="absolute left-[-9999px] top-[-9999px]">
 						<div ref={basepayPdfRef}>
-							<BasepayPdf />
+							<BasepayPdf
+								linkedAddress={linkedAddress}
+								currency={currency}
+								address={resolvedAddress}
+							/>
 						</div>
 					</div>
 				</div>

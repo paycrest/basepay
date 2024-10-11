@@ -63,7 +63,7 @@ export const Navbar = () => {
 	return (
 		<header className="fixed left-0 top-0 z-20 w-full bg-white transition-all">
 			<nav
-				className="container mx-auto max-w-screen-md flex items-center justify-between py-4 text-text-primary"
+				className="container mx-auto max-w-screen-md flex items-center justify-between p-4 text-text-primary"
 				aria-label="Navbar"
 			>
 				<Link href="/" className="flex items-center gap-1 lg:flex-1">
