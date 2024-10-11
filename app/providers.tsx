@@ -24,6 +24,11 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 					embeddedWallets: {
 						createOnLogin: "users-without-wallets",
 					},
+					externalWallets: {
+						coinbaseWallet: {
+							connectionOptions: "smartWalletOnly",
+						},
+					},
 				}}
 			>
 				<AddressProvider>
