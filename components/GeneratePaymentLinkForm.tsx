@@ -256,7 +256,7 @@ export const GeneratePaymentLinkForm = ({
 							isFetchingInstitutions ||
 							isFetchingRecipientName ||
 							recipientNameError !== "" ||
-							accountName === ""
+							!accountName
 						}
 						className={`w-fit ${primaryButtonStyles}`}
 					>

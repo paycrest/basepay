@@ -7,6 +7,7 @@ import {
 } from "react";
 import { usePrivy } from "@privy-io/react-auth";
 import { fetchLinkedAddress, getBasename } from "../app/aggregator";
+import { toast } from "react-toastify";
 
 interface AddressContextProps {
 	basename: string | null;
@@ -40,6 +41,7 @@ export const AddressProvider = ({ children }: { children: ReactNode }) => {
 					setBasename(basename);
 				} catch (error) {
 					console.error("Error fetching basename:", error);
+					toast.error("Error fetching basename");
 				}
 			}
 		};
