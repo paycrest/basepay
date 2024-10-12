@@ -9,6 +9,7 @@ export {
 export { Navbar } from "./Navbar";
 export { Dropdown } from "./Dropdown";
 export { Preloader } from "./Preloader";
+export { Disclaimer } from "./Disclaimer";
 
 export { BasepayPdf } from "./BasepayPdf";
 export { RateCalculator } from "./RateCalculator";

@@ -1,14 +1,19 @@
 "use client";
-import { Preloader } from "@/components";
-import { useEffect, useState } from "react";
 import { usePrivy } from "@privy-io/react-auth";
-import Dashboard from "./dashboard/Dashboard";
+
 import Home from "./home/Home";
+import Dashboard from "./dashboard/Dashboard";
+import { Disclaimer, Preloader } from "@/components";
 
 export default function Page() {
 	const { ready, authenticated } = usePrivy();
 
 	if (!ready) return <Preloader isLoading={!ready} />;
 
-	return authenticated ? <Dashboard /> : <Home />;
+	return (
+		<>
+			<Disclaimer />
+			{authenticated ? <Dashboard /> : <Home />}
+		</>
+	);
 }

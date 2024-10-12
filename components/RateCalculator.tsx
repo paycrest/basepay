@@ -70,7 +70,7 @@ export const RateCalculator = () => {
 	return (
 		<Menu
 			as="div"
-			className="fixed bottom-5 sm:bottom-10 right-5 sm:right-20 z-50"
+			className="fixed bottom-5 sm:bottom-10 right-5 sm:right-20 z-40"
 		>
 			<MenuButton className="p-4 rounded-full bg-black transition hover:bg-gray-700 active:bg-black text-white">
 				{({ open }) =>

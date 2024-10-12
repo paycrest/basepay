@@ -34,3 +34,11 @@ To run the project locally, follow these steps:
    ```
 
 4. Visit [localhost:3000](http://localhost:3000) to view the waitlist page locally.
+
+## Disclaimer Notice
+
+This application is for demo use only. Any transactions conducted within this app are for illustrative purposes.
+
+Therefore:
+
+While the app records real transactions, please exercise caution and do not use this app as is in a production environment. Use at your own risk. The developers are not responsible for any issues or damages that may arise from the use of this app.
