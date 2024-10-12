@@ -3,14 +3,11 @@ import jsPDF from "jspdf";
 import Link from "next/link";
 import Image from "next/image";
 import html2canvas from "html2canvas";
+import { toast } from "react-toastify";
 import { QRCode } from "react-qrcode-logo";
 import { usePrivy } from "@privy-io/react-auth";
 import { useEffect, useRef, useState } from "react";
 import { notFound, usePathname } from "next/navigation";
-
-import { http } from "viem";
-import { base } from "viem/chains";
-import { createEnsPublicClient } from "@ensdomains/ensjs";
 
 import {
 	CheckmarkIcon,
@@ -28,52 +25,13 @@ import {
 } from "@/components";
 import { classNames } from "../utils";
 import { fetchLinkedAddress, fetchRate } from "../aggregator";
-import { toast } from "react-toastify";
 
 export default function BasepayLink() {
 	const pathname = usePathname();
 	const rawAddress = pathname.split("/").pop() as string;
-	const [resolvedAddress, setResolvedAddress] = useState<string>("");
 	const [isPageLoading, setIsPageLoading] = useState(true);
 	const [isAddressLinked, setIsAddressLinked] = useState(false);
 	const [hasError, setHasError] = useState(false);
-
-	useEffect(() => {
-		const resolveAddress = async () => {
-			try {
-				if (!rawAddress?.startsWith("0x") && !rawAddress?.includes(".eth")) {
-					setHasError(true);
-					setIsPageLoading(false);
-					return;
-				}
-
-				if (rawAddress?.includes(".eth")) {
-					const client = createEnsPublicClient({
-						// @ts-ignore
-						chain: base,
-						transport: http(),
-					});
-
-					console.log("resolving address", rawAddress);
-					const addressRecord = await client.getAddressRecord({
-						name: rawAddress,
-					});
-					setResolvedAddress(addressRecord?.value ?? "");
-					console.log("resolved address", addressRecord);
-				} else {
-					setResolvedAddress(rawAddress);
-					console.log("resolved address", rawAddress);
-				}
-			} catch (error) {
-				console.error("Error resolving address:", error);
-				setHasError(true);
-			} finally {
-				setIsPageLoading(false);
-			}
-		};
-
-		resolveAddress();
-	}, [rawAddress]);
 
 	const { ready, user } = usePrivy();
 	const [rate, setRate] = useState(0);
@@ -87,7 +45,7 @@ export default function BasepayLink() {
 	);
 
 	const handleCopyAddress = () => {
-		navigator.clipboard.writeText(resolvedAddress ?? "");
+		navigator.clipboard.writeText(rawAddress ?? "");
 		setIsAddressCopied(true);
 		setTimeout(() => setIsAddressCopied(false), 2000);
 	};
@@ -149,10 +107,10 @@ export default function BasepayLink() {
 
 	useEffect(() => {
 		const checkLinkedAddress = async () => {
-			if (resolvedAddress) {
+			if (rawAddress) {
 				try {
 					const response = await fetchLinkedAddress({
-						address: resolvedAddress,
+						address: rawAddress,
 					});
 					setIsAddressLinked(response !== "No linked address");
 				} catch (error) {
@@ -163,7 +121,7 @@ export default function BasepayLink() {
 		};
 
 		checkLinkedAddress();
-	}, [resolvedAddress]);
+	}, [rawAddress]);
 
 	useEffect(() => {
 		const getRate = async () => {
@@ -181,14 +139,15 @@ export default function BasepayLink() {
 
 	useEffect(() => {
 		if (
-			!resolvedAddress?.startsWith("0x") ||
-			resolvedAddress?.length !== 42 ||
+			!rawAddress?.startsWith("0x") ||
+			!rawAddress?.includes(".base.eth") ||
+			rawAddress?.length !== 42 ||
 			!isAddressLinked ||
 			hasError
 		) {
 			notFound();
 		}
-	}, [resolvedAddress, isAddressLinked, hasError]);
+	}, [rawAddress, isAddressLinked, hasError]);
 
 	if (!ready || isPageLoading) return <Preloader isLoading={true} />;
 
@@ -254,7 +213,7 @@ export default function BasepayLink() {
 
 					<AnimatedItem className="w-full">
 						<QRCode
-							value={resolvedAddress ?? ""}
+							value={rawAddress ?? ""}
 							qrStyle="dots"
 							eyeRadius={20}
 							eyeColor="#121217"
@@ -278,7 +237,7 @@ export default function BasepayLink() {
 					<AnimatedItem className="rounded-xl border border-border-light bg-background-neutral py-4 space-y-4">
 						<div className="px-4 flex justify-between items-center">
 							<p className="text-xs font-semibold bg-gradient-to-r from-purple-500 via-orange-500 to-fuchsia-400 bg-clip-text text-transparent">
-								{resolvedAddress}
+								{rawAddress}
 							</p>
 							<button type="button" onClick={handleCopyAddress}>
 								{isAddressCopied ? (
@@ -296,7 +255,7 @@ export default function BasepayLink() {
 						</p>
 					</AnimatedItem>
 
-					{ready && user && user.wallet?.address === resolvedAddress && (
+					{ready && user && user.wallet?.address === rawAddress && (
 						<AnimatedItem className="flex items-center justify-between space-x-4 rounded-xl bg-background-neutral p-4">
 							<p className="text-text-primary">Download format</p>
 							<div className="flex gap-4">
@@ -325,7 +284,7 @@ export default function BasepayLink() {
 							type="button"
 							className={classNames(
 								secondaryButtonStyles,
-								ready && user && user.wallet?.address === resolvedAddress
+								ready && user && user.wallet?.address === rawAddress
 									? ""
 									: "w-full",
 							)}
@@ -340,7 +299,7 @@ export default function BasepayLink() {
 							Share
 						</button>
 
-						{ready && user && user.wallet?.address === resolvedAddress && (
+						{ready && user && user.wallet?.address === rawAddress && (
 							<button
 								type="button"
 								title="Download"
@@ -357,7 +316,7 @@ export default function BasepayLink() {
 							<BasepayPdf
 								linkedAddress={linkedAddress}
 								currency={currency}
-								address={resolvedAddress}
+								address={rawAddress}
 							/>
 						</div>
 					</div>

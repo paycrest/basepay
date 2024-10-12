@@ -27,10 +27,13 @@ import { linkNewAddress } from "@/app/aggregator";
 import { classNames, shortenAddress } from "@/app/utils";
 import { useAddressContext } from "@/context/AddressContext";
 
+import { base } from "viem/chains";
+import { Avatar, Identity, Name, Address } from "@coinbase/onchainkit/identity";
+
 export default function GeneratePaymentLink() {
 	const router = useRouter();
 	const { user, ready, authenticated } = usePrivy();
-	const { isAddressLinked } = useAddressContext();
+	const { isAddressLinked, basename } = useAddressContext();
 	const [showPreloader, setShowPreloader] = useState(false);
 	const [isPreviewVisible, setIsPreviewVisible] = useState(true);
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -124,39 +127,49 @@ export default function GeneratePaymentLink() {
 
 							<div className="space-y-4">
 								<div className="flex justify-between items-center gap-4 flex-wrap">
-									<div className="flex gap-2 items-center">
-										<Image
-											src="/images/avatar.svg"
-											alt="avatar"
-											width={24}
-											height={24}
-										/>
-										<p className="text-text-primary font-medium text-base">
-											{shortenAddress(user?.wallet?.address ?? "", 8)}
-										</p>
-									</div>
+									{user && (
+										<Identity
+											address={user?.wallet?.address as `0x${string}`}
+											chain={base}
+											schemaId="0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9"
+											className="flex items-center"
+										>
+											<Avatar
+												address={user?.wallet?.address as `0x${string}`}
+												chain={base}
+												className="w-8 bg-gradient-to-br from-purple-500 via-pink-500 to-cyan-500 rounded-full"
+												alt="avatar"
+											/>
+											<Name
+												address={user?.wallet?.address as `0x${string}`}
+												chain={base}
+												className="text-text-primary font-medium text-base"
+											/>
+										</Identity>
+									)}
 									<GreenCheckCircleIcon className="rounded-full size-4" />
 								</div>
 
-								{user?.wallet?.walletClientType !== "privy" && (
-									<div className="p-4 rounded-xl bg-background-neutral flex justify-between items-center">
-										<div className="flex items-center gap-2.5">
-											<BannerIcon className="size-6" />
-											<h3 className="font-medium text-base bg-gradient-to-r from-purple-500 via-orange-500 to-fuchsia-400 bg-clip-text text-transparent">
-												Get your basename
-											</h3>
+								{user?.wallet?.walletClientType !== "privy" &&
+									!basename?.includes(".base.eth") && (
+										<div className="p-4 rounded-xl bg-background-neutral flex justify-between items-center">
+											<div className="flex items-center gap-2.5">
+												<BannerIcon className="size-6" />
+												<h3 className="font-medium text-base bg-gradient-to-r from-purple-500 via-orange-500 to-fuchsia-400 bg-clip-text text-transparent">
+													Get your basename
+												</h3>
+											</div>
+											<Link
+												target="_blank"
+												rel="noopener noreferrer"
+												href="https://www.base.org/names"
+												className="flex gap-1 items-center text-primary-blue hover:text-blue-800 transition font-medium"
+											>
+												Continue
+												<ArrowRightIcon />
+											</Link>
 										</div>
-										<Link
-											target="_blank"
-											rel="noopener noreferrer"
-											href="https://www.base.org/names"
-											className="flex gap-1 items-center text-primary-blue hover:text-blue-800 transition font-medium"
-										>
-											Continue
-											<ArrowRightIcon />
-										</Link>
-									</div>
-								)}
+									)}
 							</div>
 
 							<GeneratePaymentLinkForm onSubmit={onSubmit} />

@@ -34,6 +34,9 @@ import type { PaymentOrderResponse } from "../types";
 import { fetchTransactionHistory } from "../aggregator";
 import { useAddressContext } from "@/context/AddressContext";
 
+import { base } from "viem/chains";
+import { Avatar, Identity, Name } from "@coinbase/onchainkit/identity";
+
 const data = [
 	{
 		id: 1,
@@ -57,7 +60,7 @@ const Card = ({ title, content }: { title: string; content: string }) => (
 export default function Dashboard() {
 	const router = useRouter();
 	const { ready, user } = usePrivy();
-	const { isAddressLinked } = useAddressContext();
+	const { isAddressLinked, basename } = useAddressContext();
 
 	const [transactions, setTransactions] = useState<PaymentOrderResponse[]>([]);
 	const [isAddressCopied, setIsAddressCopied] = useState(false);
@@ -96,57 +99,66 @@ export default function Dashboard() {
 			<RateCalculator />
 
 			<AnimatedContainer className="space-y-4">
-				{user?.wallet?.walletClientType !== "privy" && (
-					<AnimatedItem className="relative rounded-2xl p-3 bg-gray-50 border border-border-light space-y-4 overflow-hidden">
-						<div className="absolute inset-0 w-full h-full bg-[url('/images/banner-gradient-bg.svg')] bg-center bg-no-repeat bg-cover scale-110" />
+				{user?.wallet?.walletClientType !== "privy" &&
+					!basename?.includes(".base.eth") && (
+						<AnimatedItem className="relative rounded-2xl p-3 bg-gray-50 border border-border-light space-y-4 overflow-hidden">
+							<div className="absolute inset-0 w-full h-full bg-[url('/images/banner-gradient-bg.svg')] bg-center bg-no-repeat bg-cover scale-110" />
 
-						<div className="space-y-2 relative">
-							<BannerIcon className="size-6" />
-							<h3 className="font-medium bg-gradient-to-r from-purple-500 via-orange-500 to-fuchsia-400 bg-clip-text text-transparent">
-								Get your basename
-							</h3>
-							<p className="text-text-secondary text-sm font-normal">
-								Claim your unique digital identity. Simple, memorable, and all
-								yours.
-							</p>
-						</div>
+							<div className="space-y-2 relative">
+								<BannerIcon className="size-6" />
+								<h3 className="font-medium bg-gradient-to-r from-purple-500 via-orange-500 to-fuchsia-400 bg-clip-text text-transparent">
+									Get your basename
+								</h3>
+								<p className="text-text-secondary text-sm font-normal">
+									Claim your unique digital identity. Simple, memorable, and all
+									yours.
+								</p>
+							</div>
 
-						<Link
-							target="_blank"
-							rel="noopener noreferrer"
-							href="https://www.base.org/names"
-							className="relative inline-flex items-center justify-center pt-[1.5px] p-0.5 overflow-hidden text-sm font-medium text-text-primary rounded-[0.875rem] group bg-gradient-to-br from-pink-500 via-purple-500 to-orange-400  outline-none focus:ring-primary-blue focus:ring active:translate-y-0.5 transition-all ease-in-out focus:ring-offset-2 focus:ring-offset-white"
-						>
-							<span className="px-4 py-2.5 transition-all ease-in duration-75 bg-white rounded-xl group-hover:bg-opacity-0 group-hover:text-white flex gap-2 items-center">
-								Get started{" "}
-								<ArrowRightIcon className="text-primary-blue group-hover:text-white" />
-							</span>
-						</Link>
+							<Link
+								target="_blank"
+								rel="noopener noreferrer"
+								href="https://www.base.org/names"
+								className="relative inline-flex items-center justify-center pt-[1.5px] p-0.5 overflow-hidden text-sm font-medium text-text-primary rounded-[0.875rem] group bg-gradient-to-br from-pink-500 via-purple-500 to-orange-400  outline-none focus:ring-primary-blue focus:ring active:translate-y-0.5 transition-all ease-in-out focus:ring-offset-2 focus:ring-offset-white"
+							>
+								<span className="px-4 py-2.5 transition-all ease-in duration-75 bg-white rounded-xl group-hover:bg-opacity-0 group-hover:text-white flex gap-2 items-center">
+									Get started{" "}
+									<ArrowRightIcon className="text-primary-blue group-hover:text-white" />
+								</span>
+							</Link>
 
-						<div className="absolute top-2 right-4 hidden sm:block">
-							<Image
-								src="/images/banner-illustration.svg"
-								alt="banner illustration"
-								width={120}
-								height={120}
-							/>
-						</div>
-					</AnimatedItem>
-				)}
+							<div className="absolute top-2 right-4 hidden sm:block">
+								<Image
+									src="/images/banner-illustration.svg"
+									alt="banner illustration"
+									width={120}
+									height={120}
+								/>
+							</div>
+						</AnimatedItem>
+					)}
 
 				<AnimatedItem className="flex justify-between items-center gap-4 flex-wrap">
-					<div className="flex gap-2 items-center">
-						<Image
-							src="/images/avatar.svg"
-							alt="avatar"
-							width={24}
-							height={24}
-						/>
-
-						<p className="text-text-primary font-medium text-base">
-							{shortenAddress(user?.wallet?.address ?? "", 8)}
-						</p>
-					</div>
+					{user && (
+						<Identity
+							address={user?.wallet?.address as `0x${string}`}
+							chain={base}
+							schemaId="0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9"
+							className="flex items-center"
+						>
+							<Avatar
+								address={user?.wallet?.address as `0x${string}`}
+								chain={base}
+								className="w-8 bg-gradient-to-br from-purple-500 via-pink-500 to-cyan-500 rounded-full"
+								alt="avatar"
+							/>
+							<Name
+								address={user?.wallet?.address as `0x${string}`}
+								chain={base}
+								className="text-text-primary font-medium text-base"
+							/>
+						</Identity>
+					)}
 
 					<div className="flex gap-3 items-center">
 						{!isAddressLinked && (
