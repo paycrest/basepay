@@ -313,11 +313,7 @@ export default function BasepayLink() {
 
 					<div className="absolute left-[-9999px] top-[-9999px]">
 						<div ref={basepayPdfRef}>
-							<BasepayPdf
-								linkedAddress={linkedAddress}
-								currency={currency}
-								address={rawAddress}
-							/>
+							<BasepayPdf linkedAddress={linkedAddress} currency={currency} />
 						</div>
 					</div>
 				</div>

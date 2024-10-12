@@ -3,18 +3,19 @@ import { QRCode } from "react-qrcode-logo";
 import { usePrivy } from "@privy-io/react-auth";
 
 import { PaycrestLogo } from "./ImageAssets";
+import { useAddressContext } from "@/context/AddressContext";
 
 export const BasepayPdf = ({
 	linkedAddress,
 	currency,
-	address,
 }: {
 	linkedAddress: string;
 	currency: string;
-	address: string;
 }) => {
+	const { basename } = useAddressContext();
+
 	return (
-		<div className="relative w-[1440px] h-[1024px] border border-border-light flex justify-between items-start rounded py-20">
+		<div className="relative w-[1440px] h-[1024px] border border-border-light flex justify-between items-center rounded py-20">
 			<div className="relative space-y-6 max-w-lg z-10">
 				<div className="pl-32 space-y-6">
 					<div className="flex items-center gap-1">
@@ -37,77 +38,12 @@ export const BasepayPdf = ({
 						your crypto wallet.
 					</p>
 				</div>
-
-				<div className="pt-4 pb-20 pl-32 mx-auto w-full bg-[url('/images/pdf-tag.svg')] bg-left bg-no-repeat bg-contain">
-					<h2 className="text-3xl font-semibold text-white">How it works</h2>
-				</div>
-
-				<div className="pl-32 space-y-6">
-					<h3 className="text-text-primary text-lg font-medium">Firstly</h3>
-
-					<p className="text-text-secondary text-base">
-						Get the current rate from{" "}
-						<span className="text-text-primary">Jeremy</span>
-					</p>
-
-					<p className="text-text-secondary text-base">
-						Send any of the supported tokens below to the wallet address
-						assigned to the QR code or scan the QR code in a crypto wallet
-					</p>
-
-					<div className="flex gap-3 rounded-full border border-border-light p-2.5 w-fit">
-						{["usdt", "usdc"].map((token) => (
-							<div
-								key={token}
-								className="bg-background-neutral border border-border-light rounded-full px-4 pb-2 pt-0 flex gap-1"
-							>
-								<Image
-									src={`/logos/${token}.svg`}
-									alt="usdt"
-									width={16}
-									height={16}
-									className="mt-2"
-								/>
-								<p className="text-text-primary">{token.toUpperCase()}</p>
-							</div>
-						))}
-					</div>
-
-					<h3 className="text-text-primary text-lg font-medium">What next?</h3>
-
-					<p className="text-text-secondary text-base">In a few seconds</p>
-
-					<div className="text-text-secondary text-base">
-						<div className="flex items-start gap-2">
-							<p className="text-text-primary">Jeremy</p> will receive
-							<div className="">
-								<div className="border border-border-light rounded-full px-2 pb-2.5 flex items-center gap-1 align-baseline bg-white">
-									<Image
-										src="/logos/ng.svg"
-										alt="ng"
-										width={12}
-										height={12}
-										className="mt-3.5"
-									/>
-									<p className="text-text-gray text-xs">NGN</p>
-								</div>
-							</div>
-							<p>directly in their bank</p>
-						</div>
-						<p className="-mt-4">account</p>
-					</div>
-				</div>
 			</div>
 
 			<div className="relative mr-32 z-10 space-y-10">
 				<div className="p-6 border border-border-light rounded-3xl bg-gradient-to-br from-white via-gray-50 to-gray-200">
 					<div className="p-6 text-sm space-y-5 w-full bg-white max-w-md rounded-3xl border border-border-light">
 						<div className="space-y-4">
-							<div className="flex items-center justify-between">
-								<p className="text-text-secondary">Name</p>
-								<p className="text-text-primary font-medium">Jeremy</p>
-							</div>
-
 							<div className="flex items-center justify-between">
 								<p className="text-text-secondary">Supported tokens</p>
 								<div className="flex gap-2">
@@ -168,7 +104,7 @@ export const BasepayPdf = ({
 
 						<div className="rounded-xl border border-border-light bg-background-neutral py-4 space-y-4">
 							<p className="px-4 text-sm text-background-blue">
-								basepay.link/{address}
+								basepay.link/{basename}
 							</p>
 							<hr className="border-t border-border-light" />
 							<p className="text-text-secondary px-4">
