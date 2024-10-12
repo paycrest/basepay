@@ -31,6 +31,14 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 							connectionOptions: "smartWalletOnly",
 						},
 					},
+					loginMethodsAndOrder: {
+						primary: ["email", "coinbase_wallet"],
+						overflow: [
+							"metamask",
+							"wallet_connect",
+							"detected_ethereum_wallets",
+						],
+					},
 				}}
 			>
 				<QueryClientProvider client={queryClient}>
