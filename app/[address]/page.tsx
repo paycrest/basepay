@@ -163,8 +163,8 @@ export default function BasepayLink() {
 
 			<AnimatedContainer
 				className={classNames(
-					"w-full min-h-screen content-center",
-					ready && user ? "pt-20" : "",
+					"w-full min-h-screen lg:content-center",
+					ready && user ? "pt-20" : "pt-10",
 				)}
 			>
 				<div className="p-6 text-sm space-y-5 max-w-md mx-auto">
