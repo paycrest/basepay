@@ -31,14 +31,14 @@ export const AddressProvider = ({ children }: { children: ReactNode }) => {
 					const response = await fetchLinkedAddress({
 						address: user.wallet?.address,
 					});
-					setIsAddressLinked(response !== "No linked address");
+					setIsAddressLinked(!!response.linkedAddress);
 				} catch (error) {
 					console.error("Error fetching linked address:", error);
 				}
 
 				try {
 					const basename = await getBasename(user.wallet?.address);
-					setBasename(basename);
+					setBasename(basename ?? user.wallet?.address);
 				} catch (error) {
 					console.error("Error fetching basename:", error);
 					toast.error("Error fetching basename");

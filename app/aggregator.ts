@@ -3,11 +3,12 @@ import type {
 	InstitutionProps,
 	LinkAddressRequest,
 	LinkAddressResponse,
-	LinkedAddressTransactionList,
+	LinkedAddressResponse,
 	PaymentOrderParams,
 	PaymentOrderResponse,
 	RatePayload,
 	RateResponse,
+	TransactionsListResponse,
 	VerifyAccountPayload,
 } from "./types";
 import { createThirdwebClient } from "thirdweb";
@@ -98,7 +99,7 @@ export const linkNewAddress = async ({
 
 export const fetchLinkedAddress = async ({
 	address,
-}: { address: string }): Promise<string> => {
+}: { address: string }): Promise<LinkedAddressResponse> => {
 	try {
 		const resolvedAddress = await resolveAddress({
 			client,
@@ -110,13 +111,29 @@ export const fetchLinkedAddress = async ({
 		const response = await axios.get(
 			`${AGGREGATOR_URL}/linked-addresses/?owner_address=${resolvedAddress}`,
 		);
-		return response.data.data.linkedAddress;
+
+		return {
+			linkedAddress: response.data.data.linkedAddress,
+			currency: response.data.data.currency,
+			resolvedAddress,
+			error: "",
+		};
 	} catch (error) {
 		if ((error as AxiosError).response?.status === 404) {
-			return "No linked address";
+			return {
+				linkedAddress: "",
+				currency: "",
+				resolvedAddress: "",
+				error: "No linked address",
+			};
 		}
 		console.error("Error fetching address status:", error);
-		throw error;
+		return {
+			linkedAddress: "",
+			currency: "",
+			resolvedAddress: "",
+			error: "Error fetching address status",
+		};
 	}
 };
 
@@ -128,7 +145,7 @@ export const fetchTransactionHistory = async ({
 	address: string;
 	privyId: string;
 	params?: PaymentOrderParams;
-}): Promise<LinkedAddressTransactionList> => {
+}): Promise<TransactionsListResponse> => {
 	try {
 		const response = await axios.get(
 			`${AGGREGATOR_URL}/linked-addresses/${address}/transactions`,

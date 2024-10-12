@@ -68,7 +68,10 @@ export const RateCalculator = () => {
 	}, [amountSent, amountReceived, rate]);
 
 	return (
-		<Menu as="div" className="fixed bottom-10 right-20 z-50">
+		<Menu
+			as="div"
+			className="fixed bottom-5 sm:bottom-10 right-5 sm:right-20 z-50"
+		>
 			<MenuButton className="p-4 rounded-full bg-black transition hover:bg-gray-700 active:bg-black text-white">
 				{({ open }) =>
 					open ? (
@@ -182,7 +185,8 @@ export const RateCalculator = () => {
 					</div>
 				</form>
 				<p className="text-sm text-text-secondary">
-					1 {token ?? "USDT"} = {rate ?? "..."} {currency ?? "KES"}
+					1 {token ?? "USDT"} ~ {isFetchingRate ? "..." : rate}{" "}
+					{currency ?? "KES"}
 				</p>
 			</MenuItems>
 		</Menu>

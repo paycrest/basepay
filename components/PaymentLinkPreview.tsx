@@ -1,6 +1,7 @@
 import Image from "next/image";
-import { classNames } from "@/app/utils";
 import { usePrivy } from "@privy-io/react-auth";
+import { classNames, shortenAddress } from "@/app/utils";
+import { useAddressContext } from "@/context/AddressContext";
 
 export const PaymentLinkPreview = ({
 	isSubmitting,
@@ -8,10 +9,11 @@ export const PaymentLinkPreview = ({
 	isSubmitting: boolean;
 }) => {
 	const { user } = usePrivy();
+	const { basename } = useAddressContext();
 
 	return (
 		<div className="w-full max-w-lg mx-auto overflow-hidden rounded-2xl shadow-lg">
-			<div className="p-2 bg-white">
+			<div className="p-2 bg-white hidden lg:block">
 				<div className="flex items-center gap-8">
 					<div className="flex gap-1">
 						<div className="size-1.5 rounded-full bg-red-500" />
@@ -19,7 +21,7 @@ export const PaymentLinkPreview = ({
 						<div className="size-1.5 rounded-full bg-green-500" />
 					</div>
 					<div className="flex-1 flex items-center justify-center bg-gray-100 rounded-md py-0.5 px-2 text-[.5rem] text-text-secondary">
-						basepay.link
+						basepay.link/{basename ?? user?.wallet?.address}
 					</div>
 					<div className="flex gap-2">
 						<div className="size-2 bg-gray-200 rounded" />
@@ -78,7 +80,7 @@ export const PaymentLinkPreview = ({
 								: "",
 						)}
 					>
-						jeremy0x.base.eth
+						{basename ?? shortenAddress(user?.wallet?.address ?? "", 6)}
 					</p>
 				</div>
 
@@ -88,11 +90,8 @@ export const PaymentLinkPreview = ({
 					</div>
 				) : (
 					<div className="rounded-xl border border-border-light bg-background-neutral py-4 space-y-4">
-						<p className="px-4 font-medium bg-gradient-to-r from-purple-500 via-orange-500 to-fuchsia-400 bg-clip-text text-transparent">
-							0x4b2d...{" "}
-							<span className="text-text-secondary bg-none text-xs">
-								(linked wallet address)
-							</span>
+						<p className="px-4 font-medium bg-gradient-to-r from-purple-500 via-orange-500 to-fuchsia-400 bg-clip-text text-transparent truncate">
+							basepay.link/{basename ?? user?.wallet?.address}
 						</p>
 						<hr className="border-t border-border-light" />
 						<p className="text-text-secondary px-4">

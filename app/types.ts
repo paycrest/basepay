@@ -72,7 +72,14 @@ export type LinkAddressResponse = {
 	createdAt: Date;
 };
 
-export type LinkedAddressTransactionList = {
+export type LinkedAddressResponse = {
+	linkedAddress: string;
+	currency: string;
+	resolvedAddress: string;
+	error: string;
+};
+
+export type TransactionsListResponse = {
 	total: number;
 	page: number;
 	pageSize: number;

@@ -12,6 +12,7 @@ export const BasepayPdf = ({
 	linkedAddress: string;
 	currency: string;
 }) => {
+	const { user } = usePrivy();
 	const { basename } = useAddressContext();
 
 	return (

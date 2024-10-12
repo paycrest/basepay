@@ -1,8 +1,8 @@
 "use client";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
 import { useLogout, usePrivy } from "@privy-io/react-auth";
 
 import {
@@ -24,14 +24,7 @@ export const Navbar = () => {
 	const [isSettingsDropdownOpen, setIsSettingsDropdownOpen] = useState(false);
 	const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-	const { ready, authenticated, user } = usePrivy();
-
-	const { logout } = useLogout({
-		onSuccess: () => {
-			router.push("/");
-			setIsLoggingOut(false);
-		},
-	});
+	const { user, logout } = usePrivy();
 
 	const handleCopyAddress = () => {
 		navigator.clipboard.writeText(user?.wallet?.address ?? "");
@@ -50,13 +43,6 @@ export const Navbar = () => {
 		ref: settingsDropdownRef,
 		handler: () => setIsSettingsDropdownOpen(false),
 	});
-
-	// biome-ignore lint/correctness/useExhaustiveDependencies: skipped `login` to avoid unnecessary re-renders
-	useEffect(() => {
-		if (ready && !authenticated) {
-			router.push("/");
-		}
-	}, [ready, authenticated]);
 
 	if (isLoggingOut) return <Preloader isLoading={isLoggingOut} />;
 

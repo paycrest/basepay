@@ -243,7 +243,7 @@ export const GeneratePaymentLinkForm = ({
 							isSubmitting || isFetchingInstitutions || isFetchingRecipientName
 						}
 						className={secondaryButtonStyles}
-						onClick={() => router.back()}
+						onClick={() => router.push("/")}
 					>
 						Back
 					</button>

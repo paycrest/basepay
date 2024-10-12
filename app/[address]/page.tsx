@@ -24,28 +24,27 @@ import {
 	secondaryButtonStyles,
 } from "@/components";
 import { classNames } from "../utils";
+import type { LinkedAddressResponse } from "../types";
 import { fetchLinkedAddress, fetchRate } from "../aggregator";
 
 export default function BasepayLink() {
 	const pathname = usePathname();
 	const rawAddress = pathname.split("/").pop() as string;
-	const [isPageLoading, setIsPageLoading] = useState(true);
-	const [isAddressLinked, setIsAddressLinked] = useState(false);
-	const [hasError, setHasError] = useState(false);
 
 	const { ready, user } = usePrivy();
+
 	const [rate, setRate] = useState(0);
+	const [hasError, setHasError] = useState(false);
+	const [isGenerating, setIsGenerating] = useState(false);
+	const [isPageLoading, setIsPageLoading] = useState(true);
+	const [isAddressLinked, setIsAddressLinked] = useState(false);
 	const [isAddressCopied, setIsAddressCopied] = useState(false);
 	const [exportFormat, setExportFormat] = useState<"pdf" | "png">("pdf");
-	const [isGenerating, setIsGenerating] = useState(false);
-
-	const [currency, setCurrency] = useState<string>("Naira");
-	const [linkedAddress, setLinkedAddress] = useState<string>(
-		"0x8e781F6924e039C0B24fa9f1AdaF05f706D4CE22",
-	);
+	const [addressStatusResponse, setAddressStatusResponse] =
+		useState<LinkedAddressResponse>();
 
 	const handleCopyAddress = () => {
-		navigator.clipboard.writeText(rawAddress ?? "");
+		navigator.clipboard.writeText(addressStatusResponse?.linkedAddress ?? "");
 		setIsAddressCopied(true);
 		setTimeout(() => setIsAddressCopied(false), 2000);
 	};
@@ -106,21 +105,25 @@ export default function BasepayLink() {
 	};
 
 	useEffect(() => {
-		const checkLinkedAddress = async () => {
+		const checkAddress = async () => {
 			if (rawAddress) {
+				setIsPageLoading(true);
 				try {
 					const response = await fetchLinkedAddress({
 						address: rawAddress,
 					});
-					setIsAddressLinked(response !== "No linked address");
+					setIsAddressLinked(!!response.linkedAddress);
+					setAddressStatusResponse(response);
 				} catch (error) {
 					console.error("Error fetching linked address:", error);
 					setHasError(true);
+				} finally {
+					setIsPageLoading(false);
 				}
 			}
 		};
 
-		checkLinkedAddress();
+		checkAddress();
 	}, [rawAddress]);
 
 	useEffect(() => {
@@ -139,10 +142,9 @@ export default function BasepayLink() {
 
 	useEffect(() => {
 		if (
-			!rawAddress?.startsWith("0x") ||
-			!rawAddress?.includes(".base.eth") ||
-			rawAddress?.length !== 42 ||
-			!isAddressLinked ||
+			((!rawAddress?.startsWith("0x") || rawAddress.length !== 42) &&
+				!rawAddress?.includes(".base.eth") &&
+				!isAddressLinked) ||
 			hasError
 		) {
 			notFound();
@@ -213,7 +215,7 @@ export default function BasepayLink() {
 
 					<AnimatedItem className="w-full">
 						<QRCode
-							value={rawAddress ?? ""}
+							value={addressStatusResponse?.linkedAddress}
 							qrStyle="dots"
 							eyeRadius={20}
 							eyeColor="#121217"
@@ -237,7 +239,7 @@ export default function BasepayLink() {
 					<AnimatedItem className="rounded-xl border border-border-light bg-background-neutral py-4 space-y-4">
 						<div className="px-4 flex justify-between items-center">
 							<p className="text-xs font-semibold bg-gradient-to-r from-purple-500 via-orange-500 to-fuchsia-400 bg-clip-text text-transparent">
-								{rawAddress}
+								{addressStatusResponse?.linkedAddress}
 							</p>
 							<button type="button" onClick={handleCopyAddress}>
 								{isAddressCopied ? (
@@ -255,36 +257,42 @@ export default function BasepayLink() {
 						</p>
 					</AnimatedItem>
 
-					{ready && user && user.wallet?.address === rawAddress && (
-						<AnimatedItem className="flex items-center justify-between space-x-4 rounded-xl bg-background-neutral p-4">
-							<p className="text-text-primary">Download format</p>
-							<div className="flex gap-4">
-								{["pdf", "png"].map((format) => (
-									<label
-										key={format}
-										className="inline-flex items-center gap-2 bg-white rounded-full py-1 px-2 cursor-pointer"
-									>
-										<input
-											type="radio"
-											className="form-radio accent-primary-blue cursor-pointer"
-											name="exportFormat"
-											value={format}
-											checked={exportFormat === format}
-											onChange={() => setExportFormat(format as "pdf" | "png")}
-										/>
-										<span>{format.toUpperCase()}</span>
-									</label>
-								))}
-							</div>
-						</AnimatedItem>
-					)}
+					{ready &&
+						user &&
+						user.wallet?.address === addressStatusResponse?.resolvedAddress && (
+							<AnimatedItem className="flex items-center justify-between space-x-4 rounded-xl bg-background-neutral p-4">
+								<p className="text-text-primary">Download format</p>
+								<div className="flex gap-4">
+									{["pdf", "png"].map((format) => (
+										<label
+											key={format}
+											className="inline-flex items-center gap-2 bg-white rounded-full py-1 px-2 cursor-pointer"
+										>
+											<input
+												type="radio"
+												className="form-radio accent-primary-blue cursor-pointer"
+												name="exportFormat"
+												value={format}
+												checked={exportFormat === format}
+												onChange={() =>
+													setExportFormat(format as "pdf" | "png")
+												}
+											/>
+											<span>{format.toUpperCase()}</span>
+										</label>
+									))}
+								</div>
+							</AnimatedItem>
+						)}
 
 					<AnimatedItem className="flex items-center gap-4">
 						<button
 							type="button"
 							className={classNames(
 								secondaryButtonStyles,
-								ready && user && user.wallet?.address === rawAddress
+								ready &&
+									user &&
+									user.wallet?.address === addressStatusResponse?.linkedAddress
 									? ""
 									: "w-full",
 							)}
@@ -299,23 +307,30 @@ export default function BasepayLink() {
 							Share
 						</button>
 
-						{ready && user && user.wallet?.address === rawAddress && (
-							<button
-								type="button"
-								title="Download"
-								onClick={handleExport}
-								className={classNames(primaryButtonStyles, "w-full")}
-							>
-								{isGenerating ? "Preparing..." : "Download"}
-							</button>
-						)}
+						{ready &&
+							user &&
+							user.wallet?.address === addressStatusResponse?.linkedAddress && (
+								<button
+									type="button"
+									title="Download"
+									onClick={handleExport}
+									className={classNames(primaryButtonStyles, "w-full")}
+								>
+									{isGenerating ? "Preparing..." : "Download"}
+								</button>
+							)}
 					</AnimatedItem>
 
-					<div className="absolute left-[-9999px] top-[-9999px]">
-						<div ref={basepayPdfRef}>
-							<BasepayPdf linkedAddress={linkedAddress} currency={currency} />
+					{addressStatusResponse && (
+						<div className="absolute left-[-9999px] top-[-9999px]">
+							<div ref={basepayPdfRef}>
+								<BasepayPdf
+									linkedAddress={addressStatusResponse?.linkedAddress}
+									currency={addressStatusResponse?.currency}
+								/>
+							</div>
 						</div>
-					</div>
+					)}
 				</div>
 			</AnimatedContainer>
 		</>

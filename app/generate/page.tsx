@@ -83,7 +83,7 @@ export default function GeneratePaymentLink() {
 
 			<header className="fixed left-0 top-0 z-20 w-full bg-white transition-all border-b border-border-light">
 				<nav
-					className="container mx-auto flex items-center justify-between py-4 text-text-primary"
+					className="container mx-auto flex items-center justify-between p-4 text-text-primary"
 					aria-label="Navbar"
 				>
 					<div className="flex gap-4 items-center">
@@ -113,7 +113,7 @@ export default function GeneratePaymentLink() {
 			<AnimatedContainer className="flex flex-col flex-grow lg:flex-row">
 				{!isSubmitting && (
 					<AnimatedItem
-						className={`flex-1 p-10 ${isPreviewVisible ? "" : "mx-auto"}`}
+						className={`flex-1 px-4 py-10 sm:px-10 ${isPreviewVisible ? "" : "mx-auto"}`}
 					>
 						<div className="max-w-lg mx-auto space-y-6">
 							<div className="space-y-2">
@@ -151,6 +151,7 @@ export default function GeneratePaymentLink() {
 								</div>
 
 								{user?.wallet?.walletClientType !== "privy" &&
+									basename &&
 									!basename?.includes(".base.eth") && (
 										<div className="p-4 rounded-xl bg-background-neutral flex justify-between items-center">
 											<div className="flex items-center gap-2.5">
@@ -180,7 +181,7 @@ export default function GeneratePaymentLink() {
 				<AnimatePresence mode="wait">
 					{(isPreviewVisible || isSubmitting) && (
 						<motion.div
-							className="flex-1 bg-background-neutral p-10 w-full"
+							className="flex-1 bg-background-neutral px-4 py-10 sm:px-10 w-full"
 							variants={previewVariants}
 							initial="hidden"
 							animate="visible"

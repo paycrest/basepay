@@ -30,7 +30,7 @@ import {
 	WalletIcon,
 	WifiCircleIcon,
 } from "@/components/ImageAssets";
-import type { PaymentOrderResponse } from "../types";
+import type { PaymentOrderResponse, TransactionsListResponse } from "../types";
 import { fetchTransactionHistory } from "../aggregator";
 import { useAddressContext } from "@/context/AddressContext";
 
@@ -41,7 +41,7 @@ const data = [
 	{
 		id: 1,
 		title: "Total settled",
-		content: "N0.00",
+		content: "$0.00",
 	},
 	{
 		id: 2,
@@ -62,18 +62,20 @@ export default function Dashboard() {
 	const { ready, user } = usePrivy();
 	const { isAddressLinked, basename } = useAddressContext();
 
+	const [tsxHistoryResponse, setTxHistoryResponse] =
+		useState<TransactionsListResponse>();
 	const [transactions, setTransactions] = useState<PaymentOrderResponse[]>([]);
-	const [isAddressCopied, setIsAddressCopied] = useState(false);
+	const [isLinkedAddressCopied, setIsLinkedAddressCopied] = useState(false);
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-	const handleCopyAddress = () => {
+	const handleCopyLinkedAddress = () => {
 		navigator.clipboard.writeText(user?.wallet?.address ?? "");
-		setIsAddressCopied(true);
-		setTimeout(() => setIsAddressCopied(false), 2000);
+		setIsLinkedAddressCopied(true);
+		setTimeout(() => setIsLinkedAddressCopied(false), 2000);
 	};
 
 	useEffect(() => {
-		const getTransactions = async () => {
+		const getTransactionHistory = async () => {
 			if (!ready || !user?.wallet?.address || !isAddressLinked) return;
 
 			const response = await fetchTransactionHistory({
@@ -84,10 +86,11 @@ export default function Dashboard() {
 					pageSize: 50,
 				},
 			});
-			setTransactions(response.transactions);
+			setTxHistoryResponse(response);
+			setTransactions(response?.transactions);
 		};
 
-		getTransactions();
+		getTransactionHistory();
 	}, [isAddressLinked, user, ready]);
 
 	if (!ready) return <Preloader isLoading={!ready} />;
@@ -100,6 +103,7 @@ export default function Dashboard() {
 
 			<AnimatedContainer className="space-y-4">
 				{user?.wallet?.walletClientType !== "privy" &&
+					basename &&
 					!basename?.includes(".base.eth") && (
 						<AnimatedItem className="relative rounded-2xl p-3 bg-gray-50 border border-border-light space-y-4 overflow-hidden">
 							<div className="absolute inset-0 w-full h-full bg-[url('/images/banner-gradient-bg.svg')] bg-center bg-no-repeat bg-cover scale-110" />
@@ -164,26 +168,28 @@ export default function Dashboard() {
 						{!isAddressLinked && (
 							<button
 								type="button"
-								onClick={() => router.push("/dashboard/generate")}
+								onClick={() => router.push("/generate")}
 								className={primaryButtonStyles}
 							>
 								Generate link
 							</button>
 						)}
 
-						{isAddressLinked && (
+						{isAddressLinked && basename && (
 							<>
 								<button
 									type="button"
 									title="Copy wallet address"
-									onClick={handleCopyAddress}
+									onClick={handleCopyLinkedAddress}
 									className="px-4 py-3 rounded-full border border-border-light flex items-center gap-2.5 hover:bg-gray-50 transition group"
 								>
 									<p className="font-medium text-sm bg-gradient-to-r from-purple-500 via-orange-500 to-fuchsia-400 bg-clip-text text-transparent group-hover:from-purple-700 group-hover:via-orange-700 group-hover:to-fuchsia-600 transition">
-										jeremy0x.base.eth
+										{basename?.includes(".base.eth")
+											? basename
+											: shortenAddress(basename, 5)}
 									</p>
 
-									{isAddressCopied ? (
+									{isLinkedAddressCopied ? (
 										<CheckmarkIcon className="size-4 text-primary-blue" />
 									) : (
 										<CopyIcon className="size-4 text-primary-blue" />
@@ -239,32 +245,36 @@ export default function Dashboard() {
 											<GreenCheckCircleIcon className="size-4 rounded-full" />
 											<p>Active</p>
 										</div>
-										<button
-											onClick={() => router.push("/dashboard/generate")}
+										{/* <button
+											onClick={() => router.push("/generate")}
 											type="button"
 											title="Edit"
 											className="group"
 										>
 											<TbPencilMinus className="size-4 transition text-text-secondary group-hover:text-text-primary" />
-										</button>
+										</button> */}
 									</div>
 								</div>
 
-								<hr className="border-t border-border-light" />
+								{tsxHistoryResponse && (
+									<>
+										<hr className="border-t border-border-light" />
 
-								<div className="px-4 flex justify-between">
-									<div className="flex items-center gap-2.5 text-text-primary">
-										<TagsIcon className="size-5" />
-										<p>Transactions</p>
-									</div>
-									<div className="rounded-full bg-white px-2 py-1 text-text-secondary">
-										2,394
-									</div>
-								</div>
+										<div className="px-4 flex justify-between">
+											<div className="flex items-center gap-2.5 text-text-primary">
+												<TagsIcon className="size-5" />
+												<p>Transactions</p>
+											</div>
+											<div className="rounded-full bg-white px-2 py-1 text-text-secondary">
+												{tsxHistoryResponse?.total}
+											</div>
+										</div>
+									</>
+								)}
 
-								<hr className="border-t border-border-light" />
+								{/* <hr className="border-t border-border-light" /> */}
 
-								<div className="px-4 flex justify-between">
+								{/* <div className="px-4 flex justify-between">
 									<div className="flex items-center gap-2.5 text-text-primary">
 										<StickyNoteIcon className="size-5" />
 										<p>Bank account</p>
@@ -272,7 +282,7 @@ export default function Dashboard() {
 									<div className="rounded-full bg-white px-2 py-1 text-text-secondary">
 										PalmPay • 7042158996
 									</div>
-								</div>
+								</div> */}
 
 								<hr className="border-t border-border-light" />
 
@@ -305,17 +315,15 @@ export default function Dashboard() {
 					)}
 				</AnimatePresence>
 
-				<AnimatedItem className="flex items-center justify-center gap-4">
+				<AnimatedItem className="flex flex-col sm:flex-row sm:items-center justify-center gap-4">
 					{data.map((item) => (
 						<Card key={item.id} title={item.title} content={item.content} />
 					))}
 				</AnimatedItem>
 
-				{isAddressLinked && (
-					<AnimatedItem>
-						<TransactionHistory transactions={transactions} />
-					</AnimatedItem>
-				)}
+				<AnimatedItem>
+					<TransactionHistory transactions={transactions} />
+				</AnimatedItem>
 			</AnimatedContainer>
 		</div>
 	);
