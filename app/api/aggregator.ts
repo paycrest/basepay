@@ -19,8 +19,6 @@ import {
 import { base as thirdwebBase } from "thirdweb/chains";
 
 const AGGREGATOR_URL = process.env.NEXT_PUBLIC_AGGREGATOR_URL;
-const NGN_PROVIDER_ID = process.env.NEXT_PUBLIC_NGN_PROVIDER_ID;
-const KES_PROVIDER_ID = process.env.NEXT_PUBLIC_KES_PROVIDER_ID;
 
 const client = createThirdwebClient({
 	secretKey: process.env.NEXT_PUBLIC_THIRDWEB_SECRET_KEY ?? "",
@@ -61,9 +59,8 @@ export const fetchRate = async ({
 	currency,
 }: RatePayload): Promise<RateResponse> => {
 	try {
-		const providerId = currency === "KES" ? KES_PROVIDER_ID : NGN_PROVIDER_ID;
 		const response = await axios.get(
-			`${AGGREGATOR_URL}/rates/${token}/${amount}/${currency}?provider_id=${providerId}`,
+			`${AGGREGATOR_URL}/rates/${token}/${amount}/${currency}`,
 		);
 		return response.data;
 	} catch (error) {

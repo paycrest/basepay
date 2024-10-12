@@ -70,10 +70,10 @@ export default function GeneratePaymentLink() {
 		if (!ready || !authenticated || isAddressLinked) {
 			if (!basename) return;
 			toast.warning("Your address is already linked", {
-				description: "Redirecting to your basepay page...",
+				description: "Redirecting to dashboard...",
 			});
 			setShowPreloader(true);
-			router.push(`/${basename}`);
+			router.push("/");
 		}
 	}, [ready, authenticated, isAddressLinked, basename]);
 
