@@ -53,9 +53,9 @@ export const BasepayPdf = ({
 											<Image
 												src={`/logos/${token}.svg`}
 												alt={token}
-												width={16}
-												height={16}
-												className="mt-3.5"
+												width={0}
+												height={0}
+												className="mt-3.5 size-4"
 											/>
 											<p className="text-text-primary">{token.toUpperCase()}</p>
 										</div>

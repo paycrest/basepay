@@ -31,8 +31,8 @@ export type PaymentOrderResponse = {
 		accountIdentifier: string;
 		accountName: string;
 	};
-	fromAddress: string;
-	returnAddress: string;
+	fromAddress: `0x${string}`;
+	returnAddress: `0x${string}`;
 	gatewayID: string;
 	createdAt: Date;
 	updatedAt: Date;

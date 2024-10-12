@@ -181,8 +181,9 @@ export default function BasepayLink() {
 										<Image
 											src={`/logos/${token}.svg`}
 											alt={token}
-											width={16}
-											height={16}
+											width={0}
+											height={0}
+											className="size-4"
 										/>
 										<p className="text-text-primary">{token.toUpperCase()}</p>
 									</div>

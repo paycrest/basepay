@@ -118,8 +118,9 @@ export const GeneratePaymentLinkForm = ({
 									<Image
 										src={`/logos/${token}.svg`}
 										alt="usdt"
-										width={16}
-										height={16}
+										width={0}
+										height={0}
+										className="size-4"
 									/>
 									<p className="text-text-primary">{token.toUpperCase()}</p>
 								</div>

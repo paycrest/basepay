@@ -29,9 +29,9 @@ const CurrencyLogo = ({
 		<Image
 			src={src}
 			alt={alt}
-			width={24}
-			height={24}
-			className="rounded-full"
+			width={0}
+			height={0}
+			className="rounded-full size-6"
 		/>
 	</AnimatedItem>
 );

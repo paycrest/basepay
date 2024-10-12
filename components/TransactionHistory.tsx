@@ -6,6 +6,8 @@ import { classNames, formatCurrency, formatDate } from "@/app/utils";
 
 import { StatusIcon } from "./StatusIcon";
 import { AnalyticsIllustration, ExternalLinkIcon } from "./ImageAssets";
+import { base } from "viem/chains";
+import { Avatar, Identity, Name } from "@coinbase/onchainkit/identity";
 
 type Statuses = {
 	[key: string]: string;
@@ -62,26 +64,33 @@ export const TransactionHistory = ({
 							className="bg-background-neutral rounded-xl hover:bg-gray-100 transition"
 						>
 							<td className="py-4 whitespace-nowrap rounded-l-xl px-3">
-								<div className="flex items-center gap-3">
-									<Image
-										src="/images/avatar-abstract.svg"
+								<Identity
+									address={transaction.fromAddress}
+									chain={base}
+									schemaId="0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9"
+									className="flex items-center"
+								>
+									<Avatar
+										address={transaction.fromAddress}
+										chain={base}
+										className="w-8 bg-gradient-to-br from-purple-500 via-pink-500 to-cyan-500 rounded-full"
 										alt="avatar"
-										width={24}
-										height={24}
 									/>
-									<span>
-										{transaction.fromAddress.slice(0, 6)}...
-										{transaction.fromAddress.slice(-4)}
-									</span>
-								</div>
+									<Name
+										address={transaction.fromAddress}
+										chain={base}
+										className="text-text-primary font-medium text-base"
+									/>
+								</Identity>
 							</td>
 							<td className="py-4 whitespace-nowrap">
 								<div className="flex items-center gap-3">
 									<Image
 										src={`/logos/${transaction.recipient.currency.toLowerCase().slice(0, 2)}.svg`}
 										alt={transaction.recipient.currency}
-										width={24}
-										height={24}
+										width={0}
+										height={0}
+										className="size-4 md:size-6"
 									/>
 									<span>
 										{formatCurrency(
@@ -101,7 +110,7 @@ export const TransactionHistory = ({
 								>
 									<StatusIcon
 										status={transaction.status}
-										className="mr-1 h-4 w-4"
+										className="mr-1 size-4"
 									/>
 									{transaction.status.charAt(0).toUpperCase() +
 										transaction.status.slice(1)}
