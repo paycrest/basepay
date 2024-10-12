@@ -35,6 +35,11 @@ To run the project locally, follow these steps:
 
 4. Visit [localhost:3000](http://localhost:3000) to view the waitlist page locally.
 
+## Major Technologies Used
+
+- [OnchainKit](https://docs.base.org/docs/basenames-tutorial-with-onchainkit/) to resolve basenames
+- [Coinbase wallet](https://www.coinbase.com/wallet/smart-wallet) for smart wallet integration
+
 ## Disclaimer Notice
 
 This application is for demo use only. Any transactions conducted within this app are for illustrative purposes.
