@@ -1,6 +1,5 @@
 "use client";
-import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer } from "react-toastify";
+import { Toaster } from "sonner";
 import { PrivyProvider } from "@privy-io/react-auth";
 import { AddressProvider } from "@/context/AddressContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -38,16 +37,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 					<AddressProvider>
 						{children}
 
-						<ToastContainer
-							position="bottom-right"
-							theme="light"
-							stacked
-							draggable
-							pauseOnHover
-							pauseOnFocusLoss
-							hideProgressBar
-							bodyClassName="font-sans"
-						/>
+						<Toaster position="bottom-right" richColors theme="light" />
 					</AddressProvider>
 				</QueryClientProvider>
 			</PrivyProvider>

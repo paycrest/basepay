@@ -1,11 +1,13 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
+import { toast } from "sonner";
+import { base } from "viem/chains";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { TbPencilMinus } from "react-icons/tb";
 import { usePrivy } from "@privy-io/react-auth";
 import { AnimatePresence, motion } from "framer-motion";
+import { Avatar, Identity, Name } from "@coinbase/onchainkit/identity";
 
 import { classNames, shortenAddress } from "../utils";
 import {
@@ -30,13 +32,12 @@ import {
 	WalletIcon,
 	WifiCircleIcon,
 } from "@/components/ImageAssets";
-import type { PaymentOrderResponse, TransactionsListResponse } from "../types";
-import { fetchTransactionHistory } from "../aggregator";
+import type {
+	TransactionHistoryResponse,
+	TransactionsListResponse,
+} from "../types";
+import { fetchTransactionHistory } from "../api/aggregator";
 import { useAddressContext } from "@/context/AddressContext";
-
-import { base } from "viem/chains";
-import { Avatar, Identity, Name } from "@coinbase/onchainkit/identity";
-import { toast } from "react-toastify";
 
 const data = [
 	{
@@ -61,33 +62,34 @@ const Card = ({ title, content }: { title: string; content: string }) => (
 export default function Dashboard() {
 	const router = useRouter();
 	const { ready, user } = usePrivy();
-	const { isAddressLinked, basename } = useAddressContext();
+	const { isAddressLinked, basename, linkedAddress } = useAddressContext();
 
 	const [tsxHistoryResponse, setTxHistoryResponse] =
 		useState<TransactionsListResponse>();
-	const [transactions, setTransactions] = useState<PaymentOrderResponse[]>([]);
+	const [transactions, setTransactions] = useState<
+		TransactionHistoryResponse[]
+	>([]);
 	const [isLinkedAddressCopied, setIsLinkedAddressCopied] = useState(false);
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
 	const handleCopyLinkedAddress = () => {
-		navigator.clipboard.writeText(user?.wallet?.address ?? "");
+		navigator.clipboard.writeText(`https://basepay.link/${basename}`);
 		setIsLinkedAddressCopied(true);
 		setTimeout(() => setIsLinkedAddressCopied(false), 2000);
 	};
 
 	useEffect(() => {
-		const privyIdToken = localStorage.getItem("privy:token");
+		const privyIdToken = localStorage.getItem("privy:id_token");
 		if (!privyIdToken) {
 			toast.error("Privy token not found, please login again.");
 			return;
 		}
 
 		const getTransactionHistory = async () => {
-			if (!ready || !user?.wallet?.address || !isAddressLinked || !privyIdToken)
-				return;
+			if (!ready || !linkedAddress || !isAddressLinked || !privyIdToken) return;
 
 			const response = await fetchTransactionHistory({
-				address: user?.wallet?.address,
+				linkedAddress,
 				privyIdToken,
 				params: {
 					page: 1,
@@ -99,7 +101,7 @@ export default function Dashboard() {
 		};
 
 		getTransactionHistory();
-	}, [isAddressLinked, user, ready]);
+	}, [isAddressLinked, ready, linkedAddress]);
 
 	if (!ready) return <Preloader isLoading={!ready} />;
 
@@ -187,7 +189,7 @@ export default function Dashboard() {
 							<>
 								<button
 									type="button"
-									title="Copy wallet address"
+									title="Copy payment link"
 									onClick={handleCopyLinkedAddress}
 									className="px-4 py-3 rounded-full border border-border-light flex items-center gap-2.5 hover:bg-gray-50 transition group"
 								>
@@ -300,14 +302,14 @@ export default function Dashboard() {
 										<p>Supported</p>
 									</div>
 									<div className="flex gap-3">
-										{["usdc", "usdt"].map((token) => (
+										{["usdc"].map((token) => (
 											<div
 												key={token}
 												className="bg-background-neutral rounded-full px-2 py-1 flex gap-1"
 											>
 												<Image
 													src={`/logos/${token}.svg`}
-													alt="usdt"
+													alt={token}
 													width={0}
 													height={0}
 													className="size-4"

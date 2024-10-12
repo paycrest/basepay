@@ -3,7 +3,7 @@ import jsPDF from "jspdf";
 import Link from "next/link";
 import Image from "next/image";
 import html2canvas from "html2canvas";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { QRCode } from "react-qrcode-logo";
 import { usePrivy } from "@privy-io/react-auth";
 import { useEffect, useRef, useState } from "react";
@@ -18,6 +18,7 @@ import {
 	AnimatedContainer,
 	AnimatedItem,
 	BasepayPdf,
+	Navbar,
 	Preloader,
 	primaryButtonStyles,
 	RateCalculator,
@@ -25,13 +26,15 @@ import {
 } from "@/components";
 import { classNames } from "../utils";
 import type { LinkedAddressResponse } from "../types";
-import { fetchLinkedAddress, fetchRate } from "../aggregator";
+import { fetchLinkedAddress, fetchRate } from "../api/aggregator";
+import { useAddressContext } from "@/context/AddressContext";
 
 export default function BasepayLink() {
 	const pathname = usePathname();
 	const rawAddress = pathname.split("/").pop() as string;
 
 	const { ready, user } = usePrivy();
+	const { basename } = useAddressContext();
 
 	const [rate, setRate] = useState(0);
 	const [hasError, setHasError] = useState(false);
@@ -156,8 +159,14 @@ export default function BasepayLink() {
 	return (
 		<>
 			<RateCalculator />
+			{ready && user && <Navbar />}
 
-			<AnimatedContainer className="w-full min-h-screen content-center">
+			<AnimatedContainer
+				className={classNames(
+					"w-full min-h-screen content-center",
+					ready && user ? "pt-20" : "",
+				)}
+			>
 				<div className="p-6 text-sm space-y-5 max-w-md mx-auto">
 					<AnimatedItem>
 						<Link
@@ -176,7 +185,7 @@ export default function BasepayLink() {
 						<div className="flex items-center justify-between">
 							<p className="text-text-secondary">Supported tokens</p>
 							<div className="flex gap-2">
-								{["usdc", "usdt"].map((token) => (
+								{["usdc"].map((token) => (
 									<div key={token} className="flex gap-1 items-center">
 										<Image
 											src={`/logos/${token}.svg`}
@@ -260,7 +269,8 @@ export default function BasepayLink() {
 
 					{ready &&
 						user &&
-						user.wallet?.address === addressStatusResponse?.resolvedAddress && (
+						user.wallet?.address === addressStatusResponse?.resolvedAddress &&
+						basename && (
 							<AnimatedItem className="flex items-center justify-between space-x-4 rounded-xl bg-background-neutral p-4">
 								<p className="text-text-primary">Download format</p>
 								<div className="flex gap-4">
@@ -293,7 +303,9 @@ export default function BasepayLink() {
 								secondaryButtonStyles,
 								ready &&
 									user &&
-									user.wallet?.address === addressStatusResponse?.linkedAddress
+									user.wallet?.address ===
+										addressStatusResponse?.resolvedAddress &&
+									basename
 									? ""
 									: "w-full",
 							)}
@@ -310,7 +322,8 @@ export default function BasepayLink() {
 
 						{ready &&
 							user &&
-							user.wallet?.address === addressStatusResponse?.linkedAddress && (
+							user.wallet?.address === addressStatusResponse?.resolvedAddress &&
+							basename && (
 								<button
 									type="button"
 									title="Download"
@@ -322,12 +335,13 @@ export default function BasepayLink() {
 							)}
 					</AnimatedItem>
 
-					{addressStatusResponse && (
+					{addressStatusResponse && basename && (
 						<div className="absolute left-[-9999px] top-[-9999px]">
 							<div ref={basepayPdfRef}>
 								<BasepayPdf
 									linkedAddress={addressStatusResponse?.linkedAddress}
 									currency={addressStatusResponse?.currency}
+									basename={basename}
 								/>
 							</div>
 						</div>

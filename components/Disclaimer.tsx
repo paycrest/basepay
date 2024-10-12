@@ -2,10 +2,10 @@
 import { useState, useEffect } from "react";
 import { BsExclamationOctagon } from "react-icons/bs";
 import { motion, AnimatePresence } from "framer-motion";
-import { primaryButtonStyles, secondaryButtonStyles } from "./Styles";
+import { primaryButtonStyles } from "./Styles";
 
 export const Disclaimer = () => {
-	const [showDisclaimer, setShowDisclaimer] = useState(true);
+	const [showDisclaimer, setShowDisclaimer] = useState(false);
 
 	useEffect(() => {
 		const hasAcceptedDisclaimer = localStorage.getItem("hasAcceptedDisclaimer");

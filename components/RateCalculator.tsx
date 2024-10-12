@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { ImSpinner3 } from "react-icons/im";
 import { BsArrowDown } from "react-icons/bs";
 import { currencies, tokens } from "@/app/mocks";
-import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import { Menu, MenuButton, MenuItems } from "@headlessui/react";
 
-import { fetchRate } from "@/app/aggregator";
+import { fetchRate } from "@/app/api/aggregator";
 import { FormDropdown } from "./FormDropdown";
 import { CalculatorIcon, PaycrestLogo, XIcon } from "./ImageAssets";
 
@@ -135,7 +135,7 @@ export const RateCalculator = () => {
 								<FormDropdown
 									defaultTitle="Select token"
 									data={tokens}
-									defaultSelectedItem="USDT"
+									defaultSelectedItem="USDC"
 									onSelect={(selectedToken) => setValue("token", selectedToken)}
 								/>
 							</div>
@@ -185,7 +185,7 @@ export const RateCalculator = () => {
 					</div>
 				</form>
 				<p className="text-sm text-text-secondary">
-					1 {token ?? "USDT"} ~ {isFetchingRate ? "..." : rate}{" "}
+					1 {token ?? "USDC"} ~ {isFetchingRate ? "..." : rate}{" "}
 					{currency ?? "KES"}
 				</p>
 			</MenuItems>

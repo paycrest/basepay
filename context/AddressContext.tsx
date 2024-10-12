@@ -5,14 +5,14 @@ import {
 	useEffect,
 	type ReactNode,
 } from "react";
+import { toast } from "sonner";
 import { usePrivy } from "@privy-io/react-auth";
-import { fetchLinkedAddress, getBasename } from "../app/aggregator";
-import { toast } from "react-toastify";
+import { fetchLinkedAddress, getBasename } from "@/app/api/aggregator";
 
 interface AddressContextProps {
 	basename: string | null;
 	isAddressLinked: boolean;
-	setIsAddressLinked: (status: boolean) => void;
+	linkedAddress: string | null;
 }
 
 const AddressContext = createContext<AddressContextProps | undefined>(
@@ -22,6 +22,7 @@ const AddressContext = createContext<AddressContextProps | undefined>(
 export const AddressProvider = ({ children }: { children: ReactNode }) => {
 	const { user, ready } = usePrivy();
 	const [isAddressLinked, setIsAddressLinked] = useState(false);
+	const [linkedAddress, setLinkedAddress] = useState<string | null>(null);
 	const [basename, setBasename] = useState<string | null>(null);
 
 	useEffect(() => {
@@ -32,6 +33,7 @@ export const AddressProvider = ({ children }: { children: ReactNode }) => {
 						address: user.wallet?.address,
 					});
 					setIsAddressLinked(!!response.linkedAddress);
+					if (response.linkedAddress) setLinkedAddress(response.linkedAddress);
 				} catch (error) {
 					console.error("Error fetching linked address:", error);
 				}
@@ -51,7 +53,7 @@ export const AddressProvider = ({ children }: { children: ReactNode }) => {
 
 	return (
 		<AddressContext.Provider
-			value={{ basename, isAddressLinked, setIsAddressLinked }}
+			value={{ basename, isAddressLinked, linkedAddress }}
 		>
 			{children}
 		</AddressContext.Provider>

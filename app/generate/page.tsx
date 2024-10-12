@@ -1,11 +1,13 @@
 "use client";
 import Link from "next/link";
-import Image from "next/image";
+import { toast } from "sonner";
+import { base } from "viem/chains";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { usePrivy } from "@privy-io/react-auth";
 import type { SubmitHandler } from "react-hook-form";
 import { motion, AnimatePresence } from "framer-motion";
+import { Avatar, Identity, Name } from "@coinbase/onchainkit/identity";
 
 import {
 	AnimatedContainer,
@@ -21,14 +23,10 @@ import {
 	BannerIcon,
 	GreenCheckCircleIcon,
 } from "@/components/ImageAssets";
-import { toast } from "react-toastify";
+import { classNames } from "@/app/utils";
 import type { FormValues } from "@/app/types";
-import { linkNewAddress } from "@/app/aggregator";
-import { classNames, shortenAddress } from "@/app/utils";
+import { linkNewAddress } from "@/app/api/aggregator";
 import { useAddressContext } from "@/context/AddressContext";
-
-import { base } from "viem/chains";
-import { Avatar, Identity, Name, Address } from "@coinbase/onchainkit/identity";
 
 export default function GeneratePaymentLink() {
 	const router = useRouter();
@@ -43,7 +41,7 @@ export default function GeneratePaymentLink() {
 	};
 
 	const onSubmit: SubmitHandler<FormValues> = async (data) => {
-		const privyIdToken = localStorage.getItem("privy:token");
+		const privyIdToken = localStorage.getItem("privy:id_token");
 		if (!privyIdToken) {
 			toast.error("Privy token not found, please login again.");
 			return;
@@ -57,7 +55,7 @@ export default function GeneratePaymentLink() {
 			});
 			if (response) {
 				setShowPreloader(true);
-				router.push(`/${user?.wallet?.address}`);
+				router.push(`/${basename}`);
 			}
 		} catch (error) {
 			console.error("Error linking address: ", error);
@@ -67,21 +65,17 @@ export default function GeneratePaymentLink() {
 		}
 	};
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: skipped `login` to avoid unnecessary re-renders
+	// biome-ignore lint/correctness/useExhaustiveDependencies: skipped `router.push` to avoid unnecessary re-renders
 	useEffect(() => {
-		if (ready && !authenticated) {
+		if (!ready || !authenticated || isAddressLinked) {
+			if (!basename) return;
+			toast.warning("Your address is already linked", {
+				description: "Redirecting to your basepay page...",
+			});
 			setShowPreloader(true);
-			router.push("/");
+			router.push(`/${basename}`);
 		}
-	}, [ready, authenticated]);
-
-	// biome-ignore lint/correctness/useExhaustiveDependencies: this is a false positive
-	useEffect(() => {
-		if (isAddressLinked) {
-			setShowPreloader(true);
-			router.push("/dashboard");
-		}
-	}, [isAddressLinked]);
+	}, [ready, authenticated, isAddressLinked, basename]);
 
 	return (
 		<div className="min-h-screen flex flex-col overflow-hidden pt-16">

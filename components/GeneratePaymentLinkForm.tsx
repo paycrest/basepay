@@ -4,10 +4,13 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PiCaretDown } from "react-icons/pi";
 
-import { classNames, sleep } from "@/app/utils";
+import { classNames } from "@/app/utils";
 import { currencies } from "@/app/mocks";
 import type { FormValues, InstitutionProps } from "@/app/types";
-import { fetchAccountName, fetchSupportedInstitutions } from "@/app/aggregator";
+import {
+	fetchAccountName,
+	fetchSupportedInstitutions,
+} from "@/app/api/aggregator";
 
 import {
 	inputClasses,
@@ -110,14 +113,14 @@ export const GeneratePaymentLinkForm = ({
 							receive your payment directly in your bank account
 						</p>
 						<div className="flex gap-3">
-							{["usdc", "usdt"].map((token) => (
+							{["usdc"].map((token) => (
 								<div
 									key={token}
 									className="bg-background-neutral rounded-full px-2 py-1 flex gap-1"
 								>
 									<Image
 										src={`/logos/${token}.svg`}
-										alt="usdt"
+										alt={token}
 										width={0}
 										height={0}
 										className="size-4"
@@ -262,8 +265,8 @@ export const GeneratePaymentLinkForm = ({
 						className={`w-fit ${primaryButtonStyles}`}
 					>
 						{isSubmitting
-							? "Generating payment link..."
-							: "Generate payment link"}
+							? "Generating linked address..."
+							: "Generate linked address"}
 					</button>
 				</AnimatedItem>
 			</AnimatedContainer>

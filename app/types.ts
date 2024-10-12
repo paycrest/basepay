@@ -18,7 +18,7 @@ export type FormValues = {
 
 export type TransactionStatus = "pending" | "settled" | "refunded";
 
-export type PaymentOrderResponse = {
+export type TransactionHistoryResponse = {
 	id: string;
 	amount: number;
 	token: string;
@@ -40,7 +40,7 @@ export type PaymentOrderResponse = {
 	icon?: React.ReactNode;
 };
 
-export type PaymentOrderParams = {
+export type TransactionHistoryParams = {
 	page?: number;
 	pageSize?: number;
 };
@@ -83,5 +83,5 @@ export type TransactionsListResponse = {
 	total: number;
 	page: number;
 	pageSize: number;
-	transactions: PaymentOrderResponse[];
+	transactions: TransactionHistoryResponse[];
 };

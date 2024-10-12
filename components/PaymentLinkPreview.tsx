@@ -35,7 +35,7 @@ export const PaymentLinkPreview = ({
 					<div className="flex items-center justify-between">
 						<p className="text-text-secondary">Supported tokens</p>
 						<div className="flex gap-2">
-							{["usdc", "usdt"].map((token) => (
+							{["usdc"].map((token) => (
 								<div key={token} className="flex gap-1 items-center">
 									<Image
 										src={`/logos/${token}.svg`}

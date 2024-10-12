@@ -4,13 +4,12 @@ import type {
 	LinkAddressRequest,
 	LinkAddressResponse,
 	LinkedAddressResponse,
-	PaymentOrderParams,
-	PaymentOrderResponse,
 	RatePayload,
 	RateResponse,
+	TransactionHistoryParams,
 	TransactionsListResponse,
 	VerifyAccountPayload,
-} from "./types";
+} from "../types";
 import { createThirdwebClient } from "thirdweb";
 import {
 	BASENAME_RESOLVER_ADDRESS,
@@ -111,7 +110,7 @@ export const fetchLinkedAddress = async ({
 		});
 
 		const response = await axios.get(
-			`${AGGREGATOR_URL}/linked-addresses/?owner_address=${resolvedAddress}`,
+			`${AGGREGATOR_URL}/linked-addresses?owner_address=${resolvedAddress}`,
 		);
 
 		return {
@@ -140,17 +139,19 @@ export const fetchLinkedAddress = async ({
 };
 
 export const fetchTransactionHistory = async ({
-	address,
+	linkedAddress,
 	privyIdToken,
 	params,
 }: {
-	address: string;
+	linkedAddress: string;
 	privyIdToken: string;
-	params?: PaymentOrderParams;
+	params?: TransactionHistoryParams;
 }): Promise<TransactionsListResponse> => {
+	privyIdToken = privyIdToken.replace(/^"(.*)"$/, "$1");
+
 	try {
 		const response = await axios.get(
-			`${AGGREGATOR_URL}/linked-addresses/${address}/transactions`,
+			`${AGGREGATOR_URL}/linked-addresses/${linkedAddress}/transactions`,
 			{
 				headers: {
 					Authorization: `Bearer ${privyIdToken}`,

@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { QRCode } from "react-qrcode-logo";
-import { usePrivy } from "@privy-io/react-auth";
 
 import { PaycrestLogo } from "./ImageAssets";
 import { useAddressContext } from "@/context/AddressContext";
@@ -8,35 +7,35 @@ import { useAddressContext } from "@/context/AddressContext";
 export const BasepayPdf = ({
 	linkedAddress,
 	currency,
+	basename,
 }: {
 	linkedAddress: string;
 	currency: string;
+	basename: string;
 }) => {
-	const { user } = usePrivy();
-	const { basename } = useAddressContext();
-
 	return (
 		<div className="relative w-[1440px] h-[1024px] border border-border-light flex justify-between items-center rounded py-20">
 			<div className="relative space-y-6 max-w-lg z-10">
 				<div className="pl-32 space-y-6">
-					<div className="flex items-center gap-1">
-						<p className="text-text-primary sm:text-lg font-semibold">
-							basepay
-						</p>
-						<div className="pb-2 mt-5">
-							<PaycrestLogo className="size-2.5" />
+					<div>
+						<div className="flex items-center gap-1">
+							<p className="text-text-primary sm:text-lg font-semibold">
+								basepay
+							</p>
+							<div className="pb-2 mt-7">
+								<PaycrestLogo className="size-2.5" />
+							</div>
 						</div>
+
+						<h1 className="text-text-primary text-5xl font-semibold leading-tight">
+							Pay <span className="text-background-blue">{currency}</span>
+							<br />
+							with your wallet
+						</h1>
 					</div>
 
-					<h1 className="text-text-primary text-5xl font-semibold leading-tight">
-						Pay <span className="text-background-blue">{currency},</span>
-						<br />
-						with crypto
-					</h1>
-
 					<p className="text-text-secondary text-base">
-						Send direct local payments with crypto by scanning the QR code on
-						your crypto wallet.
+						Send direct local payments by scanning the QR code on your wallet.
 					</p>
 				</div>
 			</div>
@@ -48,7 +47,7 @@ export const BasepayPdf = ({
 							<div className="flex items-center justify-between">
 								<p className="text-text-secondary">Supported tokens</p>
 								<div className="flex gap-2">
-									{["usdc", "usdt"].map((token) => (
+									{["usdc"].map((token) => (
 										<div key={token} className="flex gap-1 items-center">
 											<Image
 												src={`/logos/${token}.svg`}
@@ -104,7 +103,7 @@ export const BasepayPdf = ({
 						</div>
 
 						<div className="rounded-xl border border-border-light bg-background-neutral py-4 space-y-4">
-							<p className="px-4 text-sm text-background-blue">
+							<p className="px-4 text-xs text-background-blue">
 								basepay.link/{basename}
 							</p>
 							<hr className="border-t border-border-light" />
@@ -117,7 +116,7 @@ export const BasepayPdf = ({
 					</div>
 				</div>
 
-				<div className="flex items-center gap-2">
+				<div className="flex items-center gap-2 w-fit mx-auto">
 					<div className="text-text-secondary text-base text-center">
 						Need a payment link like this? visit
 					</div>
@@ -130,8 +129,6 @@ export const BasepayPdf = ({
 					/>
 				</div>
 			</div>
-
-			<div className="absolute left-0 bottom-0 w-full h-[620px] bg-background-neutral z-0" />
 		</div>
 	);
 };

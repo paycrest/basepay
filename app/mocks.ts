@@ -1,3 +1,5 @@
+import type { TransactionHistoryResponse } from "./types";
+
 export const currencies = [
 	{
 		name: "KES",
@@ -30,17 +32,17 @@ export const currencies = [
 ];
 
 export const tokens = [
-	{
-		name: "USDT",
-		imageUrl: "/logos/usdt.svg",
-	},
+	// {
+	// 	name: "USDT",
+	// 	imageUrl: "/logos/usdt.svg",
+	// },
 	{
 		name: "USDC",
 		imageUrl: "/logos/usdc.svg",
 	},
 ];
 
-export const mockTransactions = [
+export const mockTransactions: TransactionHistoryResponse[] = [
 	{
 		id: "1",
 		amount: 1000,
@@ -74,8 +76,8 @@ export const mockTransactions = [
 			accountIdentifier: "987654321",
 			accountName: "Jane Doe",
 		},
-		fromAddress: "0x8e781F6924e039C0B24fa9f1AdaF05f706D4CE22",
-		returnAddress: "0x8e781F6924e039C0B24fa9f1AdaF05f706D4CE22",
+		fromAddress: "0x893c31CBF5C79F0b9055545B7B1aeAfA2D617382",
+		returnAddress: "0x893c31CBF5C79F0b9055545B7B1aeAfA2D617382",
 		gatewayID: "gateway2",
 		createdAt: new Date(),
 		updatedAt: new Date(),
