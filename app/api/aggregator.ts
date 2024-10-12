@@ -21,7 +21,7 @@ import { base as thirdwebBase } from "thirdweb/chains";
 const AGGREGATOR_URL = process.env.NEXT_PUBLIC_AGGREGATOR_URL;
 
 const client = createThirdwebClient({
-	secretKey: process.env.NEXT_PUBLIC_THIRDWEB_SECRET_KEY ?? "",
+	secretKey: process.env.NEXT_PUBLIC_THIRDWEB_KEY ?? "",
 });
 
 export const fetchSupportedInstitutions = async (
