@@ -36,6 +36,7 @@ import { useAddressContext } from "@/context/AddressContext";
 
 import { base } from "viem/chains";
 import { Avatar, Identity, Name } from "@coinbase/onchainkit/identity";
+import { toast } from "react-toastify";
 
 const data = [
 	{
@@ -75,12 +76,19 @@ export default function Dashboard() {
 	};
 
 	useEffect(() => {
+		const privyIdToken = localStorage.getItem("privy:token");
+		if (!privyIdToken) {
+			toast.error("Privy token not found, please login again.");
+			return;
+		}
+
 		const getTransactionHistory = async () => {
-			if (!ready || !user?.wallet?.address || !isAddressLinked) return;
+			if (!ready || !user?.wallet?.address || !isAddressLinked || !privyIdToken)
+				return;
 
 			const response = await fetchTransactionHistory({
 				address: user?.wallet?.address,
-				privyId: user?.id,
+				privyIdToken,
 				params: {
 					page: 1,
 					pageSize: 50,

@@ -43,10 +43,16 @@ export default function GeneratePaymentLink() {
 	};
 
 	const onSubmit: SubmitHandler<FormValues> = async (data) => {
+		const privyIdToken = localStorage.getItem("privy:token");
+		if (!privyIdToken) {
+			toast.error("Privy token not found, please login again.");
+			return;
+		}
+
 		setIsSubmitting(true);
 		try {
 			const response = await linkNewAddress({
-				privyId: user?.id ?? "",
+				privyIdToken,
 				payload: data,
 			});
 			if (response) {

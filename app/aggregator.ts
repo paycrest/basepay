@@ -74,19 +74,21 @@ export const fetchRate = async ({
 };
 
 export const linkNewAddress = async ({
-	privyId,
+	privyIdToken,
 	payload,
 }: {
-	privyId: string;
+	privyIdToken: string;
 	payload: LinkAddressRequest;
 }): Promise<LinkAddressResponse> => {
+	privyIdToken = privyIdToken.replace(/^"(.*)"$/, "$1");
+
 	try {
 		const response = await axios.post(
 			`${AGGREGATOR_URL}/linked-addresses`,
 			payload,
 			{
 				headers: {
-					Authorization: `Bearer ${privyId}`,
+					Authorization: `Bearer ${privyIdToken}`,
 				},
 			},
 		);
@@ -124,7 +126,7 @@ export const fetchLinkedAddress = async ({
 				linkedAddress: "",
 				currency: "",
 				resolvedAddress: "",
-				error: "No linked address",
+				error: "Linked address not found",
 			};
 		}
 		console.error("Error fetching address status:", error);
@@ -139,11 +141,11 @@ export const fetchLinkedAddress = async ({
 
 export const fetchTransactionHistory = async ({
 	address,
-	privyId,
+	privyIdToken,
 	params,
 }: {
 	address: string;
-	privyId: string;
+	privyIdToken: string;
 	params?: PaymentOrderParams;
 }): Promise<TransactionsListResponse> => {
 	try {
@@ -151,7 +153,7 @@ export const fetchTransactionHistory = async ({
 			`${AGGREGATOR_URL}/linked-addresses/${address}/transactions`,
 			{
 				headers: {
-					Authorization: `Bearer ${privyId}`,
+					Authorization: `Bearer ${privyIdToken}`,
 				},
 				params,
 			},
