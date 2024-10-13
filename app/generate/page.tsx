@@ -127,7 +127,7 @@ export default function GeneratePaymentLink() {
 
 							<div className="space-y-4">
 								<div className="flex justify-between items-center gap-4 flex-wrap">
-									{user && (
+									{user?.wallet?.address && (
 										<Identity
 											address={user?.wallet?.address as `0x${string}`}
 											chain={base}

@@ -5,6 +5,10 @@
 [![Tailwind CSS](https://img.shields.io/badge/-Tailwind%20CSS-06B6D4?logo=Tailwind%20CSS&logoColor=60bdfa&color=11172a)](https://tailwindcss.com/)
 [![Biome](https://img.shields.io/badge/-Biome-1d2b34?logo=Biome&logoColor=71a5fc&color=11172a)](https://biomejs.dev/)
 
+Basepay by Paycrest is a dApp developed for the [Based Africa Buildathon](https://based-africa.devfolio.co/).
+
+Check out our live demo at [basepay.link](https://www.basepay.link).
+
 ## Running Locally
 
 To run the project locally, follow these steps:
@@ -37,8 +41,9 @@ To run the project locally, follow these steps:
 
 ## Major Technologies Used
 
-- [OnchainKit](https://docs.base.org/docs/basenames-tutorial-with-onchainkit/) to resolve basenames
-- [Coinbase wallet](https://www.coinbase.com/wallet/smart-wallet) for smart wallet integration
+- [Basenames](https://base.org/names)
+- [Coinbase Smart Wallet](https://www.smartwallet.dev) for gasless transactions
+- [Paycrest Protocol](https://paycrest.io) for decentralized payments
 
 ## Disclaimer Notice
 
