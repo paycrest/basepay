@@ -28,6 +28,7 @@ import { classNames, formatCurrency } from "../utils";
 import type { LinkedAddressResponse } from "../types";
 import { fetchLinkedAddress, fetchRate } from "../api/aggregator";
 import { useAddressContext } from "@/context/AddressContext";
+import { Footer } from "@/components/Footer";
 
 export default function BasepayLink() {
 	const pathname = usePathname();
@@ -166,11 +167,11 @@ export default function BasepayLink() {
 
 			<AnimatedContainer
 				className={classNames(
-					"w-full min-h-screen lg:content-center",
+					"w-full min-h-screen flex flex-col gap-8 max-w-md mx-auto",
 					ready && authenticated ? "pt-20" : "pt-4",
 				)}
 			>
-				<div className="p-6 text-sm space-y-5 max-w-md mx-auto">
+				<div className="flex-grow p-6 text-sm space-y-5">
 					{ready && !authenticated && (
 						<AnimatedItem>
 							<Link
@@ -346,20 +347,22 @@ export default function BasepayLink() {
 								</button>
 							)}
 					</AnimatedItem>
-
-					{addressStatusResponse && basename && (
-						<div className="absolute left-[-9999px] top-[-9999px]">
-							<div ref={basepayPdfRef}>
-								<BasepayPdf
-									linkedAddress={addressStatusResponse?.linkedAddress}
-									currency={addressStatusResponse?.currency}
-									basename={basename}
-								/>
-							</div>
-						</div>
-					)}
 				</div>
+
+				<Footer />
 			</AnimatedContainer>
+
+			{addressStatusResponse && basename && (
+				<div className="absolute left-[-9999px] top-[-9999px]">
+					<div ref={basepayPdfRef}>
+						<BasepayPdf
+							linkedAddress={addressStatusResponse?.linkedAddress}
+							currency={addressStatusResponse?.currency}
+							basename={basename}
+						/>
+					</div>
+				</div>
+			)}
 		</>
 	);
 }
