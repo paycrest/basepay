@@ -9,6 +9,8 @@ Basepay by Paycrest is a dApp developed for the [Based Africa Buildathon](https:
 
 Check out our live demo at [basepay.link](https://www.basepay.link).
 
+![image](https://based-africa.devfolio.co/_next/image?url=https%3A%2F%2Fassets.devfolio.co%2Fhackathons%2Fb95da37a3a1a4fb9adb82d7d9f6d80e9%2Fassets%2Fcover%2F733.png&w=1440&q=100)
+
 ## Running Locally
 
 To run the project locally, follow these steps:
