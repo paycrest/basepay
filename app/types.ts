@@ -37,7 +37,7 @@ export type TransactionHistoryResponse = {
 	createdAt: Date;
 	updatedAt: Date;
 	status: TransactionStatus;
-	icon?: React.ReactNode;
+	txHash: string;
 };
 
 export type TransactionHistoryParams = {

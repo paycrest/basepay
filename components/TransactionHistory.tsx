@@ -68,7 +68,7 @@ export const TransactionHistory = ({
 							{transactions.map((transaction) => (
 								<tr
 									key={transaction.id}
-									className="bg-background-neutral rounded-xl hover:bg-gray-100 transition"
+									className="bg-background-neutral rounded-xl hover:bg-gray-100 transition text-text-secondary"
 								>
 									<td className="py-4 whitespace-nowrap rounded-l-xl px-3">
 										<Identity
@@ -80,35 +80,35 @@ export const TransactionHistory = ({
 											<Avatar
 												address={transaction.fromAddress}
 												chain={base}
-												className="w-8 bg-gradient-to-br from-purple-500 via-pink-500 to-cyan-500 rounded-full"
+												className="w-4 bg-gradient-to-br from-purple-500 via-pink-500 to-cyan-500 rounded-full"
 												alt="avatar"
 											/>
 											<Name
 												address={transaction.fromAddress}
 												chain={base}
-												className="text-text-primary font-medium text-base"
+												className="text-sm text-text-secondary -ml-2"
 											/>
 										</Identity>
 									</td>
-									<td className="py-4 whitespace-nowrap">
+									<td className="py-4 whitespace-nowrap text-sm">
 										<div className="flex items-center gap-3">
 											<Image
 												src={`/logos/${transaction.recipient.currency.toLowerCase().slice(0, 2)}.svg`}
 												alt={transaction.recipient.currency}
 												width={0}
 												height={0}
-												className="size-4 md:size-6"
+												className="size-4"
 											/>
 											<span>
 												{formatCurrency(
-													Number(transaction.amount),
+													Number(transaction.amount * transaction.rate),
 													transaction.recipient.currency,
 													`en-${transaction.recipient.currency.toUpperCase().slice(0, 2)}`,
 												)}
 											</span>
 										</div>
 									</td>
-									<td className="py-4 whitespace-nowrap hidden md:table-cell">
+									<td className="py-4 whitespace-nowrap hidden md:table-cell text-sm">
 										<span
 											className={classNames(
 												"flex items-center w-fit px-2.5 py-1 rounded-lg",
@@ -128,7 +128,9 @@ export const TransactionHistory = ({
 										{formatDate(transaction.createdAt)}
 									</td>
 									<td className="py-4 whitespace-nowrap text-right font-medium rounded-r-xl hidden md:table-cell">
-										<Link href="https://base.org">
+										<Link
+											href={`https://basescan.org/tx/${transaction.txHash}`}
+										>
 											<ExternalLinkIcon className="text-text-secondary hover:text--text-primary transition" />
 										</Link>
 									</td>
