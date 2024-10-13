@@ -164,7 +164,7 @@ export default function BasepayLink() {
 			<AnimatedContainer
 				className={classNames(
 					"w-full min-h-screen lg:content-center",
-					ready && user ? "pt-20" : "pt-10",
+					ready && user ? "pt-20" : "pt-5",
 				)}
 			>
 				<div className="p-6 text-sm space-y-5 max-w-md mx-auto">
@@ -312,7 +312,7 @@ export default function BasepayLink() {
 							onClick={() => {
 								navigator.share({
 									title: "My basepay link",
-									text: "Click to pay me via basepay",
+									text: `Click to pay me in ${addressStatusResponse?.currency} with crypto via Basepay`,
 									url: window.location.href,
 								});
 							}}

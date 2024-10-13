@@ -35,6 +35,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 						primary: ["email", "coinbase_wallet"],
 						overflow: [
 							"metamask",
+							"rainbow",
 							"wallet_connect",
 							"detected_ethereum_wallets",
 						],
