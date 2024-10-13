@@ -28,8 +28,6 @@ import {
 	DropdownIcon,
 	GreenCheckCircleIcon,
 	StickyNoteIcon,
-	TagsIcon,
-	WalletIcon,
 	WifiCircleIcon,
 } from "@/components/ImageAssets";
 import type {
@@ -40,20 +38,10 @@ import { fetchTransactionHistory } from "../api/aggregator";
 import { useAddressContext } from "@/context/AddressContext";
 import { Footer } from "@/components/Footer";
 
-const data = [
-	{
-		id: 1,
-		title: "Total settled",
-		content: "$0.00",
-	},
-	{
-		id: 2,
-		title: "Total transactions",
-		content: "0",
-	},
-];
-
-const Card = ({ title, content }: { title: string; content: string }) => (
+const Card = ({
+	title,
+	content,
+}: { title: string; content: string | number }) => (
 	<div className="bg-gray-50 rounded-2xl border-border-light px-4 py-3 flex-1 space-y-8">
 		<h3 className="text-text-secondary text-sm font-normal">{title}</h3>
 		<p className="text-text-primary text-2xl font-semibold">{content}</p>
@@ -79,6 +67,26 @@ export default function Dashboard() {
 		setIsLinkedAddressCopied(true);
 		setTimeout(() => setIsLinkedAddressCopied(false), 2000);
 	};
+
+	const cardData = [
+		{
+			id: 1,
+			title: "Total settled",
+			content: `$${transactions
+				.filter((transaction) => transaction.status === "settled")
+				.reduce((sum, transaction) => {
+					const amount = Number.parseFloat(
+						transaction.amount as unknown as string,
+					);
+					return sum + (Number.isNaN(amount) ? 0 : amount);
+				}, 0)}`,
+		},
+		{
+			id: 2,
+			title: "Total transactions",
+			content: tsxHistoryResponse?.total ?? 0,
+		},
+	];
 
 	useEffect(() => {
 		const privyIdToken = localStorage.getItem("privy:id_token");
@@ -298,7 +306,7 @@ export default function Dashboard() {
 						)}
 					</AnimatePresence>
 					<AnimatedItem className="flex flex-col sm:flex-row sm:items-center justify-center gap-4">
-						{data.map((item) => (
+						{cardData.map((item) => (
 							<Card key={item.id} title={item.title} content={item.content} />
 						))}
 					</AnimatedItem>
