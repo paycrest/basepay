@@ -75,6 +75,9 @@ export type LinkAddressResponse = {
 export type LinkedAddressResponse = {
 	linkedAddress: string;
 	currency: string;
+	institution: string;
+	accountIdentifier: string;
+	accountName: string;
 	resolvedAddress: string;
 	error: string;
 };

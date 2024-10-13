@@ -63,7 +63,8 @@ const Card = ({ title, content }: { title: string; content: string }) => (
 export default function Dashboard() {
 	const router = useRouter();
 	const { ready, user } = usePrivy();
-	const { isAddressLinked, basename, linkedAddress } = useAddressContext();
+	const { isAddressLinked, basename, linkedAddress, accountDetails } =
+		useAddressContext();
 
 	const [tsxHistoryResponse, setTxHistoryResponse] =
 		useState<TransactionsListResponse>();
@@ -247,17 +248,26 @@ export default function Dashboard() {
 											</button> */}
 										</div>
 									</div>
-									{/* <hr className="border-t border-border-light" /> */}
-									{/* <div className="px-4 flex justify-between">
-										<div className="flex items-center gap-2.5 text-text-primary">
-											<StickyNoteIcon className="size-5" />
-											<p>Bank account</p>
-										</div>
-										<div className="rounded-full bg-white px-2 py-1 text-text-secondary">
-											PalmPay • 7042158996
-										</div>
-									</div> */}
+
+									{accountDetails && (
+										<>
+											<hr className="border-t border-border-light" />
+
+											<div className="px-4 flex justify-between">
+												<div className="flex items-center gap-2.5 text-text-primary">
+													<StickyNoteIcon className="size-5" />
+													<p>Cash account</p>
+												</div>
+												<div className="rounded-full bg-white px-2 py-1 text-text-secondary">
+													{accountDetails?.institution} •{" "}
+													{accountDetails?.accountIdentifier}
+												</div>
+											</div>
+										</>
+									)}
+
 									<hr className="border-t border-border-light" />
+
 									<div className="px-4 flex justify-between">
 										<div className="flex items-center gap-2.5 text-text-primary">
 											<CheckmarkCircleIcon className="size-5" />

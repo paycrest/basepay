@@ -97,22 +97,44 @@ export const linkNewAddress = async ({
 
 export const fetchLinkedAddress = async ({
 	address,
-}: { address: string }): Promise<LinkedAddressResponse> => {
-	try {
-		const resolvedAddress = await resolveAddress({
-			client,
-			name: address,
-			resolverAddress: BASENAME_RESOLVER_ADDRESS,
-			resolverChain: thirdwebBase,
-		});
+	privyIdToken,
+}: {
+	address: string;
+	privyIdToken?: string;
+}): Promise<LinkedAddressResponse> => {
+	privyIdToken = privyIdToken?.replace(/^"(.*)"$/, "$1") ?? "";
 
-		const response = await axios.get(
-			`${AGGREGATOR_URL}/linked-addresses?owner_address=${resolvedAddress}`,
-		);
+	try {
+		let response = null;
+		let resolvedAddress = address;
+		if (privyIdToken) {
+			response = await axios.get(
+				`${AGGREGATOR_URL}/linked-addresses/me?owner_address=${resolvedAddress}`,
+				{
+					headers: {
+						Authorization: `Bearer ${privyIdToken}`,
+					},
+				},
+			);
+		} else {
+			resolvedAddress = await resolveAddress({
+				client,
+				name: address,
+				resolverAddress: BASENAME_RESOLVER_ADDRESS,
+				resolverChain: thirdwebBase,
+			});
+
+			response = await axios.get(
+				`${AGGREGATOR_URL}/linked-addresses?owner_address=${resolvedAddress}`,
+			);
+		}
 
 		return {
 			linkedAddress: response.data.data.linkedAddress,
 			currency: response.data.data.currency,
+			institution: response.data.data.institution,
+			accountIdentifier: response.data.data.accountIdentifier,
+			accountName: response.data.data.accountName,
 			resolvedAddress,
 			error: "",
 		};
@@ -121,6 +143,9 @@ export const fetchLinkedAddress = async ({
 			return {
 				linkedAddress: "",
 				currency: "",
+				institution: "",
+				accountIdentifier: "",
+				accountName: "",
 				resolvedAddress: "",
 				error: "Linked address not found",
 			};
@@ -129,6 +154,9 @@ export const fetchLinkedAddress = async ({
 		return {
 			linkedAddress: "",
 			currency: "",
+			institution: "",
+			accountIdentifier: "",
+			accountName: "",
 			resolvedAddress: "",
 			error: "Error fetching address status",
 		};
