@@ -89,7 +89,7 @@ export const BasepayPdf = ({
 								bgColor="#fff"
 								size={400}
 								quietZone={40}
-								logoImage="/images/link.svg"
+								logoImage="/images/paycrest-grayscale.svg"
 								style={{
 									borderRadius: "24px",
 									margin: "0 auto",

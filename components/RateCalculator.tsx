@@ -8,7 +8,8 @@ import { Menu, MenuButton, MenuItems } from "@headlessui/react";
 
 import { fetchRate } from "@/app/api/aggregator";
 import { FormDropdown } from "./FormDropdown";
-import { CalculatorIcon, PaycrestLogo, XIcon } from "./ImageAssets";
+import { CalculatorIcon, XIcon } from "./ImageAssets";
+import { formatCurrency } from "@/app/utils";
 
 type FormValues = {
 	amountSent: number;
@@ -17,7 +18,11 @@ type FormValues = {
 	currency: string;
 };
 
-export const RateCalculator = () => {
+export const RateCalculator = ({
+	defaultSelectedCurrency = "KES",
+}: {
+	defaultSelectedCurrency?: string;
+}) => {
 	const [rate, setRate] = useState(0);
 	const [isFetchingRate, setIsFetchingRate] = useState(false);
 	const [isReceiveInputActive, setIsReceiveInputActive] = useState(false);
@@ -34,7 +39,7 @@ export const RateCalculator = () => {
 			const rate = await fetchRate({
 				token: "usdt", // only USDT is supported
 				amount: amountSent || 1,
-				currency: currency || "KES",
+				currency: currency || defaultSelectedCurrency,
 			});
 			setRate(rate.data);
 			setIsFetchingRate(false);
@@ -50,7 +55,7 @@ export const RateCalculator = () => {
 		return () => {
 			clearTimeout(timeoutId);
 		};
-	}, [amountSent, currency]);
+	}, [amountSent, currency, defaultSelectedCurrency]);
 
 	// Calculate receive amount based on send amount and rate
 	// biome-ignore lint/correctness/useExhaustiveDependencies: This is a false positive
@@ -87,19 +92,12 @@ export const RateCalculator = () => {
 				transition
 				className="origin-top transition duration-200 ease-out data-[closed]:scale-95 data-[closed]:opacity-0 bg-white shadow-2xl rounded-3xl p-5 space-y-4 w-96 max-w-full -mt-4"
 			>
-				<div className="space-y-2">
-					<div className="flex items-center gap-1">
-						<p className="text-text-primary sm:text-lg font-semibold">
-							basepay
-						</p>
-						<PaycrestLogo className="size-2.5" />
-					</div>
-					<p className="text-text-secondary text-sm">Exchange Calculator</p>
-				</div>
+				<p className="text-text-primary text-base font-semibold">
+					Exchange Calculator
+				</p>
+
 				<form>
 					<div className="space-y-2 rounded-2xl bg-gray-50 p-2">
-						<h3 className="px-2 font-medium">Swap</h3>
-
 						{/* Amount to send & Token */}
 						<div className="relative space-y-3.5 rounded-2xl bg-white px-4 py-3">
 							<label htmlFor="amount-sent" className="text-gray-500">
@@ -174,7 +172,7 @@ export const RateCalculator = () => {
 								<FormDropdown
 									defaultTitle="Select currency"
 									data={currencies}
-									defaultSelectedItem="KES"
+									defaultSelectedItem={defaultSelectedCurrency}
 									onSelect={(selectedCurrency) =>
 										setValue("currency", selectedCurrency)
 									}
@@ -185,8 +183,14 @@ export const RateCalculator = () => {
 					</div>
 				</form>
 				<p className="text-sm text-text-secondary">
-					1 {token ?? "USDC"} ~ {isFetchingRate ? "..." : rate}{" "}
-					{currency ?? "KES"}
+					1 {token ?? "USDC"} ~{" "}
+					{isFetchingRate
+						? "..."
+						: formatCurrency(
+								Number(rate),
+								currency ?? defaultSelectedCurrency,
+								`en-${(currency ?? defaultSelectedCurrency).toUpperCase().slice(0, 2)}`,
+							)}
 				</p>
 			</MenuItems>
 		</Menu>

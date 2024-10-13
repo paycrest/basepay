@@ -23,7 +23,7 @@ const statuses: Statuses = {
 const TableHeader = () => (
 	<thead>
 		<tr>
-			{["From", "Amount", "Status", "Timestamp", "Hash"].map(
+			{["From", "Amount", "Status", "Timestamp", "Receipt"].map(
 				(header, index) => (
 					<th
 						key={header}

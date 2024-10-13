@@ -24,7 +24,7 @@ import {
 	RateCalculator,
 	secondaryButtonStyles,
 } from "@/components";
-import { classNames } from "../utils";
+import { classNames, formatCurrency } from "../utils";
 import type { LinkedAddressResponse } from "../types";
 import { fetchLinkedAddress, fetchRate } from "../api/aggregator";
 import { useAddressContext } from "@/context/AddressContext";
@@ -33,7 +33,7 @@ export default function BasepayLink() {
 	const pathname = usePathname();
 	const rawAddress = pathname.split("/").pop() as string;
 
-	const { ready, user } = usePrivy();
+	const { ready, user, authenticated } = usePrivy();
 	const { basename } = useAddressContext();
 
 	const [rate, setRate] = useState(0);
@@ -131,9 +131,10 @@ export default function BasepayLink() {
 
 	useEffect(() => {
 		const getRate = async () => {
-			if (!isAddressLinked) return;
+			if (!isAddressLinked || !addressStatusResponse?.currency) return;
+
 			const rate = await fetchRate({
-				currency: "ngn",
+				currency: addressStatusResponse.currency,
 				amount: 1,
 				token: "usdt",
 			});
@@ -141,7 +142,7 @@ export default function BasepayLink() {
 		};
 
 		getRate();
-	}, [isAddressLinked]);
+	}, [isAddressLinked, addressStatusResponse?.currency]);
 
 	useEffect(() => {
 		if (
@@ -158,28 +159,32 @@ export default function BasepayLink() {
 
 	return (
 		<>
-			<RateCalculator />
-			{ready && user && <Navbar />}
+			<RateCalculator
+				defaultSelectedCurrency={addressStatusResponse?.currency}
+			/>
+			{ready && authenticated && <Navbar />}
 
 			<AnimatedContainer
 				className={classNames(
 					"w-full min-h-screen lg:content-center",
-					ready && user ? "pt-20" : "pt-5",
+					ready && authenticated ? "pt-20" : "pt-4",
 				)}
 			>
 				<div className="p-6 text-sm space-y-5 max-w-md mx-auto">
-					<AnimatedItem>
-						<Link
-							href="/"
-							title="Go to basepay"
-							className="flex items-center justify-center gap-1 pb-2"
-						>
-							<p className="text-text-primary text-base sm:text-lg font-semibold">
-								basepay
-							</p>
-							<PaycrestLogo className="size-2.5" />
-						</Link>
-					</AnimatedItem>
+					{ready && !authenticated && (
+						<AnimatedItem>
+							<Link
+								href="/"
+								title="Go to basepay"
+								className="flex items-center justify-center gap-1 pb-2"
+							>
+								<p className="text-text-primary text-base sm:text-lg font-semibold">
+									basepay
+								</p>
+								<PaycrestLogo className="size-2.5" />
+							</Link>
+						</AnimatedItem>
+					)}
 
 					<AnimatedItem className="space-y-4">
 						<div className="flex items-center justify-between">
@@ -215,10 +220,17 @@ export default function BasepayLink() {
 							</div>
 						</div>
 
-						{rate > 0 && (
+						{rate > 0 && addressStatusResponse?.currency && (
 							<div className="flex items-center justify-between">
 								<p className="text-text-secondary">Rate</p>
-								<p className="text-text-primary">$1 ~ {rate} NGN</p>
+								<p className="text-text-primary">
+									$1 ~{" "}
+									{formatCurrency(
+										Number(rate),
+										addressStatusResponse?.currency,
+										`en-${addressStatusResponse?.currency?.toUpperCase().slice(0, 2)}`,
+									)}
+								</p>
 							</div>
 						)}
 					</AnimatedItem>
@@ -233,7 +245,7 @@ export default function BasepayLink() {
 							bgColor="#F9FAFB"
 							size={400}
 							quietZone={40}
-							logoImage="/images/link.svg"
+							logoImage="/images/paycrest-grayscale.svg"
 							style={{
 								borderRadius: "32px",
 								margin: "0 auto",
