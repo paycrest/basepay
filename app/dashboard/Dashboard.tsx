@@ -209,7 +209,7 @@ export default function Dashboard() {
 									>
 										<DropdownIcon
 											className={classNames(
-												"size-7 text-gray-400 transition-transform",
+												"size-6 text-gray-400 transition-transform",
 												isDropdownOpen ? "rotate-180" : "",
 											)}
 										/>
@@ -227,16 +227,6 @@ export default function Dashboard() {
 								transition={{ duration: 0.1 }}
 							>
 								<div className="bg-background-neutral rounded-2xl border border-border-neutral space-y-3 py-4 text-sm">
-									<div className="px-4 flex justify-between">
-										<div className="flex items-center gap-2.5 text-text-primary">
-											<WalletIcon className="size-5" />
-											<p>Wallet address</p>
-										</div>
-										<div className="rounded-full bg-white px-2 py-1 text-text-secondary">
-											{shortenAddress(user?.wallet?.address ?? "", 5)}
-										</div>
-									</div>
-									<hr className="border-t border-border-light" />
 									<div className="px-4 flex justify-between">
 										<div className="flex items-center gap-2.5 text-text-primary">
 											<WifiCircleIcon className="size-5" />
@@ -257,20 +247,6 @@ export default function Dashboard() {
 											</button> */}
 										</div>
 									</div>
-									{tsxHistoryResponse && (
-										<>
-											<hr className="border-t border-border-light" />
-											<div className="px-4 flex justify-between">
-												<div className="flex items-center gap-2.5 text-text-primary">
-													<TagsIcon className="size-5" />
-													<p>Transactions</p>
-												</div>
-												<div className="rounded-full bg-white px-2 py-1 text-text-secondary">
-													{tsxHistoryResponse?.total}
-												</div>
-											</div>
-										</>
-									)}
 									{/* <hr className="border-t border-border-light" /> */}
 									{/* <div className="px-4 flex justify-between">
 										<div className="flex items-center gap-2.5 text-text-primary">
@@ -285,13 +261,13 @@ export default function Dashboard() {
 									<div className="px-4 flex justify-between">
 										<div className="flex items-center gap-2.5 text-text-primary">
 											<CheckmarkCircleIcon className="size-5" />
-											<p>Supported</p>
+											<p>Supported tokens</p>
 										</div>
 										<div className="flex gap-3">
 											{["usdc"].map((token) => (
 												<div
 													key={token}
-													className="bg-background-neutral rounded-full px-2 py-1 flex gap-1"
+													className="bg-background-neutral rounded-full px-2 py-1 flex items-center gap-1"
 												>
 													<Image
 														src={`/logos/${token}.svg`}
