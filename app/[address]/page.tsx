@@ -172,7 +172,7 @@ export default function BasepayLink() {
 					ready && authenticated ? "pt-20" : "pt-4",
 				)}
 			>
-				<div className="flex-grow p-6 text-sm space-y-5">
+				<div className="flex-grow p-6 text-sm space-y-5 lg:content-center">
 					{ready && !authenticated && (
 						<AnimatedItem>
 							<Link

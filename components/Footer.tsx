@@ -7,17 +7,17 @@ import { AnimatedItem } from "./Animations";
 
 const socials = [
 	{
-		href: "https://github.com/paycrest/noblocks",
+		href: "https://github.com/paycrest/basepay",
 		title: "GitHub",
 		LogoSvg: GithubIcon,
 	},
 	{
-		href: "https://x.com/noblocks_xyz",
+		href: "https://x.com/paycrest",
 		title: "X",
 		LogoSvg: XTwitterIcon,
 	},
 	{
-		href: "https://warpcast.com/~/channel/noblocks",
+		href: "https://warpcast.com/~/channel/paycrst",
 		title: "Farcaster",
 		LogoSvg: FarcasterIcon,
 	},
