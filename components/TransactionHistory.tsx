@@ -130,6 +130,8 @@ export const TransactionHistory = ({
 									<td className="py-4 whitespace-nowrap text-right font-medium rounded-r-xl hidden md:table-cell">
 										<Link
 											href={`https://basescan.org/tx/${transaction.txHash}`}
+											target="_blank"
+											rel="noopener noreferrer"
 										>
 											<ExternalLinkIcon className="text-text-secondary hover:text--text-primary transition" />
 										</Link>
