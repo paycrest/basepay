@@ -181,7 +181,7 @@ export default function Dashboard() {
 								onClick={() => router.push("/generate")}
 								className={primaryButtonStyles}
 							>
-								Generate link
+								Create address
 							</button>
 						)}
 

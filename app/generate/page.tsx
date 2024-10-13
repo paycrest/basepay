@@ -86,19 +86,14 @@ export default function GeneratePaymentLink() {
 					className="container mx-auto flex items-center justify-between p-4 text-text-primary"
 					aria-label="Navbar"
 				>
-					<div className="flex gap-4 items-center">
-						<button
-							title="Back"
-							type="button"
-							className={`${secondaryButtonStyles} py-3.5`}
-							onClick={() => router.back()}
-						>
-							<ArrowRightIcon className="rotate-180 text-text-secondary size-4" />
-						</button>
-						<h1 className="text-base text-text-primary font-medium">
-							Payment link
-						</h1>
-					</div>
+					<button
+						title="Back"
+						type="button"
+						className={`${secondaryButtonStyles} py-3.5`}
+						onClick={() => router.back()}
+					>
+						<ArrowRightIcon className="rotate-180 text-text-secondary size-4" />
+					</button>
 
 					<button
 						type="button"
@@ -118,10 +113,10 @@ export default function GeneratePaymentLink() {
 						<div className="max-w-lg mx-auto space-y-6">
 							<div className="space-y-2">
 								<h2 className="text-text-primary text-xl font-semibold">
-									Generate payment link
+									Generate linked address
 								</h2>
 								<p className="text-text-secondary text-sm font-normal">
-									Create a direct payment link/page for your customers
+									Create a linked address to receive money
 								</p>
 							</div>
 
