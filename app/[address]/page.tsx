@@ -163,6 +163,7 @@ export default function BasepayLink() {
 			<RateCalculator
 				defaultSelectedCurrency={addressStatusResponse?.currency}
 			/>
+
 			{ready && authenticated && <Navbar />}
 
 			<AnimatedContainer

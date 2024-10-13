@@ -107,12 +107,12 @@ export default function Dashboard() {
 	if (!ready) return <Preloader isLoading={!ready} />;
 
 	return (
-		<div className="bg-white max-w-screen-md mx-auto px-4 pt-10">
+		<>
 			<Navbar />
 
 			<RateCalculator />
 
-			<AnimatedContainer className="flex flex-col gap-8">
+			<AnimatedContainer className="flex flex-col gap-8 max-w-screen-md mx-auto px-4 pt-10 min-h-screen">
 				<div className="flex-grow space-y-4">
 					{user?.wallet?.walletClientType !== "privy" &&
 						basename &&
@@ -323,6 +323,6 @@ export default function Dashboard() {
 
 				<Footer />
 			</AnimatedContainer>
-		</div>
+		</>
 	);
 }
