@@ -12,8 +12,8 @@ import { CalculatorIcon, XIcon } from "./ImageAssets";
 import { formatCurrency } from "@/app/utils";
 
 type FormValues = {
-	amountSent: number;
-	amountReceived: number;
+	amountSent: string;
+	amountReceived: string;
 	token: string;
 	currency: string;
 };
@@ -30,6 +30,18 @@ export const RateCalculator = ({
 	const { watch, setValue, register } = useForm<FormValues>();
 	const { amountSent, amountReceived, token, currency } = watch();
 
+	const formatNumberWithCommas = (value: string) => {
+		const parts = value.split(".");
+		parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		if (parts[1]) {
+			parts[1] = parts[1].replace(/0+$/, ""); // Remove trailing zeros after the decimal point
+			if (parts[1] === "") {
+				parts.pop(); // Remove the decimal point if there are no digits after it
+			}
+		}
+		return parts.join(".");
+	};
+
 	// Fetch rate based on currency, amount, and token
 	useEffect(() => {
 		let timeoutId: NodeJS.Timeout;
@@ -38,7 +50,7 @@ export const RateCalculator = ({
 			setIsFetchingRate(true);
 			const rate = await fetchRate({
 				token: "usdt", // only USDT is supported
-				amount: amountSent || 1,
+				amount: Number.parseFloat(amountSent.replace(/,/g, "")) || 1, // remove the commas
 				currency: currency || defaultSelectedCurrency,
 			});
 			setRate(rate.data);
@@ -64,13 +76,22 @@ export const RateCalculator = ({
 			if (isReceiveInputActive) {
 				setValue(
 					"amountSent",
-					Number((Number(amountReceived) / rate).toFixed(4)),
+					formatNumberWithCommas(
+						(Number(amountReceived.replace(/,/g, "")) / rate).toFixed(4),
+					),
 				);
 			} else {
-				setValue("amountReceived", Number((rate * amountSent).toFixed(4)));
+				setValue(
+					"amountReceived",
+					formatNumberWithCommas(
+						(rate * Number(amountSent.replace(/,/g, ""))).toFixed(4),
+					),
+				);
 			}
 		}
 	}, [amountSent, amountReceived, rate]);
+
+	if (!rate) return null;
 
 	return (
 		<Menu
@@ -107,8 +128,7 @@ export const RateCalculator = ({
 							<div className="flex items-center justify-between gap-2">
 								<input
 									id="amount-sent"
-									type="number"
-									step="0.0001"
+									type="text"
 									{...register("amountSent", {
 										required: { value: true, message: "Amount is required" },
 										min: {
@@ -123,7 +143,13 @@ export const RateCalculator = ({
 											value: /^\d+(\.\d{1,4})?$/,
 											message: "Max. of 4 decimal places + no leading dot",
 										},
-										onChange: () => setIsReceiveInputActive(false),
+										onChange: (e) => {
+											setIsReceiveInputActive(false);
+											setValue(
+												"amountSent",
+												formatNumberWithCommas(e.target.value),
+											);
+										},
 									})}
 									className="w-full rounded-xl border-b border-transparent bg-transparent py-2 text-2xl text-neutral-900 outline-none transition-all placeholder:text-gray-400 focus:outline-none disabled:cursor-not-allowed"
 									placeholder="0"
@@ -159,10 +185,15 @@ export const RateCalculator = ({
 							<div className="flex items-center justify-between gap-2">
 								<input
 									id="amount-received"
-									type="number"
-									step="0.0001"
+									type="text"
 									{...register("amountReceived", {
-										onChange: () => setIsReceiveInputActive(true),
+										onChange: (e) => {
+											setIsReceiveInputActive(true);
+											setValue(
+												"amountReceived",
+												formatNumberWithCommas(e.target.value),
+											);
+										},
 									})}
 									className="w-full rounded-xl border-b border-transparent bg-transparent py-2 text-2xl text-neutral-900 outline-none transition-all placeholder:text-gray-400 focus:outline-none disabled:cursor-not-allowed"
 									placeholder="0"
