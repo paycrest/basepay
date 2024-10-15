@@ -53,11 +53,13 @@ export const Navbar = () => {
 				className="container mx-auto max-w-screen-md flex items-center justify-between p-4 text-text-primary"
 				aria-label="Navbar"
 			>
-				<Link href="/" className="flex items-center gap-1 lg:flex-1">
-					<p className="text-text-primary text-base sm:text-lg font-semibold">
-						basepay
-					</p>
-					<PaycrestLogo className="size-2.5" />
+				<Link href="/" className="group outline-none">
+					<div className="flex items-center gap-1 lg:flex-1 group-focus:ring-2 group-focus:ring-primary-blue group-focus:ring-offset-2 group-focus:ring-offset-white rounded">
+						<p className="text-text-primary text-base sm:text-lg font-semibold">
+							basepay
+						</p>
+						<PaycrestLogo className="size-2.5" />
+					</div>
 				</Link>
 
 				<div className="flex gap-4 text-sm font-normal">

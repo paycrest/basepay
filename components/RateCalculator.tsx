@@ -50,7 +50,7 @@ export const RateCalculator = ({
 			setIsFetchingRate(true);
 			const rate = await fetchRate({
 				token: "usdt", // only USDT is supported
-				amount: Number.parseFloat(amountSent.replace(/,/g, "")) || 1, // remove the commas
+				amount: Number.parseFloat(amountSent?.replace(/,/g, "")) || 1, // remove the commas
 				currency: currency || defaultSelectedCurrency,
 			});
 			setRate(rate.data);
@@ -94,10 +94,7 @@ export const RateCalculator = ({
 	if (!rate) return null;
 
 	return (
-		<Menu
-			as="div"
-			className="fixed bottom-5 sm:bottom-10 right-5 sm:right-20 z-40"
-		>
+		<Menu as="div" className="fixed bottom-16 right-5 sm:right-16 z-40">
 			<MenuButton className="p-4 rounded-full bg-black transition hover:bg-gray-700 active:bg-black text-white">
 				{({ open }) =>
 					open ? (
