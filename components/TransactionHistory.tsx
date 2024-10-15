@@ -56,8 +56,8 @@ export const TransactionHistory = ({
 									<div className="flex flex-col items-center justify-center space-y-4">
 										<AnalyticsIllustration />
 										<p className="text-text-secondary max-w-sm">
-											You have no transactions yet, your transactions will
-											appear here when your customers start sending payments{" "}
+											You have no transactions yet. Your transactions will
+											appear here when you start receiving funds{" "}
 										</p>
 									</div>
 								</td>

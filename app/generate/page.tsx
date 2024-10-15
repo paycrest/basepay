@@ -113,11 +113,12 @@ export default function GeneratePaymentLink() {
 						<div className="max-w-lg mx-auto space-y-6">
 							<div className="space-y-2">
 								<h2 className="text-text-primary text-xl font-semibold">
-									Generate linked address
+									Create a linked address
 								</h2>
-								<p className="text-text-secondary text-sm font-normal">
-									Create a linked address to receive money
-								</p>
+								<div className="text-text-secondary text-sm sm:text-lg font-normal">
+									<p className="mb-2 text-sm">An onchain representation of a bank or mobile money account that enables automatic settlement of stablecoins.</p>
+									<p className="text-xs italic text-gray-600 mb-2">e.g "I'm at the ATM, can you send USDC to my linked address immediately?"</p>
+								</div>
 							</div>
 
 							<div className="space-y-4">
@@ -189,12 +190,12 @@ export default function GeneratePaymentLink() {
 								)}
 							>
 								{!isSubmitting && (
-									<div className="space-y-4">
+									<div className="space-y-4 mt-4">
 										<h3 className="text-text-primary text-base font-medium">
 											Preview
 										</h3>
 										<p className="text-text-secondary text-sm font-normal">
-											What the page will look like for your customers
+											What the page will look like for anyone who visits your link
 										</p>
 									</div>
 								)}

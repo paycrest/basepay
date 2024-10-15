@@ -87,7 +87,7 @@ export const PaymentLinkPreview = ({
 
 				{isSubmitting ? (
 					<div className="rounded-xl border border-border-light p-4 text-text-secondary text-center">
-						<p>Generating your payment link...</p>
+						<p>Creating your linked address...</p>
 					</div>
 				) : (
 					<div className="rounded-xl border border-border-light bg-background-neutral py-4 space-y-4">

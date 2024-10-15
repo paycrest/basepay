@@ -134,9 +134,7 @@ export default function Home() {
 					</AnimatedItem>
 					<AnimatedItem>
 						<p className="text-text-secondary text-sm sm:text-lg leading-normal sm:max-w-sm sm:mx-auto">
-							Receive direct fiat payments with crypto through our simple
-							interface. Just like a bank transfer powered by digital assets -
-							no P2P required.
+							Receive direct fiat payments with crypto through our simple interface. Just like a bank transfer powered by digital assets.
 						</p>
 					</AnimatedItem>
 				</AnimatedContainer>

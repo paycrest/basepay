@@ -325,7 +325,7 @@ export default function BasepayLink() {
 							)}
 							onClick={() => {
 								navigator.share({
-									title: "My basepay link",
+									title: "My Basepay link",
 									text: `Click to pay me in ${addressStatusResponse?.currency} with crypto via Basepay`,
 									url: window.location.href,
 								});
@@ -350,7 +350,6 @@ export default function BasepayLink() {
 					</AnimatedItem>
 				</div>
 
-				<Footer />
 			</AnimatedContainer>
 
 			{addressStatusResponse && basename && (

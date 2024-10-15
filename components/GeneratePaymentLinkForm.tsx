@@ -109,8 +109,8 @@ export const GeneratePaymentLinkForm = ({
 					<div className="rounded-2xl border-border-light border bg-white p-4 space-y-2 text-sm font-normal">
 						<p className="text-text-primary font-medium">Supported Tokens</p>
 						<p className="text-text-secondary">
-							Your customers can pay you with any of these tokens and you will
-							receive your payment directly in your bank account
+							Anyone can send you funds with any of these tokens and you will
+							receive it directly in your bank or mobile money account
 						</p>
 						<div className="flex gap-3">
 							{["usdc"].map((token) => (
@@ -136,7 +136,7 @@ export const GeneratePaymentLinkForm = ({
 					<div className="space-y-1 px-4">
 						<p className="text-text-primary font-medium">Account information</p>
 						<p className="text-text-secondary font-normal text-sm">
-							Specify account to receive payments
+							Specify account to receive funds
 						</p>
 					</div>
 
@@ -265,8 +265,8 @@ export const GeneratePaymentLinkForm = ({
 						className={`w-fit ${primaryButtonStyles}`}
 					>
 						{isSubmitting
-							? "Generating linked address..."
-							: "Generate linked address"}
+							? "Creating linked address..."
+							: "Create linked address"}
 					</button>
 				</AnimatedItem>
 			</AnimatedContainer>
