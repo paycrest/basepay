@@ -78,7 +78,7 @@ export type LinkedAddressResponse = {
 	institution: string;
 	accountIdentifier: string;
 	accountName: string;
-	resolvedAddress: string;
+	resolvedAddress: string | null;
 	error: string;
 };
 

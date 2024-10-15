@@ -7,8 +7,10 @@ import {
 } from "react";
 import { toast } from "sonner";
 import { usePrivy } from "@privy-io/react-auth";
-import { fetchLinkedAddress, getBasename } from "@/app/api/aggregator";
+import { fetchLinkedAddress } from "@/app/api/aggregator";
 import type { LinkedAddressResponse } from "@/app/types";
+import { getName } from "@coinbase/onchainkit/identity";
+import { base } from "viem/chains";
 
 interface AddressContextProps {
 	basename: string | null;
@@ -47,10 +49,9 @@ export const AddressProvider = ({ children }: { children: ReactNode }) => {
 				}
 
 				try {
-					const basename = await getBasename(user.wallet?.address);
+					const basename = await getName({ address: user?.wallet?.address as `0x${string}`, chain: base });
 					setBasename(basename ?? user.wallet?.address);
 				} catch (error) {
-					console.error("Error fetching basename:", error);
 					toast.error("Error fetching basename");
 				}
 			}

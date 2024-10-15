@@ -181,13 +181,13 @@ export default function Dashboard() {
 							</Identity>
 						)}
 						<div className="flex gap-3 items-center">
-							{!isAddressLinked && (
+							{!isAddressLinked && basename && (
 								<button
 									type="button"
 									onClick={() => router.push("/generate")}
 									className={primaryButtonStyles}
 								>
-									Create address
+									Link address
 								</button>
 							)}
 							{isAddressLinked && basename && (

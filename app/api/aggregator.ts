@@ -10,19 +10,10 @@ import type {
 	TransactionsListResponse,
 	VerifyAccountPayload,
 } from "../types";
-import { createThirdwebClient } from "thirdweb";
-import {
-	BASENAME_RESOLVER_ADDRESS,
-	resolveAddress,
-	resolveL2Name,
-} from "thirdweb/extensions/ens";
-import { base as thirdwebBase } from "thirdweb/chains";
+import { getAddress } from "@coinbase/onchainkit/identity";
+import { base } from "viem/chains";
 
 const AGGREGATOR_URL = process.env.NEXT_PUBLIC_AGGREGATOR_URL;
-
-const client = createThirdwebClient({
-	secretKey: process.env.NEXT_PUBLIC_THIRDWEB_KEY ?? "",
-});
 
 export const fetchSupportedInstitutions = async (
 	currency: string,
@@ -106,7 +97,7 @@ export const fetchLinkedAddress = async ({
 
 	try {
 		let response = null;
-		let resolvedAddress = address;
+		let resolvedAddress = address as `0x${string}` | null;
 		if (privyIdToken) {
 			response = await axios.get(
 				`${AGGREGATOR_URL}/linked-addresses/me?owner_address=${resolvedAddress}`,
@@ -117,13 +108,7 @@ export const fetchLinkedAddress = async ({
 				},
 			);
 		} else {
-			resolvedAddress = await resolveAddress({
-				client,
-				name: address,
-				resolverAddress: BASENAME_RESOLVER_ADDRESS,
-				resolverChain: thirdwebBase,
-			});
-
+			resolvedAddress = await getAddress({ name: address, chain: base });
 			response = await axios.get(
 				`${AGGREGATOR_URL}/linked-addresses?owner_address=${resolvedAddress}`,
 			);
@@ -187,22 +172,6 @@ export const fetchTransactionHistory = async ({
 		return response.data.data;
 	} catch (error) {
 		console.error("Error fetching transaction history:", error);
-		throw error;
-	}
-};
-
-export const getBasename = async (address: string): Promise<string | null> => {
-	try {
-		const basename = await resolveL2Name({
-			client,
-			address,
-			resolverAddress: BASENAME_RESOLVER_ADDRESS,
-			resolverChain: thirdwebBase,
-		});
-
-		return basename;
-	} catch (error) {
-		console.error("Error fetching basename:", error);
 		throw error;
 	}
 };
