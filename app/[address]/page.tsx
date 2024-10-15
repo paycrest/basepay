@@ -12,6 +12,7 @@ import { notFound, usePathname } from "next/navigation";
 import {
 	CheckmarkIcon,
 	CopyIcon,
+	LoadingIcon,
 	PaycrestLogo,
 } from "@/components/ImageAssets";
 import {
@@ -29,6 +30,7 @@ import type { LinkedAddressResponse } from "../types";
 import { fetchLinkedAddress, fetchRate } from "../api/aggregator";
 import { useAddressContext } from "@/context/AddressContext";
 import { Footer } from "@/components/Footer";
+import { TbFileDownload } from "react-icons/tb";
 
 export default function BasepayLink() {
 	const pathname = usePathname();
@@ -261,8 +263,8 @@ export default function BasepayLink() {
 					</AnimatedItem>
 
 					<AnimatedItem className="rounded-xl border border-border-light bg-background-neutral py-4 space-y-4">
-						<div className="px-4 flex justify-between items-center">
-							<p className="text-xs font-semibold bg-gradient-to-r from-purple-500 via-orange-500 to-fuchsia-400 bg-clip-text text-transparent">
+						<div className="px-4 flex justify-between items-center overflow-hidden flex-wrap">
+							<p className="text-xs font-semibold bg-gradient-to-r from-purple-500 via-orange-500 to-fuchsia-400 bg-clip-text text-transparent break-words">
 								{addressStatusResponse?.linkedAddress}
 							</p>
 							<button type="button" onClick={handleCopyAddress}>
@@ -311,18 +313,27 @@ export default function BasepayLink() {
 						)}
 
 					<AnimatedItem className="flex items-center gap-4">
+						{ready &&
+							user &&
+							user.wallet?.address === addressStatusResponse?.resolvedAddress &&
+							basename && (
+								<button
+									type="button"
+									title="Download"
+									onClick={handleExport}
+									className={classNames(secondaryButtonStyles)}
+								>
+									{isGenerating ? (
+										<LoadingIcon className="size-5 animate-spin" />
+									) : (
+										<TbFileDownload className="size-5" />
+									)}
+								</button>
+							)}
+
 						<button
 							type="button"
-							className={classNames(
-								secondaryButtonStyles,
-								ready &&
-									user &&
-									user.wallet?.address ===
-										addressStatusResponse?.resolvedAddress &&
-									basename
-									? ""
-									: "w-full",
-							)}
+							className={classNames(primaryButtonStyles, "w-full")}
 							onClick={() => {
 								navigator.share({
 									title: "My Basepay link",
@@ -333,23 +344,8 @@ export default function BasepayLink() {
 						>
 							Share
 						</button>
-
-						{ready &&
-							user &&
-							user.wallet?.address === addressStatusResponse?.resolvedAddress &&
-							basename && (
-								<button
-									type="button"
-									title="Download"
-									onClick={handleExport}
-									className={classNames(primaryButtonStyles, "w-full")}
-								>
-									{isGenerating ? "Preparing..." : "Download"}
-								</button>
-							)}
 					</AnimatedItem>
 				</div>
-
 			</AnimatedContainer>
 
 			{addressStatusResponse && basename && (

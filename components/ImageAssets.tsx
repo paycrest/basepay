@@ -1045,3 +1045,107 @@ export const PrivateKeyIcon = (props: ImageProps) => {
 		</svg>
 	);
 };
+
+export const LoadingIcon = (props: ImageProps) => {
+	return (
+		<svg
+			width="16"
+			height="16"
+			viewBox="0 0 16 16"
+			fill="none"
+			xmlns="http://www.w3.org/2000/svg"
+			{...props}
+		>
+			<title>Loading Icon</title>
+			<ellipse
+				cx="8.00009"
+				cy="1.09091"
+				rx="1.09091"
+				ry="1.09091"
+				fill="currentColor"
+			/>
+			<circle
+				opacity="0.05"
+				cx="11.4542"
+				cy="1.99997"
+				r="1.09091"
+				fill="currentColor"
+			/>
+			<ellipse
+				opacity="0.1"
+				cx="14.0001"
+				cy="4.54538"
+				rx="1.09091"
+				ry="1.09091"
+				fill="currentColor"
+			/>
+			<circle
+				opacity="0.1"
+				cx="14.9083"
+				cy="7.99997"
+				r="1.09091"
+				fill="currentColor"
+			/>
+			<ellipse
+				opacity="0.2"
+				cx="14.0001"
+				cy="11.4546"
+				rx="1.09091"
+				ry="1.09091"
+				fill="currentColor"
+			/>
+			<ellipse
+				opacity="0.3"
+				cx="11.4542"
+				cy="14"
+				rx="1.09091"
+				ry="1.09091"
+				fill="currentColor"
+			/>
+			<circle
+				opacity="0.4"
+				cx="8.00009"
+				cy="14.9091"
+				r="1.09091"
+				fill="currentColor"
+			/>
+			<ellipse
+				opacity="0.5"
+				cx="4.54501"
+				cy="14"
+				rx="1.09091"
+				ry="1.09091"
+				fill="currentColor"
+			/>
+			<circle
+				opacity="0.6"
+				cx="2.00009"
+				cy="11.4546"
+				r="1.09091"
+				fill="currentColor"
+			/>
+			<ellipse
+				opacity="0.7"
+				cx="1.09091"
+				cy="7.99997"
+				rx="1.09091"
+				ry="1.09091"
+				fill="currentColor"
+			/>
+			<circle
+				opacity="0.8"
+				cx="2.00009"
+				cy="4.54538"
+				r="1.09091"
+				fill="currentColor"
+			/>
+			<circle
+				opacity="0.9"
+				cx="4.54501"
+				cy="1.99997"
+				r="1.09091"
+				fill="currentColor"
+			/>
+		</svg>
+	);
+};

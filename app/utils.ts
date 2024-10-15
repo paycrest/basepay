@@ -77,3 +77,36 @@ export const formatDate = (dateString: string | number | Date) => {
 	const date = new Date(dateString);
 	return format(date, "dd, MMM yyyy HH:mm");
 };
+
+/**
+ * Returns a human-readable relative time string based on the difference between the given date and the current date.
+ *
+ * @param date - The date to compare with the current date.
+ * @returns A string representing the relative time difference. Possible values include:
+ * - "Today"
+ * - "Yesterday"
+ * - "X days ago" (where X is the number of days less than 7)
+ * - "One week ago"
+ * - "One month ago"
+ * - "X months ago" (where X is the number of months less than 12)
+ * - "One year ago"
+ * - "X years ago" (where X is the number of years less than 5)
+ * - "A long time ago"
+ */
+export const getRelativeTimeString = (date: Date): string => {
+	const now = new Date();
+	const diffTime = Math.abs(now.getTime() - date.getTime());
+	const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+	const diffMonths = Math.floor(diffDays / 30);
+	const diffYears = Math.floor(diffDays / 365);
+
+	if (diffDays === 0) return "Today";
+	if (diffDays === 1) return "Yesterday";
+	if (diffDays < 7) return `${diffDays} days ago`;
+	if (diffDays < 30) return "One week ago";
+	if (diffMonths === 1) return "One month ago";
+	if (diffMonths < 12) return `${diffMonths} months ago`;
+	if (diffYears === 1) return "One year ago";
+	if (diffYears < 5) return `${diffYears} years ago`;
+	return "A long time ago";
+};

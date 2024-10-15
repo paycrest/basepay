@@ -1,12 +1,11 @@
 import type { IconType } from "react-icons";
-import { MdOutlineDownloading } from "react-icons/md";
 import { HiOutlineArrowCircleUp } from "react-icons/hi";
-import { CheckmarkIcon, RefundedIcon } from "./ImageAssets";
+import { CheckmarkIcon, LoadingIcon, RefundedIcon } from "./ImageAssets";
 
 type IconComponent = React.ComponentType<React.SVGProps<SVGSVGElement>>;
 
 const statusIcons: Record<string, IconType | IconComponent> = {
-	pending: MdOutlineDownloading,
+	pending: LoadingIcon,
 	settled: CheckmarkIcon,
 	refunded: RefundedIcon,
 };

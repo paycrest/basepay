@@ -126,7 +126,7 @@ export default function Dashboard() {
 			<RateCalculator />
 
 			<AnimatedContainer className="flex flex-col gap-8 max-w-screen-md mx-auto px-4 pt-20 min-h-screen">
-				<div className="flex-grow space-y-4">
+				<div className="flex-grow space-y-6">
 					{user?.wallet?.walletClientType !== "privy" &&
 						basename &&
 						!basename?.includes(".base.eth") && (
@@ -163,7 +163,8 @@ export default function Dashboard() {
 								</div>
 							</AnimatedItem>
 						)}
-					<AnimatedItem className="flex justify-between items-center gap-4 flex-wrap">
+
+					<AnimatedItem className="flex sm:justify-between sm:items-center gap-4 flex-col sm:flex-row">
 						{user?.wallet?.address && (
 							<Identity
 								address={user?.wallet?.address as `0x${string}`}
@@ -184,16 +185,21 @@ export default function Dashboard() {
 								/>
 							</Identity>
 						)}
+
 						<div className="flex gap-3 items-center">
 							{!isAddressLinked && basename && (
 								<button
 									type="button"
 									onClick={() => router.push("/generate")}
-									className={primaryButtonStyles}
+									className={classNames(
+										primaryButtonStyles,
+										"w-full sm:w-auto",
+									)}
 								>
 									Link address
 								</button>
 							)}
+
 							{isAddressLinked && basename && (
 								<>
 									<button
@@ -231,6 +237,7 @@ export default function Dashboard() {
 							)}
 						</div>
 					</AnimatedItem>
+
 					<AnimatePresence mode="wait">
 						{isAddressLinked && isDropdownOpen && (
 							<motion.div
@@ -309,11 +316,13 @@ export default function Dashboard() {
 							</motion.div>
 						)}
 					</AnimatePresence>
+
 					<AnimatedItem className="flex flex-col sm:flex-row sm:items-center justify-center gap-4">
 						{cardData.map((item) => (
 							<Card key={item.id} title={item.title} content={item.content} />
 						))}
 					</AnimatedItem>
+
 					<AnimatedItem>
 						<TransactionHistory transactions={transactions} />
 					</AnimatedItem>

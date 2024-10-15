@@ -20,10 +20,9 @@ export type TransactionStatus = "pending" | "settled" | "refunded";
 
 export type TransactionHistoryResponse = {
 	id: string;
-	amount: number;
+	amount: string;
 	token: string;
-	transactionFee: number;
-	rate: number;
+	rate: string;
 	network: string;
 	recipient: {
 		currency: string;
@@ -33,9 +32,9 @@ export type TransactionHistoryResponse = {
 	};
 	fromAddress: `0x${string}`;
 	returnAddress: `0x${string}`;
-	gatewayID: string;
-	createdAt: Date;
-	updatedAt: Date;
+	gatewayId: string;
+	createdAt: string;
+	updatedAt: string;
 	status: TransactionStatus;
 	txHash: string;
 };
