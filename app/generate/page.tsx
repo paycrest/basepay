@@ -83,7 +83,7 @@ export default function GeneratePaymentLink() {
 
 			<header className="fixed left-0 top-0 z-20 w-full bg-white transition-all border-b border-border-light">
 				<nav
-					className="container mx-auto flex items-center justify-between p-4 text-text-primary"
+					className="mx-auto flex items-center justify-between p-4 text-text-primary"
 					aria-label="Navbar"
 				>
 					<button
