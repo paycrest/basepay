@@ -11,7 +11,6 @@ import type {
 	VerifyAccountPayload,
 } from "../types";
 import { getAddress } from "@coinbase/onchainkit/identity";
-import { base } from "viem/chains";
 
 const AGGREGATOR_URL = process.env.NEXT_PUBLIC_AGGREGATOR_URL;
 
@@ -108,7 +107,9 @@ export const fetchLinkedAddress = async ({
 				},
 			);
 		} else {
-			resolvedAddress = await getAddress({ name: address, chain: base });
+			if (resolvedAddress?.includes(".base.eth")) {
+				resolvedAddress = await getAddress({ name: address });
+			}
 			response = await axios.get(
 				`${AGGREGATOR_URL}/linked-addresses?owner_address=${resolvedAddress}`,
 			);
