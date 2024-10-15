@@ -111,6 +111,10 @@ export default function Dashboard() {
 		};
 
 		getTransactionHistory();
+
+		const intervalId = setInterval(getTransactionHistory, 30000); // Poll every 30 seconds
+
+		return () => clearInterval(intervalId); // Cleanup on unmount
 	}, [isAddressLinked, ready, linkedAddress]);
 
 	if (!ready) return <Preloader isLoading={!ready} />;

@@ -9,6 +9,7 @@ import {
 	CheckmarkIcon,
 	CopyIcon,
 	LogoutIcon,
+	PrivateKeyIcon,
 	PaycrestLogo,
 	SettingsIcon,
 	WalletIcon,
@@ -24,7 +25,7 @@ export const Navbar = () => {
 	const [isSettingsDropdownOpen, setIsSettingsDropdownOpen] = useState(false);
 	const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-	const { user, logout } = usePrivy();
+	const { user, logout, exportWallet } = usePrivy();
 
 	const handleCopyAddress = () => {
 		navigator.clipboard.writeText(user?.wallet?.address ?? "");
@@ -111,6 +112,16 @@ export const Navbar = () => {
 													<CopyIcon className="size-4 transition text-text-secondary group-hover:text-primary-blue" />
 												)}
 											</div>
+										</button>
+									</li>
+									<li>
+										<button
+											type="button"
+											onClick={exportWallet}
+											className="flex items-center gap-2.5 px-4 py-2 transition hover:bg-gray-200 w-full"
+										>
+											<PrivateKeyIcon className="text-text-secondary" />
+											<p>Export wallet</p>
 										</button>
 									</li>
 									<li>
