@@ -27,6 +27,8 @@ export const BankDropdown = ({
 	setSelectedInstitution,
 	formMethods,
 }: BankDropdownProps) => {
+	institutions = institutions.sort((a, b) => a.name.localeCompare(b.name)); // Sort institutions alphabetically
+
 	const { setValue, watch } = formMethods;
 	const { currency } = watch();
 	const [bankSearchTerm, setBankSearchTerm] = useState("");
