@@ -47,6 +47,7 @@ export default function BasepayLink() {
 	const [exportFormat, setExportFormat] = useState<"pdf" | "png">("pdf");
 	const [addressStatusResponse, setAddressStatusResponse] =
 		useState<LinkedAddressResponse>();
+	const [isAddressStatusFetched, setIsAddressStatusFetched] = useState(false);
 
 	const handleCopyAddress = () => {
 		navigator.clipboard.writeText(addressStatusResponse?.linkedAddress ?? "");
@@ -124,6 +125,7 @@ export default function BasepayLink() {
 					setHasError(true);
 				} finally {
 					setIsPageLoading(false);
+					setIsAddressStatusFetched(true);
 				}
 			}
 		};
@@ -147,6 +149,8 @@ export default function BasepayLink() {
 	}, [isAddressLinked, addressStatusResponse?.currency]);
 
 	useEffect(() => {
+		if (!isAddressStatusFetched) return;
+
 		if (
 			((!rawAddress?.startsWith("0x") || rawAddress.length !== 42) &&
 				!rawAddress?.includes(".base.eth")) ||
@@ -155,7 +159,7 @@ export default function BasepayLink() {
 		) {
 			notFound();
 		}
-	}, [rawAddress, isAddressLinked, hasError]);
+	}, [rawAddress, isAddressLinked, hasError, isAddressStatusFetched]);
 
 	if (!ready || isPageLoading) return <Preloader isLoading={true} />;
 
