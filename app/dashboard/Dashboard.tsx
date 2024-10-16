@@ -124,7 +124,7 @@ export default function Dashboard() {
 			<Navbar />
 
 			<RateCalculator
-				defaultSelectedCurrency={accountDetails?.currency ?? "KES"}
+				defaultSelectedCurrency={accountDetails?.currency || "KES"}
 			/>
 
 			<AnimatedContainer className="flex flex-col gap-8 max-w-screen-md mx-auto px-4 pt-20 min-h-screen">
