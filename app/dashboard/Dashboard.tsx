@@ -63,7 +63,7 @@ export default function Dashboard() {
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
 	const handleCopyLinkedAddress = () => {
-		navigator.clipboard.writeText(`https://basepay.link/${basename}`);
+		navigator.clipboard.writeText(`https://www.basepay.link/${basename}`);
 		setIsLinkedAddressCopied(true);
 		setTimeout(() => setIsLinkedAddressCopied(false), 2000);
 	};
