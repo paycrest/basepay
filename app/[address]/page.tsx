@@ -321,7 +321,10 @@ export default function BasepayLink() {
 									type="button"
 									title="Download"
 									onClick={handleExport}
-									className={classNames(secondaryButtonStyles)}
+									className={classNames(
+										"!text-primary-blue",
+										secondaryButtonStyles,
+									)}
 								>
 									{isGenerating ? (
 										<LoadingIcon className="size-5 animate-spin" />

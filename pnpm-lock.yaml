@@ -35,6 +35,9 @@ importers:
       jspdf:
         specifier: ^2.5.2
         version: 2.5.2
+      moment:
+        specifier: ^2.30.1
+        version: 2.30.1
       next:
         specifier: 14.2.15
         version: 14.2.15(@babel/core@7.25.7)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -3629,6 +3632,9 @@ packages:
 
   modern-ahocorasick@1.0.1:
     resolution: {integrity: sha512-yoe+JbhTClckZ67b2itRtistFKf8yPYelHLc7e5xAwtNAXxM6wJTUx2C7QeVSJFDzKT7bCIFyBVybPMKvmB9AA==}
+
+  moment@2.30.1:
+    resolution: {integrity: sha512-uEmtNhbDOrWPFS+hdjFCBfy9f2YoyzRpwcl+DqpC6taX21FzsTLQVbMV/W7PzNSX6x/bhC1zA3c2UQ5NzH6how==}
 
   motion@10.16.2:
     resolution: {integrity: sha512-p+PurYqfUdcJZvtnmAqu5fJgV2kR0uLFQuBKtLeFVTrYEVllI99tiOTSefVNYuip9ELTEkepIIDftNdze76NAQ==}
@@ -10035,6 +10041,8 @@ snapshots:
       ufo: 1.5.4
 
   modern-ahocorasick@1.0.1: {}
+
+  moment@2.30.1: {}
 
   motion@10.16.2:
     dependencies:

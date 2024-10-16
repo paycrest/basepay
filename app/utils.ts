@@ -14,14 +14,19 @@ export function classNames(...classes: string[]) {
 /**
  * Shortens the given address by replacing the middle characters with ellipsis.
  * @param address - The address to be shortened.
- * @param chars - The number of characters to keep at the beginning and end of the address. Default is 4.
+ * @param startChars - The number of characters to keep at the beginning of the address. Default is 4.
+ * @param endChars - The number of characters to keep at the end of the address. Default is the same as startChars.
  * @returns The shortened address.
  */
-export function shortenAddress(address: string, chars = 4): string {
-	if (address.length <= 2 * chars) {
+export function shortenAddress(
+	address: string,
+	startChars = 4,
+	endChars = startChars,
+): string {
+	if (address.length <= startChars + endChars) {
 		return address;
 	}
-	return `${address.slice(0, chars)}...${address.slice(-chars)}`;
+	return `${address.slice(0, startChars)}...${address.slice(-endChars)}`;
 }
 
 /**
@@ -109,4 +114,42 @@ export const getRelativeTimeString = (date: Date): string => {
 	if (diffYears === 1) return "One year ago";
 	if (diffYears < 5) return `${diffYears} years ago`;
 	return "A long time ago";
+};
+
+/**
+ * Removes trailing zeros from a string representation of a number.
+ * @param value - The string representation of the number.
+ * @returns The string representation of the number with trailing zeros removed.
+ */
+export function stripTrailingZeros(value: string): string {
+	const parts = value.toString().split(".");
+	const decimalPart = parts.length > 1 ? parts[1].replace(/0+$/, "") : "";
+	return `${parts[0]}.${decimalPart}`.replace(/\.$/, "");
+}
+
+/**
+ * Returns the explorer link for a given transaction hash based on the network and status.
+ * @param network - The network name.
+ * @param txHash - The transaction hash.
+ * @param status - The status of the transaction.
+ * @returns The explorer link for the transaction.
+ */
+export const getExplorerLink = (
+	network: string,
+	txHash: string,
+): string | undefined => {
+	const explorers: { [key: string]: string } = {
+		polygon: "https://polygonscan.com/tx/",
+		"bnb-smart-chain": "https://bscscan.com/tx/",
+		base: "https://basescan.org/tx/",
+		"arbitrum-one": "https://arbiscan.io/tx/",
+		ethereum: "https://etherscan.io/tx/",
+		"ethereum-sepolia": "https://sepolia.etherscan.io/tx/",
+		"arbitrum-sepolia": "https://sepolia.arbiscan.io/tx/",
+		tron: "https://tronscan.org/#/transaction/",
+		"tron-shasta": "https://shasta.tronscan.org/#/transaction/",
+		"base-sepolia": "https://sepolia.basescan.org/tx/",
+	};
+
+	return explorers[network] ? `${explorers[network]}${txHash}` : undefined;
 };

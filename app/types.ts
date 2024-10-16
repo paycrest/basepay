@@ -87,3 +87,12 @@ export type TransactionsListResponse = {
 	pageSize: number;
 	transactions: TransactionHistoryResponse[];
 };
+
+export type CopiedStates = {
+	[key: string]: boolean;
+};
+
+export type OutsideClickHandlerProps = {
+	ref: React.RefObject<HTMLElement>;
+	handler: () => void;
+};
