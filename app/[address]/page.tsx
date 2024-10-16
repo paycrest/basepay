@@ -29,7 +29,6 @@ import { classNames, formatCurrency } from "../utils";
 import type { LinkedAddressResponse } from "../types";
 import { fetchLinkedAddress, fetchRate } from "../api/aggregator";
 import { useAddressContext } from "@/context/AddressContext";
-import { Footer } from "@/components/Footer";
 import { TbFileDownload } from "react-icons/tb";
 
 export default function BasepayLink() {
@@ -150,9 +149,9 @@ export default function BasepayLink() {
 	useEffect(() => {
 		if (
 			((!rawAddress?.startsWith("0x") || rawAddress.length !== 42) &&
-				!rawAddress?.includes(".base.eth") &&
-				!isAddressLinked) ||
-			hasError
+				!rawAddress?.includes(".base.eth")) ||
+			hasError ||
+			!isAddressLinked
 		) {
 			notFound();
 		}
