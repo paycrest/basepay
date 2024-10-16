@@ -175,6 +175,11 @@ export const TransactionHistory = ({
 		setIsModalOpen(true);
 	}
 
+	// Sort transactions by latest time
+	const sortedTransactions = [...transactions].sort(
+		(a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+	);
+
 	return (
 		<>
 			<h2 className="text-base font-medium">Transactions</h2>
@@ -191,7 +196,7 @@ export const TransactionHistory = ({
 			<div className="overflow-x-auto hidden md:block">
 				<table className="min-w-full overflow-hidden text-sm border-spacing-y-2 border-separate">
 					<TableHeader />
-					{transactions.length === 0 ? (
+					{sortedTransactions.length === 0 ? (
 						<tbody className="text-text-gray bg-background-neutral rounded-xl transition space-y-7 text-center">
 							<tr>
 								<td colSpan={5} className="py-10 rounded-b-xl">
@@ -207,7 +212,7 @@ export const TransactionHistory = ({
 						</tbody>
 					) : (
 						<tbody>
-							{transactions.map((transaction) => (
+							{sortedTransactions.map((transaction) => (
 								<tr
 									key={transaction.id}
 									className="bg-background-neutral rounded-xl hover:bg-gray-100 transition text-text-secondary hover:cursor-pointer outline-none focus:bg-gray-100"
