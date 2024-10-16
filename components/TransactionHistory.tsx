@@ -22,7 +22,7 @@ import {
 import { base } from "viem/chains";
 import { Avatar, Identity, Name, getName } from "@coinbase/onchainkit/identity";
 
-import { mockTransactions } from "@/app/mocks";
+// import { mockTransactions } from "@/app/mocks";
 import { useEffect, useState } from "react";
 import {
 	Dialog,
@@ -156,7 +156,7 @@ const MobileTransactionList = ({
 export const TransactionHistory = ({
 	transactions,
 }: { transactions: TransactionHistoryResponse[] }) => {
-	transactions = mockTransactions;
+	// transactions = mockTransactions;
 
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 	const [selectedOrder, setSelectedOrder] =

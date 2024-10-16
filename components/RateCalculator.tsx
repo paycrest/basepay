@@ -34,15 +34,20 @@ export const RateCalculator = ({
 		const parts = value.split(".");
 		parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 		if (parts[1]) {
-			parts[1] = parts[1].replace(/0+$/, ""); // Remove trailing zeros after the decimal point
+			parts[1] = parts[1].replace(/0+$/, "");
 			if (parts[1] === "") {
-				parts.pop(); // Remove the decimal point if there are no digits after it
+				parts.pop();
 			}
 		}
 		return parts.join(".");
 	};
 
+	const parseFormattedNumber = (value: string) => {
+		return Number.parseFloat(value?.replace(/,/g, "")) || 0;
+	};
+
 	// Fetch rate based on currency, amount, and token
+	// biome-ignore lint/correctness/useExhaustiveDependencies: This is a false positive
 	useEffect(() => {
 		let timeoutId: NodeJS.Timeout;
 
@@ -50,7 +55,7 @@ export const RateCalculator = ({
 			setIsFetchingRate(true);
 			const rate = await fetchRate({
 				token: "usdt", // only USDT is supported
-				amount: Number.parseFloat(amountSent?.replace(/,/g, "")) || 1, // remove the commas
+				amount: parseFormattedNumber(amountSent) || 1,
 				currency: currency || defaultSelectedCurrency,
 			});
 			setRate(rate.data);
@@ -74,22 +79,18 @@ export const RateCalculator = ({
 	useEffect(() => {
 		if (rate && (amountSent || amountReceived)) {
 			if (isReceiveInputActive) {
-				setValue(
-					"amountSent",
-					formatNumberWithCommas(
-						(Number(amountReceived.replace(/,/g, "")) / rate).toFixed(4),
-					),
-				);
+				const sentAmount = (
+					parseFormattedNumber(amountReceived) / rate
+				).toFixed(4);
+				setValue("amountSent", formatNumberWithCommas(sentAmount));
 			} else {
-				setValue(
-					"amountReceived",
-					formatNumberWithCommas(
-						(rate * Number(amountSent.replace(/,/g, ""))).toFixed(4),
-					),
-				);
+				const receivedAmount = (
+					rate * parseFormattedNumber(amountSent)
+				).toFixed(4);
+				setValue("amountReceived", formatNumberWithCommas(receivedAmount));
 			}
 		}
-	}, [amountSent, amountReceived, rate]);
+	}, [amountSent, amountReceived, rate, isReceiveInputActive, setValue]);
 
 	if (!rate) return null;
 
@@ -111,7 +112,7 @@ export const RateCalculator = ({
 				className="origin-top transition duration-200 ease-out data-[closed]:scale-95 data-[closed]:opacity-0 bg-white shadow-2xl rounded-3xl p-5 space-y-4 w-96 max-w-full -mt-4"
 			>
 				<p className="text-text-primary text-base font-semibold">
-					Exchange Calculator
+					Rate Calculator
 				</p>
 
 				<form>
@@ -137,14 +138,16 @@ export const RateCalculator = ({
 											message: "Max. amount is 500",
 										},
 										pattern: {
-											value: /^\d+(\.\d{1,4})?$/,
-											message: "Max. of 4 decimal places + no leading dot",
+											value: /^(\d{1,3}(,\d{3})*(\.\d{0,4})?|\d+(\.\d{0,4})?)$/,
+											message: "Invalid number format",
 										},
 										onChange: (e) => {
 											setIsReceiveInputActive(false);
 											setValue(
 												"amountSent",
-												formatNumberWithCommas(e.target.value),
+												formatNumberWithCommas(
+													e.target.value.replace(/,/g, ""),
+												),
 											);
 										},
 									})}
@@ -184,11 +187,17 @@ export const RateCalculator = ({
 									id="amount-received"
 									type="text"
 									{...register("amountReceived", {
+										pattern: {
+											value: /^(\d{1,3}(,\d{3})*(\.\d{0,4})?|\d+(\.\d{0,4})?)$/,
+											message: "Invalid number format",
+										},
 										onChange: (e) => {
 											setIsReceiveInputActive(true);
 											setValue(
 												"amountReceived",
-												formatNumberWithCommas(e.target.value),
+												formatNumberWithCommas(
+													e.target.value.replace(/,/g, ""),
+												),
 											);
 										},
 									})}
