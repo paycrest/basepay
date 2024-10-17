@@ -22,22 +22,21 @@ export const Custom404 = ({
 
 					{isAddressInvalid ? (
 						<p className="text-text-secondary text-lg max-w-sm">
-							There is no payment link associated with{" "}
+							This doesn't look like a valid address:{" "}
 							<span className="rounded-full px-2 pb-1 align-middle bg-gray-50">
-								<span className="bg-gradient-to-r from-purple-500 via-orange-500 to-fuchsia-400 bg-clip-text text-transparent text-sm font-medium">
+								<span className="bg-gradient-to-r from-purple-500 via-orange-500 to-fuchsia-400 bg-clip-text text-transparent text-sm font-medium break-words break-all">
 									{address}
 								</span>
 							</span>
 						</p>
 					) : (
 						<p className="text-text-secondary text-lg max-w-sm">
-							There is no payment link associated with this{" "}
+							There is no payment link associated with this wallet address:{" "}
 							<span className="rounded-full px-2 pb-1 align-middle bg-gray-50">
-								<span className="bg-gradient-to-r from-purple-500 via-orange-500 to-fuchsia-400 bg-clip-text text-transparent text-sm font-medium">
-									{shortenAddress(address, 4, 6)}
+								<span className="bg-gradient-to-r from-purple-500 via-orange-500 to-fuchsia-400 bg-clip-text text-transparent text-sm font-medium break-words break-all">
+									{address}
 								</span>
-							</span>{" "}
-							wallet address
+							</span>
 						</p>
 					)}
 
@@ -75,8 +74,8 @@ export const Custom404 = ({
 
 								<div className="px-4 py-3">
 									<p className="text-text-secondary text-sm sm:text-lg">
-										Basepay link lets you receive direct fiat payments with
-										crypto through a simple interface. Just like a bank transfer
+										Basepay lets you receive direct fiat payments with crypto
+										through a simple interface. Just like a bank transfer
 										powered by digital assets - no P2P required.
 									</p>
 								</div>
