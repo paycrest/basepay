@@ -51,13 +51,15 @@ export const Custom404 = ({
 						>
 							Get a linked address
 						</button>
-						<button
-							type="button"
-							onClick={() => router.push("/")}
-							className={classNames(secondaryButtonStyles)}
-						>
-							Go back home
-						</button>
+						{isAddressInvalid && (
+							<button
+								type="button"
+								onClick={() => router.push("/")}
+								className={classNames(secondaryButtonStyles)}
+							>
+								Go back home
+							</button>
+						)}
 					</div>
 				</div>
 
