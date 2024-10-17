@@ -1,9 +1,9 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { usePrivy } from "@privy-io/react-auth";
 import { useEffect, useRef, useState } from "react";
-import { notFound, usePathname } from "next/navigation";
 
 import jsPDF from "jspdf";
 import { toast } from "sonner";
@@ -41,7 +41,7 @@ export default function BasepayLink() {
 		(!rawAddress?.startsWith("0x") || rawAddress?.length !== 42) &&
 		!rawAddress?.includes(".base.eth")
 	) {
-		notFound();
+		return <Custom404 address={rawAddress} isAddressInvalid={true} />;
 	}
 
 	const { ready, user, authenticated } = usePrivy();
