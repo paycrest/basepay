@@ -94,10 +94,24 @@ export const fetchLinkedAddress = async ({
 }): Promise<LinkedAddressResponse> => {
 	privyIdToken = privyIdToken?.replace(/^"(.*)"$/, "$1") ?? "";
 
+	const defaultResponse: LinkedAddressResponse = {
+		linkedAddress: "",
+		currency: "",
+		institution: "",
+		accountIdentifier: "",
+		accountName: "",
+		resolvedAddress: "",
+		error: "",
+	};
+
 	try {
 		let resolvedAddress = address as `0x${string}` | null;
 		if (!privyIdToken && resolvedAddress?.includes(".base.eth")) {
 			resolvedAddress = await getAddress({ name: address });
+		}
+
+		if (!resolvedAddress) {
+			return { ...defaultResponse, error: "Resolved address is null" };
 		}
 
 		const url = privyIdToken
@@ -111,23 +125,18 @@ export const fetchLinkedAddress = async ({
 		const response = await axios.get(url, { headers });
 
 		return {
+			...defaultResponse,
 			linkedAddress: response.data.data.linkedAddress,
 			currency: response.data.data.currency,
 			institution: response.data.data.institution,
 			accountIdentifier: response.data.data.accountIdentifier,
 			accountName: response.data.data.accountName,
 			resolvedAddress,
-			error: "",
 		};
 	} catch (error) {
 		const isNotFound = (error as AxiosError).response?.status === 404;
 		return {
-			linkedAddress: "",
-			currency: "",
-			institution: "",
-			accountIdentifier: "",
-			accountName: "",
-			resolvedAddress: "",
+			...defaultResponse,
 			error: isNotFound
 				? "Linked address not found"
 				: "Error fetching address status",

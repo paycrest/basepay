@@ -68,7 +68,10 @@ export const Custom404 = ({
 							<div className="border-border-light border rounded-3xl bg-gray-50">
 								<div className="px-6 py-4 border-b border-border-light">
 									<p className="bg-gradient-to-r from-purple-500 via-orange-500 to-fuchsia-400 bg-clip-text text-transparent text-sm font-medium">
-										basepay.link/{shortenAddress(address, 4, 6)}
+										basepay.link/
+										{address.includes(".eth")
+											? address
+											: shortenAddress(address, 4, 6)}
 									</p>
 								</div>
 
