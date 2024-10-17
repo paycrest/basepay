@@ -82,6 +82,7 @@ export const GeneratePaymentLinkForm = ({
 				});
 
 				setValue("accountName", accountName);
+				if (recipientNameError) setRecipientNameError("");
 			} catch (error) {
 				setValue("accountName", "");
 				setRecipientNameError("No recipient account found");
