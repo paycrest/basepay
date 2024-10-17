@@ -95,25 +95,20 @@ export const fetchLinkedAddress = async ({
 	privyIdToken = privyIdToken?.replace(/^"(.*)"$/, "$1") ?? "";
 
 	try {
-		let response = null;
 		let resolvedAddress = address as `0x${string}` | null;
-		if (privyIdToken) {
-			response = await axios.get(
-				`${AGGREGATOR_URL}/linked-addresses/me?owner_address=${resolvedAddress}`,
-				{
-					headers: {
-						Authorization: `Bearer ${privyIdToken}`,
-					},
-				},
-			);
-		} else {
-			if (resolvedAddress?.includes(".base.eth")) {
-				resolvedAddress = await getAddress({ name: address });
-			}
-			response = await axios.get(
-				`${AGGREGATOR_URL}/linked-addresses?owner_address=${resolvedAddress}`,
-			);
+		if (!privyIdToken && resolvedAddress?.includes(".base.eth")) {
+			resolvedAddress = await getAddress({ name: address });
 		}
+
+		const url = privyIdToken
+			? `${AGGREGATOR_URL}/linked-addresses/me?owner_address=${resolvedAddress}`
+			: `${AGGREGATOR_URL}/linked-addresses?owner_address=${resolvedAddress}`;
+
+		const headers = privyIdToken
+			? { Authorization: `Bearer ${privyIdToken}` }
+			: undefined;
+
+		const response = await axios.get(url, { headers });
 
 		return {
 			linkedAddress: response.data.data.linkedAddress,
@@ -125,18 +120,7 @@ export const fetchLinkedAddress = async ({
 			error: "",
 		};
 	} catch (error) {
-		if ((error as AxiosError).response?.status === 404) {
-			return {
-				linkedAddress: "",
-				currency: "",
-				institution: "",
-				accountIdentifier: "",
-				accountName: "",
-				resolvedAddress: "",
-				error: "Linked address not found",
-			};
-		}
-		console.error("Error fetching address status:", error);
+		const isNotFound = (error as AxiosError).response?.status === 404;
 		return {
 			linkedAddress: "",
 			currency: "",
@@ -144,7 +128,9 @@ export const fetchLinkedAddress = async ({
 			accountIdentifier: "",
 			accountName: "",
 			resolvedAddress: "",
-			error: "Error fetching address status",
+			error: isNotFound
+				? "Linked address not found"
+				: "Error fetching address status",
 		};
 	}
 };
