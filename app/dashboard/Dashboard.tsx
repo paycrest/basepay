@@ -13,6 +13,7 @@ import { classNames, shortenAddress } from "../utils";
 import {
 	AnimatedContainer,
 	AnimatedItem,
+	Footer,
 	Navbar,
 	Preloader,
 	primaryButtonStyles,
@@ -36,7 +37,6 @@ import type {
 } from "../types";
 import { fetchTransactionHistory } from "../api/aggregator";
 import { useAddressContext } from "@/context/AddressContext";
-import { Footer } from "@/components/Footer";
 
 const Card = ({
 	title,

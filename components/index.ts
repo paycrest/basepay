@@ -7,7 +7,9 @@ export {
 } from "./Animations";
 
 export { Navbar } from "./Navbar";
+export { Footer } from "./Footer";
 export { Dropdown } from "./Dropdown";
+export { Custom404 } from "./Custom404";
 export { Preloader } from "./Preloader";
 export { Disclaimer } from "./Disclaimer";
 

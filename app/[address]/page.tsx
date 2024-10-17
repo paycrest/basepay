@@ -1,13 +1,15 @@
 "use client";
-import jsPDF from "jspdf";
 import Link from "next/link";
 import Image from "next/image";
-import html2canvas from "html2canvas";
-import { toast } from "sonner";
-import { QRCode } from "react-qrcode-logo";
 import { usePrivy } from "@privy-io/react-auth";
 import { useEffect, useRef, useState } from "react";
 import { notFound, usePathname } from "next/navigation";
+
+import jsPDF from "jspdf";
+import { toast } from "sonner";
+import html2canvas from "html2canvas";
+import { QRCode } from "react-qrcode-logo";
+import { TbFileDownload } from "react-icons/tb";
 
 import {
 	CheckmarkIcon,
@@ -19,6 +21,7 @@ import {
 	AnimatedContainer,
 	AnimatedItem,
 	BasepayPdf,
+	Custom404,
 	Navbar,
 	Preloader,
 	primaryButtonStyles,
@@ -27,13 +30,19 @@ import {
 } from "@/components";
 import { classNames, formatCurrency } from "../utils";
 import type { LinkedAddressResponse } from "../types";
-import { fetchLinkedAddress, fetchRate } from "../api/aggregator";
 import { useAddressContext } from "@/context/AddressContext";
-import { TbFileDownload } from "react-icons/tb";
+import { fetchLinkedAddress, fetchRate } from "../api/aggregator";
 
 export default function BasepayLink() {
 	const pathname = usePathname();
 	const rawAddress = pathname.split("/").pop() as string;
+
+	if (
+		(!rawAddress?.startsWith("0x") || rawAddress?.length !== 42) &&
+		!rawAddress?.includes(".base.eth")
+	) {
+		notFound();
+	}
 
 	const { ready, user, authenticated } = usePrivy();
 	const { basename } = useAddressContext();
@@ -42,20 +51,62 @@ export default function BasepayLink() {
 	const [hasError, setHasError] = useState(false);
 	const [isGenerating, setIsGenerating] = useState(false);
 	const [isPageLoading, setIsPageLoading] = useState(true);
-	const [isAddressLinked, setIsAddressLinked] = useState(false);
 	const [isAddressCopied, setIsAddressCopied] = useState(false);
 	const [exportFormat, setExportFormat] = useState<"pdf" | "png">("pdf");
 	const [addressStatusResponse, setAddressStatusResponse] =
 		useState<LinkedAddressResponse>();
-	const [isAddressStatusFetched, setIsAddressStatusFetched] = useState(false);
-
-	const handleCopyAddress = () => {
-		navigator.clipboard.writeText(addressStatusResponse?.linkedAddress ?? "");
-		setIsAddressCopied(true);
-		setTimeout(() => setIsAddressCopied(false), 2000);
-	};
 
 	const basepayPdfRef = useRef<HTMLDivElement | null>(null);
+
+	useEffect(() => {
+		const fetchAndSetAddressStatus = async () => {
+			setIsPageLoading(true);
+			try {
+				const response = await fetchLinkedAddress({ address: rawAddress });
+				setAddressStatusResponse(response);
+			} catch (error) {
+				console.error("Error fetching linked address:", error);
+				setHasError(true);
+				toast.error("Failed to fetch address information");
+			} finally {
+				setIsPageLoading(false);
+			}
+		};
+
+		fetchAndSetAddressStatus();
+	}, [rawAddress]);
+
+	useEffect(() => {
+		const getRate = async () => {
+			if (
+				!addressStatusResponse?.linkedAddress ||
+				!addressStatusResponse.currency
+			)
+				return;
+
+			try {
+				const rateResponse = await fetchRate({
+					currency: addressStatusResponse.currency,
+					amount: 1,
+					token: "usdt",
+				});
+				setRate(rateResponse.data);
+			} catch (error) {
+				console.error("Error fetching rate:", error);
+				toast.error("Failed to fetch exchange rate");
+			}
+		};
+
+		getRate();
+	}, [addressStatusResponse]);
+
+	const handleCopyAddress = () => {
+		if (addressStatusResponse?.linkedAddress) {
+			navigator.clipboard.writeText(addressStatusResponse.linkedAddress);
+			setIsAddressCopied(true);
+			setTimeout(() => setIsAddressCopied(false), 2000);
+		}
+	};
 
 	const handleExport = async () => {
 		setIsGenerating(true);
@@ -110,58 +161,11 @@ export default function BasepayLink() {
 		}
 	};
 
-	useEffect(() => {
-		const checkAddress = async () => {
-			if (rawAddress) {
-				setIsPageLoading(true);
-				try {
-					const response = await fetchLinkedAddress({
-						address: rawAddress,
-					});
-					setIsAddressLinked(!!response.linkedAddress);
-					setAddressStatusResponse(response);
-				} catch (error) {
-					console.error("Error fetching linked address:", error);
-					setHasError(true);
-				} finally {
-					setIsPageLoading(false);
-					setIsAddressStatusFetched(true);
-				}
-			}
-		};
-
-		checkAddress();
-	}, [rawAddress]);
-
-	useEffect(() => {
-		const getRate = async () => {
-			if (!isAddressLinked || !addressStatusResponse?.currency) return;
-
-			const rate = await fetchRate({
-				currency: addressStatusResponse.currency,
-				amount: 1,
-				token: "usdt",
-			});
-			setRate(rate.data);
-		};
-
-		getRate();
-	}, [isAddressLinked, addressStatusResponse?.currency]);
-
-	useEffect(() => {
-		if (!isAddressStatusFetched) return;
-
-		if (
-			((!rawAddress?.startsWith("0x") || rawAddress.length !== 42) &&
-				!rawAddress?.includes(".base.eth")) ||
-			hasError ||
-			!isAddressLinked
-		) {
-			notFound();
-		}
-	}, [rawAddress, isAddressLinked, hasError, isAddressStatusFetched]);
-
 	if (!ready || isPageLoading) return <Preloader isLoading={true} />;
+
+	if (hasError || !addressStatusResponse?.linkedAddress) {
+		return <Custom404 address={rawAddress} />;
+	}
 
 	return (
 		<>
