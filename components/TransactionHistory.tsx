@@ -186,10 +186,22 @@ export const TransactionHistory = ({
 
 			{/* Mobile View */}
 			<div className="block md:hidden">
-				<MobileTransactionList
-					transactions={transactions}
-					openOrderDetails={openOrderDetails}
-				/>
+				{sortedTransactions.length === 0 ? (
+					<div className="text-text-gray bg-background-neutral rounded-xl transition space-y-7 text-center py-10">
+						<div className="flex flex-col items-center justify-center space-y-4">
+							<AnalyticsIllustration />
+							<p className="text-text-secondary text-xs max-w-sm">
+								You have no transactions yet. Your transactions will appear here
+								when you start receiving funds
+							</p>
+						</div>
+					</div>
+				) : (
+					<MobileTransactionList
+						transactions={transactions}
+						openOrderDetails={openOrderDetails}
+					/>
+				)}
 			</div>
 
 			{/* Tablet and Desktop View */}
