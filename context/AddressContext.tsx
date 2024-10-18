@@ -9,10 +9,11 @@ import { toast } from "sonner";
 import { usePrivy } from "@privy-io/react-auth";
 import { fetchLinkedAddress } from "@/app/api/aggregator";
 import type { LinkedAddressResponse } from "@/app/types";
-import { getName } from "@coinbase/onchainkit/identity";
+import { getAvatar, getName } from "@coinbase/onchainkit/identity";
 import { base } from "viem/chains";
 
 interface AddressContextProps {
+	avatar: string | null;
 	basename: string | null;
 	isAddressLinked: boolean;
 	linkedAddress: string | null;
@@ -28,6 +29,7 @@ export const AddressProvider = ({ children }: { children: ReactNode }) => {
 	const [isAddressLinked, setIsAddressLinked] = useState(false);
 	const [linkedAddress, setLinkedAddress] = useState<string | null>(null);
 	const [basename, setBasename] = useState<string | null>(null);
+	const [avatar, setAvatar] = useState<string | null>(null);
 	const [accountDetails, setAccountDetails] =
 		useState<LinkedAddressResponse | null>(null);
 
@@ -49,8 +51,23 @@ export const AddressProvider = ({ children }: { children: ReactNode }) => {
 				}
 
 				try {
-					const basename = await getName({ address: user?.wallet?.address as `0x${string}`, chain: base });
+					const basename = await getName({
+						address: user?.wallet?.address as `0x${string}`,
+						chain: base,
+					});
 					setBasename(basename ?? user.wallet?.address);
+
+					if (basename) {
+						try {
+							const avatar = await getAvatar({
+								ensName: basename as string,
+								chain: base,
+							});
+							setAvatar(avatar);
+						} catch (error) {
+							toast.error("Error fetching avatar");
+						}
+					}
 				} catch (error) {
 					toast.error("Error fetching basename");
 				}
@@ -62,7 +79,13 @@ export const AddressProvider = ({ children }: { children: ReactNode }) => {
 
 	return (
 		<AddressContext.Provider
-			value={{ basename, isAddressLinked, linkedAddress, accountDetails }}
+			value={{
+				basename,
+				avatar,
+				isAddressLinked,
+				linkedAddress,
+				accountDetails,
+			}}
 		>
 			{children}
 		</AddressContext.Provider>

@@ -2,12 +2,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { toast } from "sonner";
-import { base } from "viem/chains";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { usePrivy } from "@privy-io/react-auth";
 import { AnimatePresence, motion } from "framer-motion";
-import { Avatar, Identity, Name } from "@coinbase/onchainkit/identity";
 
 import { classNames, shortenAddress } from "../utils";
 import {
@@ -51,7 +49,7 @@ const Card = ({
 export default function Dashboard() {
 	const router = useRouter();
 	const { ready, user } = usePrivy();
-	const { isAddressLinked, basename, linkedAddress, accountDetails } =
+	const { isAddressLinked, basename, avatar, linkedAddress, accountDetails } =
 		useAddressContext();
 
 	const [tsxHistoryResponse, setTxHistoryResponse] =
@@ -167,25 +165,28 @@ export default function Dashboard() {
 						)}
 
 					<AnimatedItem className="flex sm:justify-between sm:items-center gap-4 flex-col sm:flex-row">
-						{user?.wallet?.address && (
-							<Identity
-								address={user?.wallet?.address as `0x${string}`}
-								chain={base}
-								schemaId="0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9"
-								className="flex items-center"
-							>
-								<Avatar
-									address={user?.wallet?.address as `0x${string}`}
-									chain={base}
-									className="w-8 bg-gradient-to-br from-purple-500 via-pink-500 to-cyan-500 rounded-full"
-									alt="avatar"
-								/>
-								<Name
-									address={user?.wallet?.address as `0x${string}`}
-									chain={base}
-									className="text-text-primary font-medium text-base"
-								/>
-							</Identity>
+						{basename ? (
+							<div className="flex items-center gap-2">
+								{avatar ? (
+									<Image
+										src={avatar}
+										alt="avatar"
+										width={500}
+										height={500}
+										className="size-8 rounded-full"
+									/>
+								) : (
+									<div className="size-8 bg-gradient-to-br from-purple-500 via-pink-500 to-cyan-500 rounded-full" />
+								)}
+								<p className="text-text-primary text-sm font-medium">
+									{basename}
+								</p>
+							</div>
+						) : (
+							<div className="flex items-center gap-2">
+								<div className="size-8 bg-gradient-to-br from-purple-500 via-pink-500 to-cyan-500 rounded-full animate-pulse" />
+								<div className="bg-gray-200 h-5 w-40 rounded-lg animate-pulse" />
+							</div>
 						)}
 
 						<div className="flex gap-3 items-center">

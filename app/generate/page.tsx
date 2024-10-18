@@ -1,13 +1,12 @@
 "use client";
 import Link from "next/link";
 import { toast } from "sonner";
-import { base } from "viem/chains";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { usePrivy } from "@privy-io/react-auth";
 import type { SubmitHandler } from "react-hook-form";
 import { motion, AnimatePresence } from "framer-motion";
-import { Avatar, Identity, Name } from "@coinbase/onchainkit/identity";
 
 import {
 	AnimatedContainer,
@@ -31,7 +30,7 @@ import { useAddressContext } from "@/context/AddressContext";
 export default function GeneratePaymentLink() {
 	const router = useRouter();
 	const { user, ready, authenticated } = usePrivy();
-	const { isAddressLinked, basename } = useAddressContext();
+	const { isAddressLinked, basename, avatar } = useAddressContext();
 	const [showPreloader, setShowPreloader] = useState(false);
 	const [isPreviewVisible, setIsPreviewVisible] = useState(true);
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -116,32 +115,41 @@ export default function GeneratePaymentLink() {
 									Create a linked address
 								</h2>
 								<div className="text-text-secondary text-sm sm:text-lg font-normal">
-									<p className="mb-2 text-sm">An onchain representation of a bank or mobile money account that enables automatic settlement of stablecoins.</p>
-									<p className="text-xs italic text-gray-600 mb-2">e.g "I'm at the ATM, can you send USDC to my linked address immediately?"</p>
+									<p className="mb-2 text-sm">
+										An onchain representation of a bank or mobile money account
+										that enables automatic settlement of stablecoins.
+									</p>
+									<p className="text-xs italic text-gray-600 mb-2">
+										e.g "I'm at the ATM, can you send USDC to my linked address
+										immediately?"
+									</p>
 								</div>
 							</div>
 
 							<div className="space-y-4">
 								<div className="flex justify-between items-center gap-4 flex-wrap">
-									{user?.wallet?.address && (
-										<Identity
-											address={user?.wallet?.address as `0x${string}`}
-											chain={base}
-											schemaId="0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9"
-											className="flex items-center"
-										>
-											<Avatar
-												address={user?.wallet?.address as `0x${string}`}
-												chain={base}
-												className="w-8 bg-gradient-to-br from-purple-500 via-pink-500 to-cyan-500 rounded-full"
-												alt="avatar"
-											/>
-											<Name
-												address={user?.wallet?.address as `0x${string}`}
-												chain={base}
-												className="text-text-primary font-medium text-base"
-											/>
-										</Identity>
+									{basename ? (
+										<div className="flex items-center gap-2">
+											{avatar ? (
+												<Image
+													src={avatar}
+													alt="avatar"
+													width={500}
+													height={500}
+													className="size-8 rounded-full"
+												/>
+											) : (
+												<div className="size-8 bg-gradient-to-br from-purple-500 via-pink-500 to-cyan-500 rounded-full" />
+											)}
+											<p className="text-text-primary text-sm font-medium">
+												{basename}
+											</p>
+										</div>
+									) : (
+										<div className="flex items-center gap-2">
+											<div className="size-8 bg-gradient-to-br from-purple-500 via-pink-500 to-cyan-500 rounded-full animate-pulse" />
+											<div className="bg-gray-200 h-5 w-40 rounded-lg animate-pulse" />
+										</div>
 									)}
 									<GreenCheckCircleIcon className="rounded-full size-4" />
 								</div>
@@ -195,7 +203,8 @@ export default function GeneratePaymentLink() {
 											Preview
 										</h3>
 										<p className="text-text-secondary text-sm font-normal">
-											What the page will look like for anyone who visits your link
+											What the page will look like for anyone who visits your
+											link
 										</p>
 									</div>
 								)}
