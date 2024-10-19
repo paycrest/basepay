@@ -22,7 +22,7 @@ import {
 	BannerIcon,
 	GreenCheckCircleIcon,
 } from "@/components/ImageAssets";
-import { classNames } from "@/app/utils";
+import { classNames, shortenAddress } from "@/app/utils";
 import type { FormValues } from "@/app/types";
 import { linkNewAddress } from "@/app/api/aggregator";
 import { useAddressContext } from "@/context/AddressContext";
@@ -142,7 +142,9 @@ export default function GeneratePaymentLink() {
 												<div className="size-8 bg-gradient-to-br from-purple-500 via-pink-500 to-cyan-500 rounded-full" />
 											)}
 											<p className="text-text-primary text-sm font-medium">
-												{basename}
+												{basename.includes(".base.eth")
+													? basename
+													: shortenAddress(basename, 4, 6)}
 											</p>
 										</div>
 									) : (
