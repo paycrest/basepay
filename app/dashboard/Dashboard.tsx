@@ -209,8 +209,14 @@ export default function Dashboard() {
 								<>
 									<button
 										type="button"
-										title="Copy payment link"
-										onClick={handleCopyLinkedAddress}
+										title="Copy payment link and open in new tab"
+										onClick={() => {
+											handleCopyLinkedAddress();
+											window.open(
+												`https://www.basepay.link/${basename}`,
+												"_blank",
+											);
+										}}
 										className="px-4 py-3 rounded-full border border-border-light flex items-center gap-2.5 hover:bg-gray-50 transition group"
 									>
 										<p className="font-medium text-sm bg-gradient-to-r from-purple-500 via-orange-500 to-fuchsia-400 bg-clip-text text-transparent group-hover:from-purple-700 group-hover:via-orange-700 group-hover:to-fuchsia-600 transition">
