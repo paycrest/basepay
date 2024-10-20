@@ -15,7 +15,7 @@ Check out our live demo at [basepay.link](https://www.basepay.link).
 
 To run the project locally, follow these steps:
 
-1. Clone the repository and switch to the waitlist branch:
+1. Clone the repository:
 
    ```bash
    git clone https://github.com/paycrest/basepay.git
