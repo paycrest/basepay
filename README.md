@@ -5,9 +5,11 @@
 [![Tailwind CSS](https://img.shields.io/badge/-Tailwind%20CSS-06B6D4?logo=Tailwind%20CSS&logoColor=60bdfa&color=11172a)](https://tailwindcss.com/)
 [![Biome](https://img.shields.io/badge/-Biome-1d2b34?logo=Biome&logoColor=71a5fc&color=11172a)](https://biomejs.dev/)
 
-Basepay by Paycrest is a dApp developed for the [Based Africa Buildathon](https://based-africa.devfolio.co/).
+Basepay is an app developed for the [Based Africa Hackathon](https://devfolio.co/projects/basepay-df80).
 
-Check out our live demo at [basepay.link](https://www.basepay.link).
+Using Basepay, anyone can generate unique "linked addresses" -- onchain representations of their bank or mobile money accounts. These linked addresses enable anyone to receive stablecoins and have them automatically settled as local currency in their traditional financial accounts, seamlessly bridging the gap between decentralized and traditional finance.
+
+Get your linked address here [basepay.link](https://www.basepay.link)
 
 ![image](https://based-africa.devfolio.co/_next/image?url=https%3A%2F%2Fassets.devfolio.co%2Fhackathons%2Fb95da37a3a1a4fb9adb82d7d9f6d80e9%2Fassets%2Fcover%2F733.png&w=1440&q=100)
 
