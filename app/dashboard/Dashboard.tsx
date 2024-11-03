@@ -104,13 +104,20 @@ export default function Dashboard() {
 					pageSize: 50,
 				},
 			});
+			response.transactions = response?.transactions.map(a => {
+				if (a.status === "refunded") {
+					a.status = "pending"
+				}
+				return a
+			})
+
 			setTxHistoryResponse(response);
-			setTransactions(response?.transactions);
+			setTransactions(response.transactions);
 		};
 
 		getTransactionHistory();
 
-		const intervalId = setInterval(getTransactionHistory, 30000); // Poll every 30 seconds
+		const intervalId = setInterval(getTransactionHistory, 10 * 1000); // Poll every 10 seconds
 
 		return () => clearInterval(intervalId); // Cleanup on unmount
 	}, [isAddressLinked, ready, linkedAddress]);
