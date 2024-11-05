@@ -77,7 +77,8 @@ export default function Dashboard() {
 						transaction.amount as unknown as string,
 					);
 					return sum + (Number.isNaN(amount) ? 0 : amount);
-				}, 0)}`,
+				}, 0)
+				.toFixed(2)}`,
 		},
 		{
 			id: 2,
