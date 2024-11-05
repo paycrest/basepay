@@ -153,17 +153,3 @@ export const getExplorerLink = (
 
 	return explorers[network] ? `${explorers[network]}${txHash}` : undefined;
 };
-
-
-/**
- * Rounds up a number to a specified number of decimal places and returns it as a string.
- * @param number - The number to round up.
- * @param decimals - The number of decimal places to round up to. Defaults to 2.
- * @returns The rounded up and formatted number as a string.
- */
-export const roundUpToTwoDecimals = (number: number, decimals = 2): string => {
-    return number.toLocaleString("en-US", {
-        minimumFractionDigits: decimals,
-        maximumFractionDigits: decimals,
-    });
-};
