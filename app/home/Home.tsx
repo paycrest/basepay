@@ -48,7 +48,6 @@ export default function Home() {
 			router.push("/dashboard");
 		},
 	});
-
 	// biome-ignore lint/correctness/useExhaustiveDependencies: depends only on ready and authenticated
 	useEffect(() => {
 		if (ready && authenticated) {
