@@ -80,7 +80,7 @@ export default function Dashboard() {
 					return sum + (Number.isNaN(amount) ? 0 : amount);
 				}, 0)
 				, transactions[0].recipient.currency, 
-				`en-${transactions[0].recipient.currency.toUpperCase().slice(0, 2)}`)}`,
+				"en-US")}`
 		},
 		{
 			id: 2,
