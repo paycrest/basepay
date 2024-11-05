@@ -66,19 +66,29 @@ export default function Dashboard() {
 		setTimeout(() => setIsLinkedAddressCopied(false), 2000);
 	};
 
+	const formatCurrency = (amount: number): string => {
+		return new Intl.NumberFormat('en-US', {
+			style: 'currency',
+			currency: 'USD',
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
+		}).format(amount);
+	};
+
 	const cardData = [
 		{
 			id: 1,
 			title: "Total settled",
-			content: `$${transactions
-				.filter((transaction) => transaction.status === "settled")
-				.reduce((sum, transaction) => {
-					const amount = Number.parseFloat(
-						transaction.amount as unknown as string,
-					);
-					return sum + (Number.isNaN(amount) ? 0 : amount);
-				}, 0)
-				.toFixed(2)}`,
+			content: formatCurrency(
+				transactions
+					.filter((transaction) => transaction.status === "settled")
+					.reduce((sum, transaction) => {
+						const amount = Number.parseFloat(
+							transaction.amount as unknown as string
+						);
+						return sum + (Number.isNaN(amount) ? 0 : amount);
+					}, 0)
+			),
 		},
 		{
 			id: 2,
