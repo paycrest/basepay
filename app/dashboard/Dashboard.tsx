@@ -35,6 +35,7 @@ import type {
 } from "../types";
 import { fetchTransactionHistory } from "../api/aggregator";
 import { useAddressContext } from "@/context/AddressContext";
+import { roundUpToTwoDecimals } from "@/helpers/currency-helpers";
 
 const Card = ({
 	title,
@@ -70,14 +71,14 @@ export default function Dashboard() {
 		{
 			id: 1,
 			title: "Total settled",
-			content: `$${transactions
+			content: `$${roundUpToTwoDecimals(transactions
 				.filter((transaction) => transaction.status === "settled")
 				.reduce((sum, transaction) => {
 					const amount = Number.parseFloat(
 						transaction.amount as unknown as string,
 					);
 					return sum + (Number.isNaN(amount) ? 0 : amount);
-				}, 0)}`,
+				}, 0))}`,
 		},
 		{
 			id: 2,
