@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { usePrivy } from "@privy-io/react-auth";
 import { AnimatePresence, motion } from "framer-motion";
 
-import { classNames, formatCurrency, shortenAddress } from "../utils";
+import { classNames, formatCurrency, shortenAddress, stripTrailingZeros } from "../utils";
 import {
 	AnimatedContainer,
 	AnimatedItem,
@@ -71,7 +71,7 @@ export default function Dashboard() {
 			id: 1,
 			title: "Total settled",
 			content: `${
-				!transactions.length ? "$0" : formatCurrency(
+				!transactions.length ? "$0" : stripTrailingZeros(formatCurrency(
 				transactions.filter((transaction) => transaction.status === "settled")
 				.reduce((sum, transaction) => {
 					const amount = Number.parseFloat(
@@ -79,8 +79,8 @@ export default function Dashboard() {
 					);
 					return sum + (Number.isNaN(amount) ? 0 : amount);
 				}, 0)
-				, transactions[0].recipient.currency, 
-				"en-US")}`
+				, "USD", 
+				"en-US"))}`
 		},
 		{
 			id: 2,
