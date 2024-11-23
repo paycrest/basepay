@@ -12,7 +12,7 @@ export default function Page() {
 
 	return (
 		<>
-			<Disclaimer />
+			{/* <Disclaimer /> */}
 			{authenticated ? <Dashboard /> : <Home />}
 		</>
 	);
