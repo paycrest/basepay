@@ -15,6 +15,9 @@ const nextConfig = {
     };
     return config;
   },
+  experimental: {
+    serverComponentsExternalPackages: ['async_hooks']
+  },
 };
 
 export default nextConfig;
