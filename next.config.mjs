@@ -8,6 +8,9 @@ const nextConfig = {
       },
     ],
   },
+  serverRuntimeConfig: {
+    runtime: process.env.RUNTIME
+  },
 };
 
 export default nextConfig;
