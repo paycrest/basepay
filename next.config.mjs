@@ -15,6 +15,11 @@ const nextConfig = {
         "async_hooks": false,
       };
     }
+    // Add platform configuration
+    config.resolve = {
+      ...config.resolve,
+      platform: isServer ? 'node' : 'browser'
+    };
     return config;
   },
 };
