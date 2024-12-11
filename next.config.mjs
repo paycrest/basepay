@@ -9,6 +9,7 @@ const nextConfig = {
     ],
   },
   webpack: (config) => {
+    config.target = 'node';
     config.resolve.fallback = {
       ...config.resolve.fallback,
       async_hooks: false, 
