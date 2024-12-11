@@ -1,3 +1,4 @@
+export const runtime = 'edge';
 "use client";
 import Link from "next/link";
 import Image from "next/image";
@@ -33,7 +34,6 @@ import type { LinkedAddressResponse } from "../types";
 import { useAddressContext } from "@/context/AddressContext";
 import { fetchLinkedAddress, fetchRate } from "../api/aggregator";
 
-export const runtime = "edge";
 export default function BasepayLink() {
 	const pathname = usePathname();
 	const rawAddress = pathname.split("/").pop() as string;
